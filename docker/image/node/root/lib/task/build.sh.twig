@@ -1,0 +1,17 @@
+#!/bin/bash
+
+function task_build()
+{
+    if [ ! -f /app/package.json ]; then
+        task skeleton:apply
+    fi
+
+    task overlay:apply
+
+    {% for step in @('app._common.build.steps') -%}
+    {{ step|raw }}
+    {% endfor %}
+
+    task build:gateway
+    task build:client
+}

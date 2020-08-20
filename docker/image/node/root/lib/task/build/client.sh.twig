@@ -1,0 +1,9 @@
+#!/bin/bash
+
+function task_build_client()
+{
+    {% for step in @('app.client.build.steps') -%}
+    {{ step|raw }}
+    {% endfor %}
+
+}

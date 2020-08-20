@@ -1,0 +1,64 @@
+---
+harness('inviqa/viper'):
+  description: A docker based development environment for viper.
+  require:
+    services:
+      - proxy
+    confd:
+      - harness:/
+---
+command('gateway rebuild'):
+  env:
+    COMPOSE_PROJECT_NAME: = @('namespace')
+  exec: |
+    #!bash(workspace:/)
+    passthru ws exec app build:gateway
+    ws gateway restart
+command('(gateway|client) <action>'):
+  env:
+    COMPOSE_PROJECT_NAME: = @('namespace')
+    SERVICE: = input.command(1)
+    ACTION: = input.argument('action')
+  exec: |
+    #!bash(workspace:/)
+    passthru docker-compose exec node supervisorctl "${ACTION}" "${SERVICE}"
+---
+attributes:
+  app:
+    _common:
+      docker:
+        image: node:14-slim
+      build:
+        steps:
+        - run yarn install
+        - run yarn generate:types
+        - run yarn build:core
+        - run yarn build:deps
+      environment:
+        HOST_OS_FAMILY: = @('host.os')
+      environment_secrets: {}
+    gateway:
+      docker:
+        port: 4000
+        resources: 512MiB
+      build:
+        steps:
+        - run yarn build:app:gateway
+      environment:
+        APP_HOST: = 'gateway-' ~ @('hostname')
+        DRUPAL_TOKEN_SECRET: 1234
+    client:
+      docker:
+        port: 3000
+        resources:
+          memory: 512MiB
+      build:
+        steps:
+        - run yarn build:app:client
+      environment:
+        APP_HOST: = @('hostname')
+---
+import:
+  - harness/config/*.yml
+  - harness/attributes/*.yml
+  - harness/attributes/environment/={env('MY127WS_ENV','local')}.yml

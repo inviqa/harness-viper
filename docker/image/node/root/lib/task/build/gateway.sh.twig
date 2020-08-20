@@ -1,0 +1,9 @@
+#!/bin/bash
+
+function task_build_gateway()
+{
+    {% for step in @('app.gateway.build.steps') -%}
+    {{ step|raw }}
+    {% endfor %}
+
+}

@@ -1,0 +1,6 @@
+export default {
+  gateway: {
+    csr: 'https://{{ @('app.gateway.environment.APP_HOST') }}/graphql',
+    ssr: 'http://localhost:4000/graphql'
+  }
+};
