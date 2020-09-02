@@ -13,50 +13,53 @@ command('gateway rebuild'):
   exec: |
     #!bash(workspace:/)
     passthru ws exec app build:gateway
-    ws gateway restart
-command('(gateway|client) <action>'):
+    run ws gateway restart
+command('gateway <action>'):
   env:
     COMPOSE_PROJECT_NAME: = @('namespace')
-    SERVICE: = input.command(1)
     ACTION: = input.argument('action')
   exec: |
     #!bash(workspace:/)
-    passthru docker-compose exec node supervisorctl "${ACTION}" "${SERVICE}"
+    passthru docker-compose exec node supervisorctl "${ACTION}" "gateway"
+command('client <action>'):
+  env:
+    COMPOSE_PROJECT_NAME: = @('namespace')
+    ACTION: = input.argument('action')
+  exec: |
+    #!bash(workspace:/)
+    passthru docker-compose exec node supervisorctl "${ACTION}" "client"
 ---
 attributes:
   app:
-    _common:
-      docker:
-        image: node:14-slim
-      build:
-        steps:
-        - run yarn install
-        - run yarn generate:types
-        - run yarn build:core
-        - run yarn build:deps
-      environment:
-        HOST_OS_FAMILY: = @('host.os')
-      environment_secrets: {}
+    image: node:14-slim
+    build:
+      steps:
+      - run yarn install
+      - run yarn generate:types
+      - run yarn build:core
+      - run yarn build:deps
+    environment:
+      HOST_OS_FAMILY: = @('host.os')
+    environment_secrets: {}
     gateway:
-      docker:
-        port: 4000
-        resources: 512MiB
+      port: 4000
+      resources:
+        memory: 512MiB
       build:
         steps:
         - run yarn build:app:gateway
       environment:
-        APP_HOST: = 'gateway-' ~ @('hostname')
+        GATEWAY_HOST: = 'gateway-' ~ @('hostname')
         DRUPAL_TOKEN_SECRET: 1234
     client:
-      docker:
-        port: 3000
-        resources:
+      port: 3000
+      resources:
           memory: 512MiB
       build:
         steps:
         - run yarn build:app:client
       environment:
-        APP_HOST: = @('hostname')
+        CLIENT_HOST: = @('hostname')
 ---
 import:
   - harness/config/*.yml

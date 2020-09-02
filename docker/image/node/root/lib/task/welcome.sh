@@ -5,6 +5,7 @@ function task_welcome()
     echo ""
     echo "Welcome!"
     echo "--------"
-    echo "URL: https://${APP_HOST}"
+    echo "Client: https://${CLIENT_HOST}"
+    echo "Gateway: https://${GATEWAY_HOST}"
     echo ""
 }

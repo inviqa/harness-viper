@@ -1,0 +1,25 @@
+{{ if eq .Values.ingress.type "standard" }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+{{- if .Values.client.ingress.annotations }}
+  annotations:
+  {{- range $key, $value := .Values.client.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+  creationTimestamp: null
+  labels:
+    app.service: {{ .Values.resourcePrefix }}viper-client
+  name: {{ .Values.resourcePrefix }}viper-client
+spec:
+  rules:
+  - host: {{ index .Values "client" "environment" "APP_HOST" }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Values.resourcePrefix }}viper-client
+          servicePort: 80
+status:
+  loadBalancer: {}
+{{ end }}

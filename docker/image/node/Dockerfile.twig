@@ -1,4 +1,4 @@
-FROM {{ @('app._common.docker.image') }} as node
+FROM {{ @('app.image') }} as node
 
 RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
  && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
@@ -30,9 +30,17 @@ COPY .my127ws/docker/image/node/root /
 
 WORKDIR /app
 
-ENV APP_MODE={{ @('app.mode') }}
+ENV APP_DEVELOPMENT={{ @('app.development') }}
+ENV APP_DYNAMIC={{ @('app.dynamic') }}
 
-{% if @('app.build') == 'static' %}
+{% if @('app.dynamic') == 'yes' %}
+
+USER root
+VOLUME /app
+VOLUME /home/node/application
+ENTRYPOINT ["/entrypoint.dynamic.sh"]
+
+{% else %}
 
 RUN chown node:node /app
 COPY --chown=node:node .my127ws/application  /home/node/application
@@ -41,12 +49,5 @@ USER node
 RUN app build
 USER root
 ENTRYPOINT ["/entrypoint.sh"]
-
-{% else %}
-
-USER root
-VOLUME /app
-VOLUME /home/node/application
-ENTRYPOINT ["/entrypoint.dynamic.sh"]
 
 {% endif %}

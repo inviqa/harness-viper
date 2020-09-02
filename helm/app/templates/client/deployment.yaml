@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.resourcePrefix }}
+  labels:
+    app.service: {{ .Values.resourcePrefix }}viper-client
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app.service: {{ .Values.resourcePrefix }}viper-client
+  template:
+    metadata:
+      labels:
+        app.service: {{ .Values.resourcePrefix }}viper-client
+    spec:
+      containers:
+      - name: viper-client
+        env:
+        {{- range $key, $value := .Values.client.environment }}
+        {{- $tp := typeOf $value }}
+        - name: {{ $key | quote }}
+        {{- if eq $tp "string" }}
+          value: {{ tpl $value $ | quote }}
+        {{- else}}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.client.environment_secrets }}
+        envFrom:
+          - secretRef:
+              name: {{ .Values.resourcePrefix }}viper-client
+        {{- end }}
+        image: {{ .Values.client.image }}
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 3000
+        resources:
+          limits:
+            memory: {{ .Values.client.resources.memory }}
+          requests:
+            memory: {{ .Values.client.resources.memory }}
+        readinessProbe:
+          tcpSocket:
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+{{- if .Values.docker.image_pull_config }}
+      imagePullSecrets:
+      - name: {{ .Values.resourcePrefix }}image-pull-config
+{{- end }}
+      restartPolicy: Always
+      enableServiceLinks: false
+status: {}

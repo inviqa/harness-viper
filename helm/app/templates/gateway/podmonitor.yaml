@@ -1,0 +1,16 @@
+{{- if .Values.prometheus.podMonitoring -}}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ .Values.resourcePrefix }}viper-gateway
+  labels:
+    app.service: {{ .Values.resourcePrefix }}viper-gateway
+spec:
+  selector:
+    matchLabels:
+      app.service: {{ .Values.resourcePrefix }}viper-gateway
+  podMetricsEndpoints:
+{{- if .Values.gateway.metrics.enabled -}}
+{{ .Values.gateway.metrics.endpoints | toYaml | nindent 6 -}}
+{{- end -}}
+{{- end -}}

@@ -8,7 +8,7 @@ function task_build()
 
     task overlay:apply
 
-    {% for step in @('app._common.build.steps') -%}
+    {% for step in @('app.build.steps') -%}
     {{ step|raw }}
     {% endfor %}
 

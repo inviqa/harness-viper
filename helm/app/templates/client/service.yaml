@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.service: {{ .Values.resourcePrefix }}viper-client
+  name: {{ .Values.resourcePrefix }}viper-client
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3000
+  selector:
+    app.service: {{ .Values.resourcePrefix }}viper-client
+status:
+  loadBalancer: {}

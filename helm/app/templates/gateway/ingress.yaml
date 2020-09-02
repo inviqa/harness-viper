@@ -1,0 +1,25 @@
+{{ if eq .Values.ingress.type "standard" }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+{{- if .Values.gateway.ingress.annotations }}
+  annotations:
+  {{- range $key, $value := .Values.gateway.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+  creationTimestamp: null
+  labels:
+    app.service: {{ .Values.resourcePrefix }}viper-gateway
+  name: {{ .Values.resourcePrefix }}viper-gateway
+spec:
+  rules:
+  - host: {{ index .Values "gateway" "environment" "APP_HOST" }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Values.resourcePrefix }}viper-gateway
+          servicePort: 80
+status:
+  loadBalancer: {}
+{{ end }}
