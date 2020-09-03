@@ -31,35 +31,46 @@ command('client <action>'):
 ---
 attributes:
   app:
-    image: node:14-slim
+    image: = @('docker.repository') ~ @('app.version')
     build:
+      from: = 'node:' ~ @('node.version') ~ '-slim'
       steps:
       - run yarn install
       - run yarn generate:types
       - run yarn build:core
       - run yarn build:deps
-    environment:
-      HOST_OS_FAMILY: = @('host.os')
-    environment_secrets: {}
     gateway:
-      port: 4000
-      resources:
-        memory: 512MiB
       build:
         steps:
         - run yarn build:app:gateway
-      environment:
-        GATEWAY_HOST: = 'gateway-' ~ @('hostname')
-        DRUPAL_TOKEN_SECRET: 1234
-    client:
-      port: 3000
+      port: 4000
       resources:
-          memory: 512MiB
+        memory: 512MiB
+      env: ~
+      secrets: ~
+      ingress:
+        enabled: true
+        hosts:
+          - = 'gateway-' ~ @('hostname')
+    client:
       build:
         steps:
         - run yarn build:app:client
-      environment:
-        CLIENT_HOST: = @('hostname')
+      port: 3000
+      resources:
+        memory: 512MiB
+      env: ~
+      secrets: ~
+      ingress:
+        enabled: true
+        hosts:
+          - = 'gateway-' ~ @('hostname')
+  service: {}
+  environment:
+    local:
+      services: []
+    preview:
+    production:
 ---
 import:
   - harness/config/*.yml

@@ -17,10 +17,10 @@
       - traefik.enable=true
       - traefik.docker.network=my127ws
       - traefik.gateway.backend={{ 'gateway-' ~ @('workspace.name') }}
-      - traefik.gateway.frontend.rule=Host:{{ @('app.gateway.environment.GATEWAY_HOST') }}
+      - traefik.gateway.frontend.rule=Host:{{ @('app.gateway.ingress.hosts[0]') }}
       - traefik.gateway.port={{ @('app.gateway.port')}}
       - traefik.client.backend={{ 'client-' ~ @('workspace.name') }}
-      - traefik.client.frontend.rule=Host:{{ @('app.client.environment.CLIENT_HOST') }}
+      - traefik.client.frontend.rule=Host:{{ @('app.client.ingress.hosts[0]') }}
       - traefik.client.port={{ @('app.client.port')}}
     networks:
       private: {}
