@@ -53,6 +53,7 @@ attributes:
         hosts:
           - = 'gateway-' ~ @('hostname')
     client:
+      image: 
       build:
         steps:
         - run yarn build:app:client
@@ -67,10 +68,8 @@ attributes:
           - = @('hostname')
   service: {}
   environment:
-    local:
-      services: []
-    preview:
-    production:
+    preview: {}
+    production: {}
 ---
 import:
   - harness/config/*.yml
