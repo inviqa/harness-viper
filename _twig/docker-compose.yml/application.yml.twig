@@ -13,6 +13,9 @@
       - ./.my127ws/application:/home/node/application
       - ./.my127ws/docker/image/node/root/lib/task:/lib/task
       - ./.my127ws:/.my127ws
+{% else %}
+    image: {{ @('docker.repository') ~ ':' ~ @('app.version') }}
+{% endif %}
     labels:
       - traefik.enable=true
       - traefik.docker.network=my127ws
@@ -25,16 +28,9 @@
     networks:
       private: {}
       shared: {}
-{% else %}
-    image: {{ @('docker.repository') ~ ':' ~ @('app.version') }}
     expose:
       - {{ @('app.gateway.port')}}
       - {{ @('app.client.port') }}
-    labels:
-      - traefik.enable=false
-    networks:
-      - private
-{% endif %}
     environment: {{ to_nice_yaml(deep_merge([
         {
           'HOST_OS_FAMILY': @('host.os')
