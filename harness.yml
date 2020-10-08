@@ -31,6 +31,7 @@ command('client <action>'):
 ---
 attributes:
   app:
+    image_pull_config: null
     image: = @('docker.repository') ~ @('app.version')
     build:
       from: = 'node:' ~ @('node.version') ~ '-slim'
@@ -39,6 +40,7 @@ attributes:
       - run yarn generate:types
       - run yarn generate:types:contract
       - run yarn build:deps
+    resourcePrefix: ''
     gateway:
       build:
         steps:

@@ -2,13 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.service: {{ .Values.resourcePrefix }}viper-gateway
-  name: {{ .Values.resourcePrefix }}viper-gateway
+    app.service: {{ .Values.app.resourcePrefix }}viper-gateway
+  name: {{ .Values.app.resourcePrefix }}viper-gateway
 spec:
   ports:
   - name: http
     port: 80
-    targetPort: 4000
+    targetPort: {{ .Values.app.gateway.port }}
   selector:
     app.service: {{ .Values.resourcePrefix }}viper-gateway
 status:

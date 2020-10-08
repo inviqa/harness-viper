@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.resourcePrefix }}
+  name: {{ .Values.app.resourcePrefix }}
   labels:
     app.service: {{ .Values.resourcePrefix }}viper-client
   annotations:
@@ -19,37 +19,26 @@ spec:
     spec:
       containers:
       - name: viper-client
+        {{- if .Values.app.gateway.env }}
         env:
-        {{- range $key, $value := .Values.client.environment }}
-        {{- $tp := typeOf $value }}
-        - name: {{ $key | quote }}
-        {{- if eq $tp "string" }}
-          value: {{ tpl $value $ | quote }}
-        {{- else}}
-          value: {{ $value | quote }}
+{{- toYaml .Values.app.client.env | nindent 8 }}
         {{- end }}
-        {{- end }}
-        {{- if .Values.client.environment_secrets }}
-        envFrom:
-          - secretRef:
-              name: {{ .Values.resourcePrefix }}viper-client
-        {{- end }}
-        image: {{ .Values.client.image }}
+        image: {{ .Values.app.image }}
         imagePullPolicy: Always
         ports:
         - name: http
-          containerPort: 3000
+          containerPort: {{ .Values.app.client.port }}
         resources:
           limits:
-            memory: {{ .Values.client.resources.memory }}
+            memory: {{ .Values.app.client.resources.memory }}
           requests:
-            memory: {{ .Values.client.resources.memory }}
+            memory: {{ .Values.app.client.resources.memory }}
         readinessProbe:
           tcpSocket:
-            port: 3000
+            port: {{ .Values.app.client.port }}
           initialDelaySeconds: 5
           periodSeconds: 10
-{{- if .Values.docker.image_pull_config }}
+{{- if .Values.app.image_pull_config }}
       imagePullSecrets:
       - name: {{ .Values.resourcePrefix }}image-pull-config
 {{- end }}

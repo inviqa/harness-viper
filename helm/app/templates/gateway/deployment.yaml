@@ -15,43 +15,32 @@ spec:
   template:
     metadata:
       labels:
-        app.service: {{ .Values.resourcePrefix }}viper-gateway
+        app.service: {{ .Values.app.resourcePrefix }}viper-gateway
     spec:
       containers:
       - name: viper-gateway
+        {{- if .Values.app.gateway.env }}
         env:
-        {{- range $key, $value := .Values.gateway.environment }}
-        {{- $tp := typeOf $value }}
-        - name: {{ $key | quote }}
-        {{- if eq $tp "string" }}
-          value: {{ tpl $value $ | quote }}
-        {{- else}}
-          value: {{ $value | quote }}
+{{- toYaml .Values.app.gateway.env | nindent 8 }}
         {{- end }}
-        {{- end }}
-        {{- if .Values.gateway.environment_secrets }}
-        envFrom:
-          - secretRef:
-              name: {{ .Values.resourcePrefix }}gateway
-        {{- end }}
-        image: {{ .Values.gateway.docker.image }}
+        image: {{ .Values.app.image }}
         imagePullPolicy: Always
         ports:
         - name: http
-          containerPort: 80
+          containerPort: {{ .Values.app.gateway.port }}
         resources:
           limits:
-            memory: {{ .Values.gateway.docker.resources.memory }}
+            memory: {{ .Values.app.gateway.resources.memory }}
           requests:
-            memory: {{ .Values.gateway.docker.resources.memory }}
+            memory: {{ .Values.app.gateway.resources.memory }}
         readinessProbe:
           tcpSocket:
-            port: 80
+            port: {{ .Values.app.gateway.port }}
           initialDelaySeconds: 5
           periodSeconds: 10
-{{- if .Values.docker.image_pull_config }}
+{{- if .Values.app.image_pull_config }}
       imagePullSecrets:
-      - name: {{ .Values.resourcePrefix }}image-pull-config
+      - name: {{ .Values.app.resourcePrefix }}image-pull-config
 {{- end }}
       restartPolicy: Always
       enableServiceLinks: false
