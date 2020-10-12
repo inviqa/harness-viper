@@ -47,7 +47,7 @@ attributes:
         - run yarn build:app:gateway
       port: 4000
       resources:
-        memory: 512MiB
+        memory: 512Mi
       env:
         GATEWAY_HOST: = 'gateway-' ~ @('hostname')
       secrets: ~
@@ -62,7 +62,7 @@ attributes:
         - run yarn build:app:client
       port: 3000
       resources:
-        memory: 512MiB
+        memory: 512Mi
       env:
         GATEWAY_SSR_URL: http://localhost:4000/graphql
         CLIENT_HOST: = @('hostname')

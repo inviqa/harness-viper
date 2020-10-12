@@ -38,9 +38,9 @@ spec:
           containerPort: {{ .Values.app.gateway.port }}
         resources:
           limits:
-            memory: {{ .Values.app.gateway.resources.memory }}
+            memory: "{{ .Values.app.gateway.resources.memory }}"
           requests:
-            memory: {{ .Values.app.gateway.resources.memory }}
+            memory: "{{ .Values.app.gateway.resources.memory }}"
         readinessProbe:
           tcpSocket:
             port: {{ .Values.app.gateway.port }}

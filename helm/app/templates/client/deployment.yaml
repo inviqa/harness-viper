@@ -38,9 +38,9 @@ spec:
           containerPort: {{ .Values.app.client.port }}
         resources:
           limits:
-            memory: {{ .Values.app.client.resources.memory }}
+            memory: "{{ .Values.app.client.resources.memory }}"
           requests:
-            memory: {{ .Values.app.client.resources.memory }}
+            memory: "{{ .Values.app.client.resources.memory }}"
         readinessProbe:
           tcpSocket:
             port: {{ .Values.app.client.port }}
