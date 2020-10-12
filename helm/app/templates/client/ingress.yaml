@@ -24,8 +24,8 @@ spec:
       http:
         paths:
           - backend:
-            serviceName: {{ $.Values.app.resourcePrefix }}viper-client
-            servicePort: 80
+              serviceName: {{ $.Values.app.resourcePrefix }}viper-client
+              servicePort: 80
   {{- end -}}
   {{- end }}
 status:
