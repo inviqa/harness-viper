@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.app.resourcePrefix }}
+  name: {{ .Values.app.resourcePrefix }}viper-client
   labels:
     app.service: {{ .Values.resourcePrefix }}viper-client
   annotations:
@@ -21,7 +21,7 @@ spec:
       - name: viper-client
         {{- if .Values.app.gateway.env }}
         env:
-{{- toYaml .Values.app.client.env | nindent 8 }}
+{{- toYaml .Values.app.client.env | nindent 10 }}
         {{- end }}
         image: {{ .Values.app.image }}
         imagePullPolicy: Always

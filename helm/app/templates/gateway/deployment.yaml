@@ -21,7 +21,7 @@ spec:
       - name: viper-gateway
         {{- if .Values.app.gateway.env }}
         env:
-{{- toYaml .Values.app.gateway.env | nindent 8 }}
+{{- toYaml .Values.app.gateway.env | nindent 10 }}
         {{- end }}
         image: {{ .Values.app.image }}
         imagePullPolicy: Always
