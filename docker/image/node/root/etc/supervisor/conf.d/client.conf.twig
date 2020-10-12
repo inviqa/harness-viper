@@ -1,6 +1,10 @@
 [program:client]
 directory=/app/app/client
+{% if @('app.dynamic') == 'yes' %}
 command=node ./node_modules/.bin/next dev
+{% else %}
+command=node ./node_modules/.bin/next start
+{% endif %}
 user=node
 autostart=%(ENV_SUPERVISOR_START_CLIENT)s
 stdout_logfile=/dev/stdout

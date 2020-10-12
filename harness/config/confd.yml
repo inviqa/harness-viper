@@ -2,6 +2,7 @@
 confd('harness:/'):
   # base templates
   - { src: docker/image/node/Dockerfile }
+  - { src: docker/image/node/root/etc/supervisor/conf.d/client.conf }
   - { src: docker/image/node/root/lib/task/build.sh }
   - { src: docker/image/node/root/lib/task/build/gateway.sh }
   - { src: docker/image/node/root/lib/task/build/client.sh }
