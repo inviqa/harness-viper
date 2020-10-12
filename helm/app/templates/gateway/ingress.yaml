@@ -27,7 +27,7 @@ spec:
             serviceName: {{ $.Values.app.resourcePrefix }}viper-gateway
             servicePort: 80
   {{- end -}}
-  {{- end -}}
+  {{- end }}
 status:
   loadBalancer: {}
 {{ end }}
