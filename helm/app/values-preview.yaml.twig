@@ -1,2 +1,2 @@
 
-app: {{ to_nice_yaml(@('environment.production'), 2, 2) | raw }}  
+app: {{ to_nice_yaml(@('environment.preview.app'), 2, 2) | raw }}

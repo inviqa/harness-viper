@@ -75,8 +75,22 @@ attributes:
           - = @('hostname')
   service: {}
   environment:
-    preview: {}
-    production: {}
+    preview:
+      app:
+        gateway:
+          env:
+            SUPERVISOR_START_CLIENT: "false"
+        client:
+          env:
+            SUPERVISOR_START_GATEWAY: "false"
+    production:
+      app:
+        gateway:
+          env:
+            SUPERVISOR_START_CLIENT: "false"
+        client:
+          env:
+            SUPERVISOR_START_GATEWAY: "false"
 ---
 import:
   - harness/config/*.yml
