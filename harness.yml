@@ -49,6 +49,7 @@ attributes:
       resources:
         memory: 512Mi
       env:
+        SUPERVISOR_START_GATEWAY: "true"
         GATEWAY_HOST: = 'gateway-' ~ @('hostname')
       secrets: ~
       ingress:
@@ -64,6 +65,7 @@ attributes:
       resources:
         memory: 512Mi
       env:
+        SUPERVISOR_START_CLIENT: "true"
         GATEWAY_SSR_URL: http://localhost:4000/graphql
         CLIENT_HOST: = @('hostname')
       secrets: ~
