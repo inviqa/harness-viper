@@ -21,7 +21,15 @@ spec:
       - name: viper-gateway
         {{- if .Values.app.gateway.env }}
         env:
-{{- toYaml .Values.app.gateway.env | nindent 10 }}
+        {{- range $key, $value := .Values.app.gateway.env }}
+        {{- $tp := typeOf $value }}
+        - name: {{ $key | quote }}
+        {{- if eq $tp "string" }}
+          value: {{ tpl $value $ | quote }}
+        {{- else}}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
         {{- end }}
         image: {{ .Values.app.image }}
         imagePullPolicy: Always
