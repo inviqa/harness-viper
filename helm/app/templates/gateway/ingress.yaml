@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
 {{- if .Values.app.gateway.ingress.annotations }}
   annotations:
-  {{- range $key, $value := .Values.gateway.ingress.annotations }}
+  {{- range $key, $value := .Values.app.gateway.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 {{- end }}
