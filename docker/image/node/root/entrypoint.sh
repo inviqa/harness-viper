@@ -12,10 +12,25 @@ setup_app_networking()
     fi
 }
 
+configure()
+{
+    (
+        # using publicRuntimeConfig with getInitialProps limits the build time optimisations nextjs is able
+        # to perform so we interpolate the correct value at container start to still allow the same docker image
+        # to be used in multiple environments.
+
+        cd /app/app/client/.next
+        grep -rwl './' -e 'GATEWAY_CSR_URL' | xargs -I '{}' sed -i "s;GATEWAY_CSR_URL;${GATEWAY_CSR_URL};g" '{}'
+    )
+}
+
 bootstrap()
 {
     setup_app_networking
+    configure
 }
+
+bootstrap
 
 if [ $# -eq 0 ]; then
     exec supervisord -c /etc/supervisor/supervisord.conf -n
