@@ -8,7 +8,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "15"
 spec:
   replicas: 1
-  revisionHistoryLimit: 2
+  revisionHistoryLimit: 1
   selector:
     matchLabels:
       app.service: {{ .Values.resourcePrefix }}viper-gateway
