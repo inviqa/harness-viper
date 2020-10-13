@@ -42,6 +42,7 @@ ENTRYPOINT ["/entrypoint.dynamic.sh"]
 
 {% else %}
 
+RUN cd /app/app/client/config; mv default.build.js default.js
 RUN chown node:node /app
 COPY --chown=node:node .my127ws/application  /home/node/application
 COPY --chown=node:node ./                    /app
