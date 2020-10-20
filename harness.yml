@@ -30,6 +30,8 @@ command('client <action>'):
     passthru docker-compose exec node supervisorctl "${ACTION}" "client"
 ---
 attributes:
+  npm:
+    repositories: {}
   app:
     image_pull_config: null
     image: = @('docker.repository') ~ @('app.version')
