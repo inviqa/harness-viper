@@ -1,0 +1,37 @@
+parameters:
+  gateway:
+    path: /graphql
+    listen:
+      port: 4000
+    server:
+      playground: true
+      debug: true
+      subscriptions: false
+    cors:
+      maxAge: 86400
+    gateway: ~
+
+services:
+  /Gateway/GatewayService[GatewayService]:
+    arguments:
+      - '%gateway.path%'
+      - '@GatewayServiceRunner'
+      - '@GatewayApolloServerBuilder'
+      - '@GatewayApolloGatewayAutoloader'
+
+  GatewayApolloGatewayAutoloader:
+    class: //@inviqa/viper-gateway-graphql-service[ApolloGatewayAutoloader]
+    arguments: ['@GatewayApolloGatewayBuilder']
+
+  GatewayApolloGatewayBuilder:
+    class: //@inviqa/viper-apollo[ApolloGatewayBuilder]
+    factory: ['@ApolloGatewayBuilderFactory', 'create']
+    arguments: ['%gateway.gateway%']
+
+  GatewayApolloServerBuilder:
+    class: //@inviqa/viper-apollo[ApolloServerBuilder]
+    factory: ['@ApolloServerBuilderFactory', 'create']
+    arguments:
+      - '@Logger'
+      - '%gateway.server%'
+      - '@ApolloServerPluginProviderList'

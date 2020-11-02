@@ -1,0 +1,45 @@
+parameters:
+  routing:
+    path: /_internal/routing
+
+services:
+  RoutingService:
+    class: //@inviqa/viper-gateway-service-routing[RoutingService]
+    arguments:
+      - '%routing.path%'
+      - './node_modules/@inviqa/viper-gateway-service-routing/src/typedef/schema.graphql'
+      - '@RoutingResolverProvider'
+      - '@CatalogRoutingDataSource'
+      - '@ContentRoutingDataSource'
+      - '@GatewayServiceRunner'
+      - '@RoutingApolloServerBuilder'
+
+  RoutingResolverProvider:
+    class: //@inviqa/viper-gateway-service-routing[RoutingResolverProvider]
+
+  ContentRoutingDataSource:
+    class: //@inviqa/viper-gateway-service-routing[DrupalRoutingDataSource]
+    arguments:
+      - '@DrupalApolloClientBuilder'
+      - '@ContentRoutingDataTransformer'
+
+  ContentRoutingDataTransformer:
+    class: //@inviqa/viper-gateway-service-routing[DrupalRoutingDataTransformer]
+    arguments: ['%drupal.defaultLocales%']
+
+  CatalogRoutingDataSource:
+    class: //@inviqa/viper-gateway-service-routing[MagentoRoutingDataSource]
+    arguments:
+      - '@MagentoGraphqlClientProvider'
+      - '@CatalogRoutingDataTransformer'
+
+  CatalogRoutingDataTransformer:
+    class: //@inviqa/viper-gateway-service-routing[MagentoRoutingDataTransformer]
+
+  RoutingApolloServerBuilder:
+    class: //@inviqa/viper-apollo[ApolloServerBuilder]
+    factory: ['@ApolloServerBuilderFactory', 'create']
+    arguments:
+      - '@Logger'
+      - '%gateway.server%'
+      - '@ApolloServerPluginProviderList'

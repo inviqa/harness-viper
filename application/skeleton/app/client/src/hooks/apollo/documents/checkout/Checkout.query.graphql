@@ -1,0 +1,5 @@
+query GetCheckout($checkoutId: String!) {
+  checkout(checkoutId: $checkoutId) {
+    ...CheckoutFragment
+  }
+}

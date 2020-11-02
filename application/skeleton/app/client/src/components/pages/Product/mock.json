@@ -1,0 +1,63 @@
+{
+  "routeByPath": {
+    "path": "/en/promotions/men-sale/rapha-sports-short.html",
+    "page": {
+      "id": "MSH07",
+      "type": "ProductPage",
+      "locale": "en_GB",
+      "product": {
+        "id": "969",
+        "sku": "MSH07",
+        "name": "Rapha Sports Short",
+        "title": "Rapha Sports Short",
+        "price": {
+          "value": 3500,
+          "currency": "GBP",
+          "__typename": "Money"
+        },
+        "description": "<p>For those about to sweat, we support you with the Rapha Sports Short. The compression-fit liner surrounds your muscles with the stimulation they need to find your high gear, while moisture-wicking performance fabric helps prevents sweat build-up.</p><p>&bull; Black shorts with royal accents.<br />&bull; Compression liner. <br />&bull; Inseam: 8\". <br />&bull; Machine wash/dry.</p>",
+        "image": {
+          "alt": "Rapha  Sports Short",
+          "url": "https://magento-int.viper.webpipeline.net/media/catalog/product/cache/e73f31ae33f68f0f603b4fb488de3756/m/s/msh07-black_main_1.jpg",
+          "__typename": "ProductImage"
+        },
+        "gallery": [
+          {
+            "alt": "Rapha  Sports Short",
+            "url": "https://magento-int.viper.webpipeline.net/media/catalog/product/cache/df5e62fb1e927688bec2d9a70eaf27ef/m/s/msh07-black_main_1.jpg",
+            "__typename": "ProductImage"
+          },
+          {
+            "alt": "Arcadio Gym Short",
+            "url": "https://magento-int.viper.webpipeline.net/media/catalog/product/cache/df5e62fb1e927688bec2d9a70eaf27ef/m/s/msh11-blue_main_1.jpg",
+            "__typename": "ProductImage"
+          },
+          {
+            "alt": "Pierce Gym Short",
+            "url": "https://magento-int.viper.webpipeline.net/media/catalog/product/cache/df5e62fb1e927688bec2d9a70eaf27ef/m/s/msh12-red_main_1.jpg",
+            "__typename": "ProductImage"
+          },
+          {
+            "alt": "Lono Yoga Short",
+            "url": "https://magento-int.viper.webpipeline.net/media/catalog/product/cache/df5e62fb1e927688bec2d9a70eaf27ef/m/s/msh06-gray_main_2.jpg",
+            "__typename": "ProductImage"
+          },
+          {
+            "alt": "Hawkeye Yoga Short",
+            "url": "https://magento-int.viper.webpipeline.net/media/catalog/product/cache/df5e62fb1e927688bec2d9a70eaf27ef/m/s/msh05-gray_main_1.jpg",
+            "__typename": "ProductImage"
+          },
+          {
+            "alt": "Cob'alt CoolTech™ Fitness Short",
+            "url": "https://magento-int.viper.webpipeline.net/media/catalog/product/cache/df5e62fb1e927688bec2d9a70eaf27ef/m/s/msh01-blue_main_1.jpg",
+            "__typename": "ProductImage"
+          }
+        ],
+        "type": "OTHER",
+        "__typename": "Product"
+      },
+      "__typename": "ProductPage"
+    },
+    "__typename": "Route"
+  }
+}

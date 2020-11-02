@@ -1,0 +1,50 @@
+fragment ProductPageFragment on ProductPage {
+  id
+  type
+  locale
+  product {
+    id
+    sku
+    name
+    title
+    price {
+      value
+      currency
+    }
+    description
+    image {
+      alt
+      url
+    }
+    gallery {
+      alt
+      url
+    }
+    type
+    ... on ConfigurableProduct {
+      variants {
+        options {
+          option
+          id
+          label
+        }
+        product {
+          sku
+          price {
+            value
+            currency
+          }
+        }
+      }
+      options {
+        name
+        label
+        values {
+          option
+          id
+          label
+        }
+      }
+    }
+  }
+}

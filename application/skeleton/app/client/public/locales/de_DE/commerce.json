@@ -1,0 +1,63 @@
+{
+  "Cart": {
+    "Title": "Dein Korb",
+    "IsEmpty": "Ihr Warenkorb ist leer. <0>Stöbern Sie in unserem Katalog</0>.",
+    "Empty": "Leere deinen Korb",
+    "View": "Warenkorb anzeigen und bearbeiten",
+    "Close": "Korb schließen",
+    "Toggle": "Korb umschalten",
+    "AddToCart": "Kaufe jetzt",
+    "ProceedToCheckout": "Zur Kasse",
+    "Table": {
+      "Product": "Produkt",
+      "Description": "Beschreibung",
+      "Quantity": "Menge",
+      "Total": "Gesamt"
+    },
+    "Total": {
+      "Subtotal": "Zwischensumme",
+      "GrandTotal": "Gesamtsumme",
+      "Shipping": "Versand ({{ method }})"
+    },
+    "Item": {
+      "Quantity": "Menge",
+      "Remove": {
+        "Full": "Entfernen Sie {{ name }} aus Ihrem Warenkorb",
+        "Short": "Entfernen"
+      }
+    }
+  },
+  "Checkout": {
+    "Title": "Auschecken",
+    "Customer": "Kundin",
+    "AsGuest": "Als Gast fortfahren",
+    "ShippingMethod": "Versandart",
+    "SelectShippingMethod": "Wählen Sie eine Versandart",
+    "SaveShippingMethod": "Versandart speichern",
+    "ShippingAddressForm": "Lieferanschrift",
+    "BillingAddressForm": "Rechnungsadresse",
+    "PaymentMethod": "Zahlungsmethode",
+    "SelectPaymentMethod": "Wählen Sie eine Zahlungsmethode",
+    "UseShippingForBilling": "Verwenden Sie die Lieferadresse für die Abrechnung",
+    "PlaceOrder": "Bestellung aufgeben"
+  },
+  "CheckoutSuccess": {
+    "Title": "Wir haben Ihre Bestellung erhalten",
+    "OrderNumber": "Ihre Bestellnummer lautet: <0>{{ orderNumber }}</0>.",
+    "Message": "Wir haben Ihre Bestellung erhalten und Sie erhalten in Kürze eine Bestätigungs-E-Mail."
+  },
+  "Messages": {
+    "AddedToCart": "{{ name }} wurde erfolgreich in Ihren Warenkorb gelegt.",
+    "RemovedFromCart": "{{ name }} wurde erfolgreich aus Ihrem Warenkorb entfernt.",
+    "UpdatedCartQuantity": "Die Menge für {{ name }} wurde auf {{ quantity }} aktualisiert.",
+    "AddedCouponCodeToCart": "Der Gutscheincode wurde erfolgreich auf Ihren Warenkorb angewendet.",
+    "CouponCodeRemovedFromCart": "Der Gutscheincode wurde erfolgreich aus Ihrem Warenkorb entfernt.",
+    "SetShippingFormSuccess": "Versandformular wurde erfolgreich gespeichert.",
+    "SetShippingFormFailed": "Beim Speichern des Versandformulars ist ein Fehler aufgetreten.",
+    "UnexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
+    "Errors": {
+      "INVALID_QUANTITY_ERROR": "Die angeforderte Menge ist nicht verfügbar.",
+      "INVALID_COUPON_CODE_ERROR": "Der Gutscheincode {{ couponCode }} ist ungültig."
+    }
+  }
+}

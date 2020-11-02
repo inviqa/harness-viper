@@ -1,0 +1,54 @@
+fragment CmsArticlePageFragment on CmsArticlePage {
+  id
+  type
+  locale
+  cmsArticle {
+    id
+    title
+    body {
+      raw
+      html
+    }
+    summary {
+      raw
+      html
+    }
+    url {
+      path
+      alias
+    }
+    createdAt
+    author {
+      id
+      name
+    }
+    image {
+      alt
+      sizes {
+        width
+        height
+        size
+        url
+      }
+    }
+    layout {
+      items {
+        layout
+        label
+        regions {
+          region
+          configuration {
+            width
+          }
+          components {
+            configuration {
+              displayLabel
+            }
+            label
+            component
+          }
+        }
+      }
+    }
+  }
+}

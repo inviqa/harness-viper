@@ -1,0 +1,28 @@
+parameters:
+  user:
+    path: /_internal/user
+
+services:
+  UserService:
+    class: //@inviqa/viper-gateway-service-user[UserService]
+    arguments:
+      - '%user.path%'
+      - './node_modules/@inviqa/viper-gateway-service-user/src/typedef/schema.graphql'
+      - '@UserResolverProvider'
+      - '@UserDataSource'
+      - '@GatewayServiceRunner'
+      - '@UserApolloServerBuilder'
+
+  UserResolverProvider:
+    class: //@inviqa/viper-gateway-service-user[UserResolverProvider]
+
+  UserDataSource:
+    class: //@inviqa/viper-gateway-service-user[InMemoryUserDataSource]
+
+  UserApolloServerBuilder:
+    class: //@inviqa/viper-apollo[ApolloServerBuilder]
+    factory: ['@ApolloServerBuilderFactory', 'create']
+    arguments:
+      - '@Logger'
+      - '%gateway.server%'
+      - '@ApolloServerPluginProviderList'

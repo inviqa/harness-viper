@@ -1,0 +1,11 @@
+fragment CategoryPageFragment on CategoryPage {
+  id
+  type
+  locale
+  category {
+    id
+    name
+    title
+    description
+  }
+}

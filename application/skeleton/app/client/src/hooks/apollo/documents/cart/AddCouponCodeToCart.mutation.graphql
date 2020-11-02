@@ -1,0 +1,5 @@
+mutation AddCouponCodeToCart($cartId: String!, $couponCode: String!) {
+  addCouponCodeToCart(cartId: $cartId, couponCode: $couponCode) {
+    ...CartFragment
+  }
+}

@@ -1,0 +1,46 @@
+parameters:
+  drupal:
+    client: ~
+    http:
+      uri: https://drupal-int.viper.webpipeline.net/graphql
+    defaultLocales:
+      EN: en_GB
+      DE: de_DE
+    logger:
+      prefix: drupal
+      level: info
+      timestamp: true
+    rest:
+      baseUrl: https://drupal-int.viper.webpipeline.net
+
+services:
+  DrupalApolloClientBuilder:
+    class: //@inviqa/viper-apollo[ApolloClientBuilder]
+    factory: ['@ApolloClientBuilderFactory', 'create']
+    arguments:
+      - '%drupal.client%'
+      - '@DrupalApolloLinkProviders'
+
+  DrupalApolloLinkProviders:
+    class: //@inviqa/viper-apollo[ApolloLinkProviderList]
+    factory: ['@ApolloLinkProviderListFactory', 'create']
+    arguments:
+      - '@DrupalLoggerLinkProvider'
+      - '@DrupalHttpLinkProvider'
+
+  DrupalHttpLinkProvider:
+    class: //@inviqa/viper-apollo[HttpLinkProvider]
+    factory: ['@HttpLinkProviderFactory', 'create']
+    arguments: ['%drupal.http%']
+
+  DrupalLoggerLinkProvider:
+    class: //@inviqa/viper-apollo[LoggerLinkProvider]
+    factory: ['@LoggerLinkProviderFactory', 'create']
+    arguments: ['@DrupalLogger']
+
+  DrupalLogger:
+    class: //@inviqa/viper-logger[LogLevelNextLogger]
+    arguments:
+      - '%drupal.logger.prefix%'
+      - '%drupal.logger.level%'
+      - '%drupal.logger.timestamp%'

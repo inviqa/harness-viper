@@ -1,0 +1,12 @@
+fragment AddressFragment on Address {
+  email
+  firstName
+  lastName
+  country
+  city
+  postcode
+  address1
+  address2
+  phoneNumber
+  company
+}

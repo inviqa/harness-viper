@@ -1,0 +1,27 @@
+fragment CheckoutFragment on Checkout {
+  id
+  cart {
+    ...CartFragment
+  }
+  customer {
+    ...CustomerFragment
+  }
+  availableShippingMethods {
+    ...ShippingMethodFragment
+  }
+  availablePaymentMethods {
+    ...PaymentMethodFragment
+  }
+  shippingAddress {
+    ...AddressFragment
+  }
+  shippingMethod {
+    ...ShippingMethodFragment
+  }
+  paymentMethod {
+    ...PaymentMethodFragment
+  }
+  billingAddress {
+    ...AddressFragment
+  }
+}

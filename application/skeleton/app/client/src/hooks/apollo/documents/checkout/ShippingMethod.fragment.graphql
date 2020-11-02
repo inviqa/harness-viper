@@ -1,0 +1,8 @@
+fragment ShippingMethodFragment on ShippingMethod {
+  id
+  label
+  priceIncludingTax {
+    value
+    currency
+  }
+}

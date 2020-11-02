@@ -1,0 +1,5 @@
+mutation UpdateCart($cartId: String!, $items: [CartItemUpdateInput!]!) {
+  updateCart(cartId: $cartId, items: $items) {
+    ...CartFragment
+  }
+}

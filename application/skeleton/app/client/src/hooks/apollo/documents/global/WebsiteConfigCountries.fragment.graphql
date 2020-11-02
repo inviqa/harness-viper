@@ -1,0 +1,6 @@
+fragment WebsiteConfigCountriesFragment on WebsiteConfig {
+  countries {
+    id
+    name
+  }
+}

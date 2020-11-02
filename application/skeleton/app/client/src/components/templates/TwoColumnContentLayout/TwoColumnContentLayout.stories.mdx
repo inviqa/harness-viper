@@ -1,0 +1,26 @@
+import { Meta, Story, Preview } from '@storybook/addon-docs/blocks';
+import TwoColumnContentLayout from './TwoColumnContentLayout';
+
+<Meta title="Templates/TwoColumnContentLayout" component="TwoColumnContentLayout" />
+
+# Preview
+
+## Sidebar on left
+
+<Preview>
+  <Story name="Sidebar on left">
+    <TwoColumnContentLayout sidebar={<div>sidebar</div>}>
+      <div>Content slot.</div>
+    </TwoColumnContentLayout>
+  </Story>
+</Preview>
+
+## Sidebar on right
+
+<Preview>
+  <Story name="Sidebar on right">
+    <TwoColumnContentLayout sidebar={<div>sidebar</div>} sidebarPos="right">
+      <div>Content slot.</div>
+    </TwoColumnContentLayout>
+  </Story>
+</Preview>

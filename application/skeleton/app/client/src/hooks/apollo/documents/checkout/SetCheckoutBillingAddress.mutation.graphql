@@ -1,0 +1,5 @@
+mutation SetCheckoutBillingAddress($checkoutId: String!, $address: AddressInput!) {
+  setCheckoutBillingAddress(checkoutId: $checkoutId, address: $address) {
+    ...CheckoutFragment
+  }
+}

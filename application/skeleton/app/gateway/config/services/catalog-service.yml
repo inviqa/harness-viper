@@ -1,0 +1,38 @@
+parameters:
+  catalog:
+    path: /_internal/catalog
+
+services:
+  CatalogService:
+    class: //@inviqa/viper-gateway-service-catalog[CatalogService]
+    arguments:
+      - '%catalog.path%'
+      - './node_modules/@inviqa/viper-gateway-service-catalog/src/typedef/schema.graphql'
+      - '@CatalogResolverProvider'
+      - '@CatalogDataSource'
+      - '@GatewayServiceRunner'
+      - '@CatalogApolloServerBuilder'
+
+  CatalogResolverProvider:
+    class: //@inviqa/viper-gateway-service-catalog[CatalogResolverProvider]
+
+  CatalogDataSource:
+    class: //@inviqa/viper-gateway-service-catalog[MagentoCatalogDataSource]
+    arguments:
+      - '@MagentoGraphqlClientProvider'
+      - '@CatalogProductDataTransformer'
+      - '@CatalogCategoryDataTransformer'
+
+  CatalogProductDataTransformer:
+    class: //@inviqa/viper-gateway-service-catalog[MagentoProductDataTransformer]
+
+  CatalogCategoryDataTransformer:
+    class: //@inviqa/viper-gateway-service-catalog[MagentoCategoryDataTransformer]
+
+  CatalogApolloServerBuilder:
+    class: //@inviqa/viper-apollo[ApolloServerBuilder]
+    factory: ['@ApolloServerBuilderFactory', 'create']
+    arguments:
+      - '@Logger'
+      - '%gateway.server%'
+      - '@ApolloServerPluginProviderList'

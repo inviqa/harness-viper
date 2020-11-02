@@ -1,0 +1,62 @@
+import { Meta, Story, Preview } from '@storybook/addon-docs/blocks';
+import Heading from './Heading';
+
+<Meta title="Atoms/Heading" component="Heading" />
+
+# Preview
+
+## Headings
+
+<Preview>
+  <Story name="h1">
+    <Heading level={1}>H1</Heading>
+    <Heading level={3} display={1}>
+      H3 as H1
+    </Heading>
+  </Story>
+</Preview>
+
+<Preview>
+  <Story name="h2">
+    <Heading level={2}>H2</Heading>
+    <Heading level={3} display={2}>
+      H3 as H2
+    </Heading>
+  </Story>
+</Preview>
+
+<Preview>
+  <Story name="h3">
+    <Heading level={3}>H3</Heading>
+    <Heading level={5} display={3}>
+      H5 as H3
+    </Heading>
+  </Story>
+</Preview>
+
+<Preview>
+  <Story name="h4">
+    <Heading level={4}>H4</Heading>
+    <Heading level={1} display={4}>
+      H1 as H4
+    </Heading>
+  </Story>
+</Preview>
+
+<Preview>
+  <Story name="h5">
+    <Heading level={5}>H5</Heading>
+    <Heading level={1} display={5}>
+      H1 as H5
+    </Heading>
+  </Story>
+</Preview>
+
+<Preview>
+  <Story name="h6">
+    <Heading level={6}>H6</Heading>
+    <Heading level={2} display={6}>
+      H2 as H6
+    </Heading>
+  </Story>
+</Preview>

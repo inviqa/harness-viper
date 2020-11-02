@@ -1,0 +1,15 @@
+{
+  "routeByPath": {
+    "path": "gear/watches.html",
+    "page": {
+      "id": "6",
+      "type": "CategoryPage",
+      "locale": "en_US",
+      "category": {
+        "title": "Watches",
+        "name": "Watches",
+        "description": "<p>Some description of why you would want to buy a watch</p>"
+      }
+    }
+  }
+}

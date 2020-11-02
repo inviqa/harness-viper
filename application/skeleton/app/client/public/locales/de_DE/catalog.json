@@ -1,0 +1,25 @@
+{
+  "Price": {
+    "Now": "Jetzt: {{ price }}",
+    "Was": "War: {{ price }}"
+  },
+  "ViewProduct": "Anzeigen",
+  "NoProductsFound": "Es wurden keine Produkte gefunden.",
+  "SortBy": {
+    "Label": "Sortiere nach:",
+    "Position": { "Asc": "Vorgestellt" },
+    "Name": { "Asc": "Titel - A bis Z." },
+    "Price": { "Asc": "Preis - niedrig bis hoch", "Desc": "Preis - hoch bis niedrig" }
+  },
+  "Facet": {
+    "Range": {
+      "Over": "Über {{ value }}"
+    },
+    "Boolean": {
+      "Yes": "Ja",
+      "No": "Nein"
+    }
+  },
+  "LoadMoreProducts": "Mehr laden",
+  "ProductListCount": "Anzeigen von {{ visible }} von {{ total }}"
+}

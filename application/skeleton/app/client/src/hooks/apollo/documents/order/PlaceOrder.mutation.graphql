@@ -1,0 +1,10 @@
+mutation PlaceOrder($checkoutId: String!) {
+  placeOrder(checkoutId: $checkoutId) {
+    checkout {
+      ...CheckoutFragment
+    }
+    order {
+      orderNumber
+    }
+  }
+}

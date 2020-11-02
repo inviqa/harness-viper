@@ -1,0 +1,34 @@
+parameters:
+  config:
+    path: /_internal/config
+
+services:
+  ConfigService:
+    class: //@inviqa/viper-gateway-service-config[ConfigService]
+    arguments:
+      - '%config.path%'
+      - './node_modules/@inviqa/viper-gateway-service-config/src/typedef/schema.graphql'
+      - '@ConfigResolverProvider'
+      - '@ConfigDataSource'
+      - '@GatewayServiceRunner'
+      - '@ConfigApolloServerBuilder'
+
+  ConfigResolverProvider:
+    class: //@inviqa/viper-gateway-service-config[ConfigResolverProvider]
+
+  ConfigDataSource:
+    class: //@inviqa/viper-gateway-service-config[MagentoConfigDataSource]
+    arguments:
+      - '@MagentoGraphqlClientProvider'
+      - '@ConfigDataTransformer'
+
+  ConfigDataTransformer:
+    class: //@inviqa/viper-gateway-service-config[MagentoConfigDataTransformer]
+
+  ConfigApolloServerBuilder:
+    class: //@inviqa/viper-apollo[ApolloServerBuilder]
+    factory: ['@ApolloServerBuilderFactory', 'create']
+    arguments:
+      - '@Logger'
+      - '%gateway.server%'
+      - '@ApolloServerPluginProviderList'

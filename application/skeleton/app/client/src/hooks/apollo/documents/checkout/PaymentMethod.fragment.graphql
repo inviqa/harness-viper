@@ -1,0 +1,5 @@
+fragment PaymentMethodFragment on PaymentMethod {
+  id
+  label
+  note
+}

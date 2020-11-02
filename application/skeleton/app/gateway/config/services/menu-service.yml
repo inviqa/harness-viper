@@ -1,0 +1,30 @@
+parameters:
+  menu:
+    path: /_internal/menu
+
+services:
+  MenuService:
+    class: //@inviqa/viper-gateway-service-menu[MenuService]
+    arguments:
+      - '%menu.path%'
+      - './node_modules/@inviqa/viper-gateway-service-menu/src/typedef/schema.graphql'
+      - '@MenuResolverProvider'
+      - '@MenuDataSource'
+      - '@GatewayServiceRunner'
+      - '@MenuApolloServerBuilder'
+
+  MenuResolverProvider:
+    class: //@inviqa/viper-gateway-service-menu[MenuResolverProvider]
+
+  MenuDataSource:
+    class: //@inviqa/viper-gateway-service-menu[DrupalMenuDataSource]
+    arguments:
+      - '@DrupalApolloClientBuilder'
+
+  MenuApolloServerBuilder:
+    class: //@inviqa/viper-apollo[ApolloServerBuilder]
+    factory: ['@ApolloServerBuilderFactory', 'create']
+    arguments:
+      - '@Logger'
+      - '%gateway.server%'
+      - '@ApolloServerPluginProviderList'

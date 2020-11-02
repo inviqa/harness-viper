@@ -1,0 +1,64 @@
+{
+  "name": "@inviqa/randomness",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "app/*",
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@inviqa/randomness-*"
+    ]
+  },
+  "devDependencies": {
+    "@2fd/graphdoc": "^2.4.0",
+    "@types/jest": "^26.0.13",
+    "@typescript-eslint/eslint-plugin": "^3.7.1",
+    "@typescript-eslint/parser": "^3.7.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.1.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-cypress": "^2.11.1",
+    "eslint-plugin-import": "^2.21.1",
+    "eslint-plugin-jsdoc": "18.1.6",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^4.0.4",
+    "husky": "^4.2.5",
+    "http-server": "^0.12.3",
+    "jest": "^26.4.2",
+    "jest-watch-select-projects": "^2.0.0",
+    "lerna": "^3.20.2",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.0.5",
+    "ts-jest": "^26.3.0"
+  },
+  "scripts": {
+    "clean:packages": "lerna clean --yes",
+    "clean": "run-s clean:*",
+    "build:app:client": "lerna run build --scope \"@inviqa/randomness-app-client\" --stream",
+    "build:app:gateway": "lerna run build --scope \"@inviqa/randomness-app-gateway\" --stream --no-bail",
+    "build:deps": "lerna run build --ignore \"@inviqa/randomness-app-client\" --ignore \"@inviqa/randomness-app-gateway\" --stream --no-bail",
+    "build:prod": "NODE_ENV=production run-s build:deps build:app:*",
+    "build:dev": "NODE_ENV=development run-s build:deps build:app:*",
+    "init:dev": "run-s generate:types build:dev",
+    "init:prod": "run-s build:prod",
+    "lint:prod": "eslint --ext js,jsx,ts,tsx",
+    "lint:prod:fix": "eslint --fix --ext js,jsx,ts,tsx",
+    "lint:dev": "eslint --ext js,jsx,ts,tsx ./",
+    "lint:dev:fix": "eslint --fix --ext js,jsx,ts,tsx ./",
+    "generate:types": "lerna run generate:types",
+    "generate:types:contract": "lerna run generate:types:contract",
+    "generate:api-docs": "graphdoc -f -e http://localhost:4000/graphql -o ./docs/api-docs",
+    "serve:api-docs": "http-server -p 4900 -o docs/api-docs",
+    "api-docs": "run-s generate:api-docs serve:api-docs",
+    "gateway:start-dev": "NODE_ENV=development yarn --cwd app/gateway/ start:dev"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn run lint:dev"
+    }
+  }
+}

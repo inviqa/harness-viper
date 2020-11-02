@@ -1,0 +1,27 @@
+import { Meta, Story, Preview } from '@storybook/addon-docs/blocks';
+import Picture from "./Picture";
+
+
+<Meta title="Atoms/Pictures" component="Picture" />
+
+# Preview
+
+## Picture
+
+<Preview>
+  <Story name="Picture">
+    <Picture
+      sources={[
+        {
+          srcSet: 'https://picsum.photos/seed/viper/640/853',
+          media: '(max-width: 640px)'
+        },
+        {
+          srcSet: 'https://picsum.photos/seed/viper/800/600 1x, https://picsum.photos/seed/viper/1600/1200 2x'
+        }
+      ]}
+      src="https://picsum.photos/seed/viper/640/853"
+      alt="picture"
+    />
+  </Story>
+</Preview>

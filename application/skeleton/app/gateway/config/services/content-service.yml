@@ -1,0 +1,43 @@
+parameters:
+  content:
+    path: /_internal/content
+
+services:
+  ContentService:
+    class: //@inviqa/viper-gateway-service-content[ContentService]
+    arguments:
+      - '%content.path%'
+      - './node_modules/@inviqa/viper-gateway-service-content/src/typedef/schema.graphql'
+      - '@ContentResolverProvider'
+      - '@ContentDataSource'
+      - '@GatewayServiceRunner'
+      - '@ContentApolloServerBuilder'
+
+  ContentResolverProvider:
+    class: //@inviqa/viper-gateway-service-content[ContentResolverProvider]
+
+  ContentDataSource:
+    class: //@inviqa/viper-gateway-service-content[DrupalContentDataSource]
+    arguments:
+      - '@DrupalApolloClientBuilder'
+      - '@ContentArticleDataTransformer'
+
+  ContentArticleDataTransformer:
+    class: //@inviqa/viper-gateway-service-content[DrupalArticleDataTransformer]
+    arguments:
+      - '@ContentImageDataTransformer'
+      - '@ContentLayoutDataTransformer'
+
+  ContentLayoutDataTransformer:
+    class: //@inviqa/viper-gateway-service-content[DrupalLayoutDataTransformer]
+
+  ContentImageDataTransformer:
+    class: //@inviqa/viper-gateway-service-content[DrupalImageDataTransformer]
+
+  ContentApolloServerBuilder:
+    class: //@inviqa/viper-apollo[ApolloServerBuilder]
+    factory: ['@ApolloServerBuilderFactory', 'create']
+    arguments:
+      - '@Logger'
+      - '%gateway.server%'
+      - '@ApolloServerPluginProviderList'

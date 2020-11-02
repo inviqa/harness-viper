@@ -1,0 +1,23 @@
+import { Meta, Story, Preview } from '@storybook/addon-docs/blocks';
+import Footer from './Footer';
+import { withApollo } from '@inviqa/viper-storybook-addons';
+import { getMenuMock } from '~hooks/apollo/mocks/GetMenu';
+
+<Meta
+  title="Organisms/Footer"
+  component="Footer"
+  decorators={[withApollo]}
+  parameters={{
+    apollo: {
+      mocks: [getMenuMock({ name: 'footer' })]
+    }
+  }}
+/>
+
+# Preview
+
+<Preview>
+  <Story name="Footer">
+    <Footer />
+  </Story>
+</Preview>

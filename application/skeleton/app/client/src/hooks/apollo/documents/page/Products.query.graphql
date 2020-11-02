@@ -1,0 +1,49 @@
+query GetProducts(
+  $filters: [ProductFilter!]
+  $sort: ProductSort
+  $pagination: ProductPagination!
+  $searchTerm: String
+) {
+  products(filters: $filters, sort: $sort, pagination: $pagination, searchTerm: $searchTerm)
+    @connection(key: "products", filter: ["filters", "sort", "searchTerm"]) {
+    total
+    items {
+      id
+      type
+      sku
+      name
+      url
+      price {
+        value
+        currency
+      }
+      thumbnailImage {
+        alt
+        url
+      }
+    }
+    facets {
+      name
+      label
+      options {
+        facetName
+        count
+        label
+        isSelected @client
+        value {
+          ... on FacetEqualValue {
+            eq
+            in
+          }
+          ... on FacetMatchValue {
+            match
+          }
+          ... on FacetRangeValue {
+            from
+            to
+          }
+        }
+      }
+    }
+  }
+}

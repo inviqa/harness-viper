@@ -1,0 +1,24 @@
+import { Meta, Story, Preview } from '@storybook/addon-docs/blocks';
+import Header from './Header';
+import { withApollo } from '@inviqa/viper-storybook-addons';
+import { getCartMock } from '~hooks/apollo/mocks/GetCart';
+import { getMenuMock } from '~hooks/apollo/mocks/GetMenu';
+
+<Meta
+  title="Organisms/Header"
+  component="Header"
+  decorators={[withApollo]}
+  parameters={{
+    apollo: {
+      mocks: [getMenuMock({ name: 'main' }), getCartMock()]
+    }
+  }}
+/>
+
+# Preview
+
+<Preview>
+  <Story name="Header">
+    <Header />
+  </Story>
+</Preview>

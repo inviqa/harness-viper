@@ -1,0 +1,41 @@
+fragment CartFragment on Cart {
+  id
+  numberOfItems
+  items {
+    id
+    quantity
+    rowTotal {
+      value
+      currency
+    }
+    product {
+      sku
+      name
+      url
+      thumbnailImage {
+        alt
+        url
+      }
+    }
+  }
+  totals {
+    subtotalIncludingTax {
+      value
+      currency
+    }
+    discounts {
+      label
+      amount {
+        value
+        currency
+      }
+    }
+    grandTotal {
+      value
+      currency
+    }
+  }
+  couponCodes {
+    code
+  }
+}

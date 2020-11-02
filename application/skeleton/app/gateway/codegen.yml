@@ -1,0 +1,11 @@
+generates:
+  src/HelloWorld/typedef/types.ts:
+    schema: ./src/HelloWorld/typedef/*.graphql
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-resolvers
+    config:
+      enumsAsConst: true
+      federation: true
+      noSchemaStitching: true

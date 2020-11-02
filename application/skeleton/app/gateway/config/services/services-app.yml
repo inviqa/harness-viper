@@ -1,0 +1,35 @@
+parameters:
+  services:
+    listen:
+      port: 4100
+    server:
+      playground: true
+      debug: true
+
+services:
+  ServicesApp:
+    class: //@inviqa/viper-gateway[GatewayApp]
+    factory: ['@GatewayAppFactory', 'create']
+    arguments:
+      - '@ServicesKoa'
+      - '@GatewayServiceRunner'
+      - '@Services'
+      - '%services.listen%'
+
+  Services:
+    class: //@inviqa/viper-gateway[GatewayServiceList]
+    factory: ['@GatewayServiceListFactory', 'create']
+    arguments:
+      - '@/HelloWorld/HelloWorldService[HelloWorldService]'
+      - '@RoutingService'
+      - '@MenuService'
+      - '@ContentService'
+      - '@CatalogService'
+      - '@UserService'
+      - '@AuthService'
+      - '@EcommService'
+      - '@ConfigService'
+
+  ServicesKoa:
+    class: //koa[default]
+    factory: ['@KoaFactory', 'create']

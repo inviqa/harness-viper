@@ -1,0 +1,3 @@
+fragment CustomerFragment on Customer {
+  email
+}
