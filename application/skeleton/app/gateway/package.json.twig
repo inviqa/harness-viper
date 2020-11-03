@@ -1,0 +1,53 @@
+{
+  "name": "@{{ @('workspace.name')|lower }}/viper-gateway",
+  "version": "1.0.0",
+  "description": "Viper gateway app",
+  "main": "dist/src/main.js",
+  "author": "Zsolt Molnar<zmolnar@inviqa.com>",
+  "license": "OSL",
+  "private": true,
+  "dependencies": {
+    "@apollo/gateway": "^0.19.1",
+    "@inviqa/viper-apollo": "*",
+    "@inviqa/viper-backend-magento": "*",
+    "@inviqa/viper-di": "*",
+    "@inviqa/viper-event-dispatcher": "*",
+    "@inviqa/viper-gateway": "*",
+    "@inviqa/viper-gateway-graphql-service": "*",
+    "@inviqa/viper-gateway-service": "*",
+    "@inviqa/viper-gateway-service-auth": "*",
+    "@inviqa/viper-gateway-service-catalog": "*",
+    "@inviqa/viper-gateway-service-config": "*",
+    "@inviqa/viper-gateway-service-content": "*",
+    "@inviqa/viper-gateway-service-ecomm": "*",
+    "@inviqa/viper-gateway-service-menu": "*",
+    "@inviqa/viper-gateway-service-routing": "*",
+    "@inviqa/viper-gateway-service-user": "*",
+    "@inviqa/viper-koa": "*",
+    "@inviqa/viper-graphql-utils": "*",
+    "apollo-datasource": "^0.7.2",
+    "apollo-graphql": "^0.5.0",
+    "apollo-server-core": "^2.17.0",
+    "apollo-server-koa": "^2.16.1",
+    "graphql": "^15.3.0",
+    "koa": "^2.13.0"
+  },
+  "devDependencies": {
+    "@inviqa/viper-cli": "*",
+    "@types/koa": "^2.11.3",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^3.9.6"
+  },
+  "scripts": {
+    "clean:dist": "rm -rf ./dist",
+    "clean": "run-s clean:*",
+    "build:di": "di compile -c config/services.yml",
+    "build:ts": "tsc",
+    "build": "run-s clean build:di build:ts",
+    "start": "node dist/src/main.js",
+    "build:dev": "run-s clean build:ts",
+    "start:dev": "node dist/src/main.dev.js",
+    "dev": "run-s build:dev start:dev",
+    "generate:types": "viper generate:types"
+  }
+}

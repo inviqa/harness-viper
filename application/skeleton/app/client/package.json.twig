@@ -1,5 +1,5 @@
 {
-  "name": "@inviqa/randomness-app-client",
+  "name": "@{{ @('workspace.name')|lower }}/viper-client",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.1.4",
-    "@inviqa/viper-ui": "0.1.0-alpha.6 ",
-    "@inviqa/viper-ui-commerce": "0.1.0-alpha.6 ",
+    "@inviqa/viper-ui": "*",
+    "@inviqa/viper-ui-commerce": "*",
     "classnames": "^2.2.6",
     "dompurify": "^2.0.14",
     "graphql": "^15.3.0",
@@ -38,10 +38,10 @@
     "timeago-react": "^3.0.0"
   },
   "devDependencies": {
-    "@inviqa/viper-cli": "0.1.0-alpha.6 ",
-    "@inviqa/viper-preset-jest-react": "0.1.0-alpha.6 ",
-    "@inviqa/viper-storybook-addons": "0.1.0-alpha.6 ",
-    "@inviqa/viper-storybook-preset": "0.1.0-alpha.6 ",
+    "@inviqa/viper-cli": "*",
+    "@inviqa/viper-preset-jest-react": "*",
+    "@inviqa/viper-storybook-addons": "*",
+    "@inviqa/viper-storybook-preset": "*",
     "@next/bundle-analyzer": "^9.5.1",
     "@storybook/react": "^6.0.0",
     "@testing-library/jest-dom": "^5.11.1",

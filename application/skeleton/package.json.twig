@@ -1,5 +1,5 @@
 {
-  "name": "@inviqa/randomness",
+  "name": "@{{ @('workspace.name')|lower }}/viper",
   "private": true,
   "workspaces": {
     "packages": [
@@ -7,7 +7,7 @@
       "packages/*"
     ],
     "nohoist": [
-      "**/@inviqa/randomness-*"
+      "**/@{{ @('workspace.name')|lower }}/*"
     ]
   },
   "devDependencies": {
@@ -35,12 +35,39 @@
     "prettier": "^2.0.5",
     "ts-jest": "^26.3.0"
   },
+  "resolutions": {
+    "**/@inviqa/viper-apollo": "0.1.0-alpha.6",
+    "**/@inviqa/viper-backend-magento": "0.1.0-alpha.6",
+    "**/@inviqa/viper-cli": "0.1.0-alpha.6",
+    "**/@inviqa/viper-di": "0.1.0-alpha.6",
+    "**/@inviqa/viper-event-dispatcher": "0.1.0-alpha.6",
+    "**/@inviqa/viper-gateway": "0.1.0-alpha.6",
+    "**/@inviqa/viper-gateway-graphql-service": "0.1.0-alpha.6",
+    "**/@inviqa/viper-gateway-service": "0.1.0-alpha.6",
+    "**/@inviqa/viper-gateway-service-auth": "0.1.0-alpha.6",
+    "**/@inviqa/viper-gateway-service-catalog": "0.1.0-alpha.6",
+    "**/@inviqa/viper-gateway-service-config": "0.1.0-alpha.6",
+    "**/@inviqa/viper-gateway-service-content": "0.1.0-alpha.6",
+    "**/@inviqa/viper-gateway-service-ecomm": "0.1.0-alpha.6",
+    "**/@inviqa/viper-gateway-service-menu": "0.1.0-alpha.6",
+    "**/@inviqa/viper-gateway-service-routing": "0.1.0-alpha.6",
+    "**/@inviqa/viper-gateway-service-user": "0.1.0-alpha.6",
+    "**/@inviqa/viper-graphql-utils": "0.1.0-alpha.6",
+    "**/@inviqa/viper-koa": "0.1.0-alpha.6",
+    "**/@inviqa/viper-logger": "0.1.0-alpha.6",
+    "**/@inviqa/viper-preset-jest-react": "0.1.0-alpha.6",
+    "**/@inviqa/viper-storybook-addons": "0.1.0-alpha.6",
+    "**/@inviqa/viper-storybook-preset": "0.1.0-alpha.6",
+    "**/@inviqa/viper-testing": "0.1.0-alpha.6",
+    "**/@inviqa/viper-ui": "0.1.0-alpha.6",
+    "**/@inviqa/viper-ui-commerce": "0.1.0-alpha.6"
+  },
   "scripts": {
     "clean:packages": "lerna clean --yes",
     "clean": "run-s clean:*",
-    "build:app:client": "lerna run build --scope \"@inviqa/randomness-app-client\" --stream",
-    "build:app:gateway": "lerna run build --scope \"@inviqa/randomness-app-gateway\" --stream --no-bail",
-    "build:deps": "lerna run build --ignore \"@inviqa/randomness-app-client\" --ignore \"@inviqa/randomness-app-gateway\" --stream --no-bail",
+    "build:app:client": "lerna run build --scope \"@{{ @('workspace.name')|lower }}/viper-client\" --stream",
+    "build:app:gateway": "lerna run build --scope \"@{{ @('workspace.name')|lower }}/viper-gateway\" --stream --no-bail",
+    "build:deps": "lerna run build --ignore \"@{{ @('workspace.name')|lower }}/viper-client\" --ignore \"@{{ @('workspace.name')|lower }}/viper-gateway\" --stream --no-bail || true",
     "build:prod": "NODE_ENV=production run-s build:deps build:app:*",
     "build:dev": "NODE_ENV=development run-s build:deps build:app:*",
     "init:dev": "run-s generate:types build:dev",
