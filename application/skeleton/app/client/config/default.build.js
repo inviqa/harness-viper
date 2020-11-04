@@ -11,7 +11,7 @@ export default {
   gateway: {
     // phase(runtime): interpolated at container start using the value of an
     // environment variable of the same name.
-    csr: '',
+    csr: 'GATEWAY_CSR_URL',
 
     // phase(build):
     // supplied by CI runner to allow static content building

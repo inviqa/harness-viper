@@ -19,8 +19,9 @@ export const defaultCartItems: GetCartQuery['cart']['items'] = [
         alt: 'Bolo Sport Watch',
         __typename: 'ProductImage'
       },
-      __typename: 'SimpleProduct'
+      __typename: 'Product'
     },
+    productOptions: null,
     __typename: 'CartItem'
   },
   {
@@ -41,8 +42,9 @@ export const defaultCartItems: GetCartQuery['cart']['items'] = [
         alt: 'Dash Digital Watch',
         __typename: 'ProductImage'
       },
-      __typename: 'SimpleProduct'
+      __typename: 'Product'
     },
+    productOptions: null,
     __typename: 'CartItem'
   },
   {
@@ -63,8 +65,9 @@ export const defaultCartItems: GetCartQuery['cart']['items'] = [
         alt: 'Image',
         __typename: 'ProductImage'
       },
-      __typename: 'SimpleProduct'
+      __typename: 'Product'
     },
+    productOptions: null,
     __typename: 'CartItem'
   },
   {
@@ -85,8 +88,9 @@ export const defaultCartItems: GetCartQuery['cart']['items'] = [
         alt: 'Aim Analog Watch',
         __typename: 'ProductImage'
       },
-      __typename: 'SimpleProduct'
+      __typename: 'Product'
     },
+    productOptions: null,
     __typename: 'CartItem'
   },
   {
@@ -107,8 +111,9 @@ export const defaultCartItems: GetCartQuery['cart']['items'] = [
         alt: 'Endurance Watch',
         __typename: 'ProductImage'
       },
-      __typename: 'SimpleProduct'
+      __typename: 'Product'
     },
+    productOptions: null,
     __typename: 'CartItem'
   },
   {
@@ -129,8 +134,9 @@ export const defaultCartItems: GetCartQuery['cart']['items'] = [
         alt: 'Cruise Dual Analog Watch',
         __typename: 'ProductImage'
       },
-      __typename: 'SimpleProduct'
+      __typename: 'Product'
     },
+    productOptions: null,
     __typename: 'CartItem'
   },
   {
@@ -151,8 +157,9 @@ export const defaultCartItems: GetCartQuery['cart']['items'] = [
         alt: 'Summit Watch',
         __typename: 'ProductImage'
       },
-      __typename: 'SimpleProduct'
+      __typename: 'Product'
     },
+    productOptions: null,
     __typename: 'CartItem'
   },
   {
@@ -173,8 +180,9 @@ export const defaultCartItems: GetCartQuery['cart']['items'] = [
         alt: 'Luma Analog Watch',
         __typename: 'ProductImage'
       },
-      __typename: 'SimpleProduct'
+      __typename: 'Product'
     },
+    productOptions: null,
     __typename: 'CartItem'
   }
 ];

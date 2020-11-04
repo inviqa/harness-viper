@@ -1,0 +1,48 @@
+extend type Product @key(fields: "sku") {
+  sku: String! @external
+}
+
+type CmsImageVersion {
+  size: String!
+  url: String!
+  width: Int
+  height: Int
+}
+
+type CmsImage {
+  alt: String!
+  sizes: [CmsImageVersion!]!
+}
+
+type CmsHtmlField {
+  raw: String!
+  html: String!
+}
+
+type ProductBanner {
+  text: CmsHtmlField!
+  image: CmsImage
+  product: Product
+}
+
+type ProductGridBanner {
+  title: String!
+  products: [Product]!
+}
+
+type CmsHomepage @key(fields: "id locale") {
+  id: String!
+  locale: String!
+  productBanner: ProductBanner!
+  productGrid: ProductGridBanner!
+}
+
+extend type CmsHomepagePage @key(fields: "id type locale") {
+  id: String! @external
+  type: String! @external
+  locale: String! @external
+  """
+  Cms Homepage data
+  """
+  homePage: CmsHomepage
+}

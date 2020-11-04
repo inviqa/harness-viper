@@ -38,7 +38,12 @@ export const Checkout: NextComponentType & { getLayout: (page: JSX.Element) => J
   const [, { data: order }] = placeOrder;
 
   const transformedCountries: SelectElementOptionProps[] = useMemo(
-    () => (countryData?.websiteConfig?.countries ?? []).map(({ name, id }) => ({ label: name, value: id })),
+    () =>
+      (countryData?.websiteConfig?.countries ?? [])
+        .map(({ name, id }) => ({ label: name, value: id }))
+        .sort((a, b) => {
+          return a.label.localeCompare(b.label);
+        }),
     [countryData?.websiteConfig?.countries]
   );
 

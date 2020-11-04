@@ -1,0 +1,8 @@
+query GetNodeHomepageByNodeId($id: String!, $language: LanguageId!) {
+  nodeById(id: $id) {
+    __typename
+    entityTranslation(language: $language) {
+      ...NodeHomepageFragment
+    }
+  }
+}

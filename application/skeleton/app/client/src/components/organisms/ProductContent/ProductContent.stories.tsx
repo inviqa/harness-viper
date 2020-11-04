@@ -14,6 +14,7 @@ const product = {
     value: 3500,
     currency: 'GBP'
   },
+  url: '/en/rapha-sports-short',
   description:
     '<p>For those about to sweat, we support you with the Rapha Sports Short. The compression-fit liner surrounds your muscles with the stimulation they need to find your high gear, while moisture-wicking performance fabric helps prevents sweat build-up.</p><p>&bull; Black shorts with royal accents.<br />&bull; Compression liner. <br />&bull; Inseam: 8". <br />&bull; Machine wash/dry.</p>',
   image: {
@@ -52,7 +53,9 @@ const product = {
       url:
         'https://magento-int.viper.webpipeline.net/media/catalog/product/cache/df5e62fb1e927688bec2d9a70eaf27ef/m/s/msh01-blue_main_1.jpg'
     }
-  ]
+  ],
+  options: [],
+  variants: []
 };
 
 export default {

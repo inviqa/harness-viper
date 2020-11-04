@@ -52,14 +52,18 @@ describe(ProductCard, () => {
     describe('When: add to cart button is clicked', () => {
       it('Then: it disables the button while loading', async () => {
         const { getByText } = renderWithProviders(<ProductCard {...product} />, { mocks: [] });
-        userEvent.click(getByText('commerce:Cart.AddToCart'));
+        act(() => {
+          userEvent.click(getByText('commerce:Cart.AddToCart'));
+        });
         await waitFor(() => expect(getByText('commerce:Cart.AddToCart')).toBeDisabled());
       });
 
       describe('When: add to cart was unsuccessful', () => {
         it('Then: it adds an error message', async () => {
           const { getByText } = renderWithProviders(<ProductCard {...product} />, { mocks: [] });
-          userEvent.click(getByText('commerce:Cart.AddToCart'));
+          act(() => {
+            userEvent.click(getByText('commerce:Cart.AddToCart'));
+          });
 
           expect(messagesVar()).toStrictEqual([]);
           await waitFor(() => expect(getByText('commerce:Cart.AddToCart')).not.toBeDisabled());
@@ -76,7 +80,9 @@ describe(ProductCard, () => {
       describe('When: add to cart was successful', () => {
         it('Then: it adds a success message', async () => {
           const { getByText } = renderWithProviders(<ProductCard {...product} />, { mocks: [addToCartMock()] });
-          userEvent.click(getByText('commerce:Cart.AddToCart'));
+          act(() => {
+            userEvent.click(getByText('commerce:Cart.AddToCart'));
+          });
 
           expect(messagesVar()).toStrictEqual([]);
           await waitFor(() => expect(getByText('commerce:Cart.AddToCart')).not.toBeDisabled());
@@ -98,7 +104,9 @@ describe(ProductCard, () => {
             cartIdVar(null);
           });
           const { getByText } = renderWithProviders(<ProductCard {...product} />, { mocks: [] });
-          userEvent.click(getByText('commerce:Cart.AddToCart'));
+          act(() => {
+            userEvent.click(getByText('commerce:Cart.AddToCart'));
+          });
 
           expect(messagesVar()).toStrictEqual([
             {

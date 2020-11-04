@@ -43,7 +43,7 @@ const ProductCard: FunctionComponent<Props> = ({ id, type, sku, name, thumbnailI
       image={thumbnailImage ?? undefined}
       price={price}
       url={url}
-      handleAddToCart={() => handleAddToCart({ quantity: 1 })}
+      handleAddToCart={() => handleAddToCart({ quantity: 1, variantSku: null })}
       disableCartAction={type !== ProductType.Simple || loading}
       overrides={overrides}
       aria-busy={loading}

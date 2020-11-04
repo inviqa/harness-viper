@@ -9,6 +9,7 @@
   "dependencies": {
     "@apollo/gateway": "^0.19.1",
     "@inviqa/viper-apollo": "*",
+    "@inviqa/viper-backend-drupal": "*",
     "@inviqa/viper-backend-magento": "*",
     "@inviqa/viper-di": "*",
     "@inviqa/viper-event-dispatcher": "*",
@@ -23,11 +24,12 @@
     "@inviqa/viper-gateway-service-menu": "*",
     "@inviqa/viper-gateway-service-routing": "*",
     "@inviqa/viper-gateway-service-user": "*",
-    "@inviqa/viper-koa": "*",
     "@inviqa/viper-graphql-utils": "*",
+    "@inviqa/viper-koa": "*",
     "apollo-datasource": "^0.7.2",
     "apollo-graphql": "^0.5.0",
     "apollo-server-core": "^2.17.0",
+    "apollo-server-errors": "^2.4.2",
     "apollo-server-koa": "^2.16.1",
     "graphql": "^15.3.0",
     "koa": "^2.13.0"
@@ -36,7 +38,7 @@
     "@inviqa/viper-cli": "*",
     "@types/koa": "^2.11.3",
     "npm-run-all": "^4.1.5",
-    "typescript": "^3.9.6"
+    "typescript": "^4.0.5"
   },
   "scripts": {
     "clean:dist": "rm -rf ./dist",
@@ -48,6 +50,7 @@
     "build:dev": "run-s clean build:ts",
     "start:dev": "node dist/src/main.dev.js",
     "dev": "run-s build:dev start:dev",
-    "generate:types": "viper generate:types"
+    "generate:types": "viper generate:types",
+    "generate:types:drupal": "viper generate:types --config ./codegen-drupal.yml"
   }
 }

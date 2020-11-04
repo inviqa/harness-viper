@@ -17,4 +17,4 @@ services:
   GatewayKoa:
     class: //koa[default]
     factory: ['@KoaFactory', 'create']
-    arguments: ['@KoaCorsMiddleware']
+    arguments: ['@KoaCorsMiddleware', '@KoaVoyagerMiddleware', '@KoaApiDocsMiddleware']

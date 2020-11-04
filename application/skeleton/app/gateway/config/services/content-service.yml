@@ -19,7 +19,7 @@ services:
   ContentDataSource:
     class: //@inviqa/viper-gateway-service-content[DrupalContentDataSource]
     arguments:
-      - '@DrupalApolloClientBuilder'
+      - '@DrupalGraphqlClientProvider'
       - '@ContentArticleDataTransformer'
 
   ContentArticleDataTransformer:

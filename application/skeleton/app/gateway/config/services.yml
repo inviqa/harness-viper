@@ -73,6 +73,18 @@ services:
     class: //@inviqa/viper-koa[CorsMiddleware]
     arguments: ['%gateway.cors%']
 
+  KoaVoyagerMiddleware:
+    class: //@inviqa/viper-koa[VoyagerMiddleware]
+    arguments: ['%gateway.path%']
+
+  KoaApiDocsMiddleware:
+    class: //@inviqa/viper-koa[StaticMiddleware]
+    factory: ['@KoaStaticMiddlewareFactory', 'create']
+    arguments: ['%gateway.docs.path%', '%gateway.docs.folder%']
+
+  KoaStaticMiddlewareFactory:
+    class: //@inviqa/viper-koa[StaticMiddlewareFactory]
+
   KoaFactory:
     class: //@inviqa/viper-koa[KoaFactory]
 

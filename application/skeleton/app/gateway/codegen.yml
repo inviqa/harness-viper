@@ -9,3 +9,27 @@ generates:
       enumsAsConst: true
       federation: true
       noSchemaStitching: true
+
+  src/Routing/typedef/types.ts:
+    schema:
+      - ./node_modules/@inviqa/viper-gateway-service-routing/src/typedef/schema.graphql
+      - ./src/Routing/typedef/*.graphql
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-resolvers
+    config:
+      enumsAsConst: true
+      federation: true
+      noSchemaStitching: true
+
+  src/CustomContent/typedef/types.ts:
+    schema: ./src/CustomContent/typedef/*.graphql
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-resolvers
+    config:
+      enumsAsConst: true
+      federation: true
+      noSchemaStitching: true

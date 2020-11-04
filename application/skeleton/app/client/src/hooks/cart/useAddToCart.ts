@@ -32,8 +32,9 @@ export function useAddToCart(product: Pick<Product, 'id' | 'name' | 'sku'>) {
   const [addToCart, data] = useAddToCartMutation(responseHandlers);
 
   const handleAddToCart = useCallback(
-    ({ quantity = 1 }: Omit<CartItemInput, 'sku'>) => {
-      if (cartId) addToCart({ variables: { cartId, items: [{ sku: product.sku, quantity }] } });
+    ({ quantity = 1, variantSku }: Omit<CartItemInput, 'sku'>) => {
+      if (cartId)
+        addToCart({ variables: { cartId, items: [{ sku: product.sku, quantity, variantSku: variantSku || null }] } });
       else {
         responseHandlers.onError?.(missingCartIdError);
       }

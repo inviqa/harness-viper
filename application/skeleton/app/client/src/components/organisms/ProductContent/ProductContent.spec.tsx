@@ -14,6 +14,7 @@ describe(ProductContent, () => {
     sku: 'mock-sku',
     name: 'Rapha Sports Short',
     title: 'Rapha Sports Short',
+    url: '/test-url',
     price: {
       value: 3500,
       currency: 'GBP'
@@ -75,7 +76,7 @@ describe(ProductContent, () => {
   });
 
   describe('When: product data is provided', () => {
-    const setup = () => renderWithProviders(<ProductContent {...product} />, { mocks: [] });
+    const setup = () => renderWithProviders(<ProductContent {...product} options={[]} variants={[]} />, { mocks: [] });
 
     it('Then: it renders the product title', () => {
       const { getByText } = setup();
@@ -112,16 +113,19 @@ describe(ProductContent, () => {
 
   describe('When: product type is other', () => {
     it('Then: the add to cart button is disabled', () => {
-      const { getByText } = renderWithProviders(<ProductContent {...product} type={ProductType.Other} />, {
-        mocks: []
-      });
+      const { getByText } = renderWithProviders(
+        <ProductContent {...product} type={ProductType.Other} options={[]} variants={[]} />,
+        {
+          mocks: []
+        }
+      );
       expect(getByText('Cart.AddToCart')).toBeDisabled();
     });
   });
 
   describe('When: product type is simple', () => {
     it('Then: the add to cart button is not disabled', () => {
-      const { getByText } = renderWithProviders(<ProductContent {...product} />, {
+      const { getByText } = renderWithProviders(<ProductContent {...product} options={[]} variants={[]} />, {
         mocks: []
       });
       expect(getByText('Cart.AddToCart')).not.toBeDisabled();
@@ -129,14 +133,18 @@ describe(ProductContent, () => {
 
     describe('When: add to cart button is clicked', () => {
       it('Then: it disables the button while loading', async () => {
-        const { getByText } = renderWithProviders(<ProductContent {...product} />, { mocks: [] });
+        const { getByText } = renderWithProviders(<ProductContent {...product} options={[]} variants={[]} />, {
+          mocks: []
+        });
         userEvent.click(getByText('Cart.AddToCart'));
         await waitFor(() => expect(getByText('Cart.AddToCart')).toBeDisabled());
       });
 
       describe('And: add to cart was unsuccessful', () => {
         it('Then: it adds an error message', async () => {
-          const { getByText } = renderWithProviders(<ProductContent {...product} />, { mocks: [] });
+          const { getByText } = renderWithProviders(<ProductContent {...product} options={[]} variants={[]} />, {
+            mocks: []
+          });
           userEvent.click(getByText('Cart.AddToCart'));
 
           expect(messagesVar()).toStrictEqual([]);
@@ -154,7 +162,9 @@ describe(ProductContent, () => {
 
       describe('And: add to cart was successful', () => {
         it('Then: it adds a success message', async () => {
-          const { getByText } = renderWithProviders(<ProductContent {...product} />, { mocks: [addToCartMock()] });
+          const { getByText } = renderWithProviders(<ProductContent {...product} options={[]} variants={[]} />, {
+            mocks: [addToCartMock()]
+          });
           userEvent.click(getByText('Cart.AddToCart'));
 
           expect(messagesVar()).toStrictEqual([]);
@@ -176,7 +186,9 @@ describe(ProductContent, () => {
           act(() => {
             cartIdVar(null);
           });
-          const { getByText } = renderWithProviders(<ProductContent {...product} />, { mocks: [] });
+          const { getByText } = renderWithProviders(<ProductContent {...product} options={[]} variants={[]} />, {
+            mocks: []
+          });
           userEvent.click(getByText('Cart.AddToCart'));
 
           await waitFor(() => expect(getByText('Cart.AddToCart')).not.toBeDisabled());

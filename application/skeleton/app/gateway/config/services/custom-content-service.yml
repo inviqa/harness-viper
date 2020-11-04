@@ -1,0 +1,32 @@
+parameters:
+  customcontent:
+    path: /_internal/custom-content
+
+services:
+  /CustomContent/Service/CustomContentService:
+    arguments:
+      - '%customcontent.path%'
+      - './src/CustomContent/typedef/schema.graphql'
+      - '@/CustomContent/Resolver/CustomContentResolverProvider'
+      - '@/CustomContent/DataSource/Drupal/DrupalCustomContentDataSource'
+      - '@GatewayServiceRunner'
+      - '@CustomContentApolloServerBuilder'
+
+  /CustomContent/Resolver/CustomContentResolverProvider: ~
+
+  /CustomContent/DataSource/Drupal/DrupalCustomContentDataSource:
+    arguments:
+      - '@DrupalGraphqlClientProvider'
+      - '@/CustomContent/DataSource/Drupal/DrupalHomeDataTransformer'
+
+  /CustomContent/DataSource/Drupal/DrupalHomeDataTransformer:
+    arguments:
+      - '@ContentImageDataTransformer'
+
+  CustomContentApolloServerBuilder:
+    class: //@inviqa/viper-apollo[ApolloServerBuilder]
+    factory: ['@ApolloServerBuilderFactory', 'create']
+    arguments:
+      - '@Logger'
+      - '%gateway.server%'
+      - '@ApolloServerPluginProviderList'

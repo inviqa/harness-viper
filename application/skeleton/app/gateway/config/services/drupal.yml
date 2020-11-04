@@ -14,6 +14,10 @@ parameters:
       baseUrl: https://drupal-int.viper.webpipeline.net
 
 services:
+  DrupalGraphqlClientProvider:
+    class: //@inviqa/viper-backend-drupal[DrupalGraphqlClientProvider]
+    arguments: ['@DrupalApolloClientBuilder']
+
   DrupalApolloClientBuilder:
     class: //@inviqa/viper-apollo[ApolloClientBuilder]
     factory: ['@ApolloClientBuilderFactory', 'create']

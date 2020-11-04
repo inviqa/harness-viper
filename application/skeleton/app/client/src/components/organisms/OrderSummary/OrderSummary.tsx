@@ -38,7 +38,8 @@ const OrderSummary: FunctionComponent<BoxProps> = ({ className, ...props }) => {
               url: item.product.thumbnailImage?.url,
               alt: item.product.thumbnailImage?.alt ?? ''
             }
-          : undefined
+          : undefined,
+        productOptions: item.productOptions || null
       })),
     [cart?.items]
   );

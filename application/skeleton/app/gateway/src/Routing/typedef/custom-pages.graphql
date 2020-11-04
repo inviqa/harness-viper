@@ -1,0 +1,17 @@
+"""
+CMS Homepage page
+"""
+type CmsHomepagePage implements Page @key(fields: "id type locale") {
+  """
+  Page identifier
+  """
+  id: String!
+  """
+  Page type
+  """
+  type: String!
+  """
+  Page locale
+  """
+  locale: String!
+}

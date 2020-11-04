@@ -8,19 +8,7 @@ query GetProducts(
     @connection(key: "products", filter: ["filters", "sort", "searchTerm"]) {
     total
     items {
-      id
-      type
-      sku
-      name
-      url
-      price {
-        value
-        currency
-      }
-      thumbnailImage {
-        alt
-        url
-      }
+      ...ProductListFragment
     }
     facets {
       name

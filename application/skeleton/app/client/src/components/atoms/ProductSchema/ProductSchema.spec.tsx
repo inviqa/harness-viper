@@ -13,6 +13,7 @@ describe(ProductSchema, () => {
     sku: 'mock-sku',
     name: 'Rapha Sports Short',
     title: 'Rapha Sports Short',
+    url: '/some-url',
     price: {
       value: 3500,
       currency: 'GBP'

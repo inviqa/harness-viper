@@ -19,7 +19,7 @@ services:
   MenuDataSource:
     class: //@inviqa/viper-gateway-service-menu[DrupalMenuDataSource]
     arguments:
-      - '@DrupalApolloClientBuilder'
+      - '@DrupalGraphqlClientProvider'
 
   MenuApolloServerBuilder:
     class: //@inviqa/viper-apollo[ApolloServerBuilder]

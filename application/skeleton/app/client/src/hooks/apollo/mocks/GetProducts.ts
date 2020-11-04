@@ -1136,7 +1136,7 @@ export const defaultFacets: GetProductsQuery['products']['facets'] = [
 
 export const defaultProducts: GetProductsQuery['products']['items'] = [
   {
-    __typename: 'SimpleProduct',
+    __typename: 'Product',
     type: ProductType.Simple,
     id: '36',
     name: 'Aim Analog Watch',
@@ -1153,7 +1153,7 @@ export const defaultProducts: GetProductsQuery['products']['items'] = [
     }
   },
   {
-    __typename: 'SimpleProduct',
+    __typename: 'Product',
     type: ProductType.Simple,
     id: '37',
     name: 'Endurance Watch',
@@ -1170,7 +1170,7 @@ export const defaultProducts: GetProductsQuery['products']['items'] = [
     }
   },
   {
-    __typename: 'SimpleProduct',
+    __typename: 'Product',
     type: ProductType.Simple,
     id: '38',
     name: 'Summit Watch',
@@ -1187,7 +1187,7 @@ export const defaultProducts: GetProductsQuery['products']['items'] = [
     }
   },
   {
-    __typename: 'SimpleProduct',
+    __typename: 'Product',
     type: ProductType.Simple,
     id: '39',
     name: 'Cruise Dual Analog Watch',
@@ -1204,7 +1204,7 @@ export const defaultProducts: GetProductsQuery['products']['items'] = [
     }
   },
   {
-    __typename: 'SimpleProduct',
+    __typename: 'Product',
     type: ProductType.Simple,
     id: '40',
     name: 'Dash Digital Watch',
@@ -1221,7 +1221,7 @@ export const defaultProducts: GetProductsQuery['products']['items'] = [
     }
   },
   {
-    __typename: 'SimpleProduct',
+    __typename: 'Product',
     type: ProductType.Simple,
     id: '41',
     name: 'Luma Analog Watch',
@@ -1238,7 +1238,7 @@ export const defaultProducts: GetProductsQuery['products']['items'] = [
     }
   },
   {
-    __typename: 'SimpleProduct',
+    __typename: 'Product',
     type: ProductType.Simple,
     id: '42',
     name: 'Bolo Sport Watch',
@@ -1255,7 +1255,7 @@ export const defaultProducts: GetProductsQuery['products']['items'] = [
     }
   },
   {
-    __typename: 'SimpleProduct',
+    __typename: 'Product',
     type: ProductType.Simple,
     id: '43',
     name: 'Clamber Watch',
@@ -1272,7 +1272,7 @@ export const defaultProducts: GetProductsQuery['products']['items'] = [
     }
   },
   {
-    __typename: 'SimpleProduct',
+    __typename: 'Product',
     type: ProductType.Simple,
     id: '44',
     name: 'Didi Sport Watch',

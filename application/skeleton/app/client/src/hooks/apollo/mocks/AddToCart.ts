@@ -3,7 +3,10 @@ import { AddToCartMutationVariables, AddToCartDocument, AddToCartMutation } from
 import { defaultCartTotals, defaultCouponCodes } from './GetCart';
 
 export const addToCartMock = (
-  { cartId = 'mock-cart-id', items = [{ sku: 'mock-sku', quantity: 1 }] }: Partial<AddToCartMutationVariables> = {},
+  {
+    cartId = 'mock-cart-id',
+    items = [{ sku: 'mock-sku', variantSku: null, quantity: 1 }]
+  }: Partial<AddToCartMutationVariables> = {},
   {
     data = {
       addToCart: {

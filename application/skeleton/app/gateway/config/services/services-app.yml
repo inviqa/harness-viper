@@ -29,6 +29,7 @@ services:
       - '@AuthService'
       - '@EcommService'
       - '@ConfigService'
+      - '@/CustomContent/Service/CustomContentService'
 
   ServicesKoa:
     class: //koa[default]

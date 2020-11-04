@@ -7,6 +7,7 @@ fragment ProductPageFragment on ProductPage {
     sku
     name
     title
+    url
     price {
       value
       currency
@@ -21,29 +22,27 @@ fragment ProductPageFragment on ProductPage {
       url
     }
     type
-    ... on ConfigurableProduct {
-      variants {
-        options {
-          option
-          id
-          label
-        }
-        product {
-          sku
-          price {
-            value
-            currency
-          }
+    variants {
+      options {
+        option
+        id
+        label
+      }
+      product {
+        sku
+        price {
+          value
+          currency
         }
       }
-      options {
-        name
+    }
+    options {
+      name
+      label
+      values {
+        option
+        id
         label
-        values {
-          option
-          id
-          label
-        }
       }
     }
   }

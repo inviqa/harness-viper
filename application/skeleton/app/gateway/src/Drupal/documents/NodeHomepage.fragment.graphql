@@ -1,0 +1,61 @@
+fragment NodeHomepageFragment on NodeHomepage {
+  entityId
+  title
+  entityUrl {
+    translate(language: $language) {
+      path
+    }
+  }
+  langcode {
+    value
+  }
+  fieldBannerText {
+    value
+    format
+    processed
+  }
+  fieldProductSku
+  fieldBannerImage {
+    url
+    alt
+    height
+    width
+    thumbnail: derivative(style: THUMBNAIL) {
+      width
+      height
+      url
+    }
+    medium: derivative(style: MEDIUM) {
+      width
+      height
+      url
+    }
+    large: derivative(style: LARGE) {
+      width
+      height
+      url
+    }
+    mobile: derivative(style: MOBILE) {
+      width
+      height
+      url
+    }
+    mobileRetina: derivative(style: MOBILERETINA) {
+      width
+      height
+      url
+    }
+    desktop: derivative(style: DESKTOP) {
+      width
+      height
+      url
+    }
+    desktopRetina: derivative(style: DESKTOPRETINA) {
+      width
+      height
+      url
+    }
+  }
+  fieldProductGridSkus
+  fieldProductGridTitle
+}

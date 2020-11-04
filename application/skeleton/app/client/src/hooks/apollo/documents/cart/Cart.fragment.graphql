@@ -17,6 +17,12 @@ fragment CartFragment on Cart {
         url
       }
     }
+    productOptions {
+      option
+      optionLabel
+      id
+      label
+    }
   }
   totals {
     subtotalIncludingTax {
