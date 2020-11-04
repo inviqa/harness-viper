@@ -6,6 +6,6 @@ function task_welcome()
     echo "Welcome!"
     echo "--------"
     echo "Client: https://${CLIENT_HOST}"
-    echo "Gateway: https://${GATEWAY_HOST}"
+    echo "Gateway: https://${GATEWAY_HOST}/graphql"
     echo ""
 }
