@@ -6,6 +6,11 @@ harness('inviqa/viper'):
       - proxy
     confd:
       - harness:/
+      - harness:/
+    attributes:
+      secret:
+        - npm.repositories.inviqa.token
+        - app.gateway.env.AUTH_TOKEN_SECRET
 ---
 command('gateway rebuild'):
   env:
@@ -31,7 +36,10 @@ command('client <action>'):
 ---
 attributes:
   npm:
-    repositories: {}
+    repositories:
+      inviqa:
+        host: npm.pkg.github.com
+        # token: ~
   app:
     image_pull_config: null
     image: = @('docker.repository') ~ @('app.version')
@@ -53,6 +61,7 @@ attributes:
       env:
         SUPERVISOR_START_GATEWAY: "true"
         GATEWAY_HOST: = 'gateway-' ~ @('hostname')
+        # AUTH_TOKEN_SECRET: ~
       secrets: ~
       ingress:
         enabled: true
