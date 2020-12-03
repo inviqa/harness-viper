@@ -5,7 +5,7 @@ module.exports = [
   // first item in the runtime cache configuration array MUST be "start-url"
   {
     // MUST be the same as "start_url" in manifest.json
-    urlPattern: '/en',
+    urlPattern: '/',
     // use NetworkFirst or NetworkOnly if you redirect un-authenticated user to login page
     // use StaleWhileRevalidate if you want to prompt user to reload when new version available
     handler: 'NetworkFirst',

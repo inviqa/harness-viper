@@ -1,10 +1,11 @@
 import { ApolloLink, InMemoryCache } from '@apollo/client';
+import { NextRouter } from 'next/router';
 import createApolloClient from '../createApolloClient';
 
 describe(createApolloClient, () => {
   describe('Given: initial state and client environment', () => {
     const initialState = { some: { apollo: 'state' } };
-    const client = createApolloClient(initialState);
+    const client = createApolloClient(initialState, { locale: 'cimode' } as NextRouter);
 
     it('Then: it populates cache', () => {
       expect(client.cache).toBeInstanceOf(InMemoryCache);

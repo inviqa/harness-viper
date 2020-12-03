@@ -71,6 +71,7 @@ describe(ProductCard, () => {
             {
               content: `Messages.UnexpectedError ${product.id},${product.name},${product.sku}`,
               id: `error-${product.id}-${product.name}-${product.sku}`,
+              location: 'minicart',
               type: 'error'
             }
           ]);
@@ -90,6 +91,7 @@ describe(ProductCard, () => {
             {
               content: `Messages.AddedToCart ${product.id},${product.name},${product.sku}`,
               id: `${product.id}-added-to-cart`,
+              location: 'minicart',
               type: 'success'
             }
           ]);
@@ -112,6 +114,7 @@ describe(ProductCard, () => {
             {
               content: `Messages.UnexpectedError ${product.id},${product.name},${product.sku}`,
               id: `error-${product.id}-${product.name}-${product.sku}`,
+              location: 'minicart',
               type: 'error'
             }
           ]);

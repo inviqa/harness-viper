@@ -1,0 +1,24 @@
+{
+  "Menu": {
+    "Toggle": "Toggle menu",
+    "Home": "Home",
+    "SubmenuLabel": "{{ name }} submenu"
+  },
+  "Loading": "Loading",
+  "Edit":  "Edit",
+  "Search": {
+    "Title": "Search: {{ term }}",
+    "Label": "Search our catalog",
+    "Placeholder": "What are you looking for?",
+    "Submit": "Search",
+    "Toggle": "Toggle search"
+  },
+  "Messages": {
+    "Dismiss": "Dismiss message"
+  },
+  "Validation": {
+    "RequiredField": "{{ label }} is required.",
+    "MinLength": "{{ label }} should be at least {{ minLength }} characters.",
+    "ValidEmailAddress": "Email address is not valid."
+  }
+}

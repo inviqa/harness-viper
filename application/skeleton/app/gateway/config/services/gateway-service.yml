@@ -11,8 +11,10 @@ parameters:
       maxAge: 86400
     gateway: ~
     docs:
-      path: /api-docs
-      folder: ../../docs/api-docs
+      path: /docs
+      folder: ../../docs
+    voyager:
+      path: /voyager
 
 services:
   /Gateway/GatewayService[GatewayService]:

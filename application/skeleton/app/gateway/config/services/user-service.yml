@@ -9,15 +9,15 @@ services:
       - '%user.path%'
       - './node_modules/@inviqa/viper-gateway-service-user/src/typedef/schema.graphql'
       - '@UserResolverProvider'
-      - '@UserDataSource'
+      - '@UserDataSourceProvider'
       - '@GatewayServiceRunner'
       - '@UserApolloServerBuilder'
 
   UserResolverProvider:
     class: //@inviqa/viper-gateway-service-user[UserResolverProvider]
 
-  UserDataSource:
-    class: //@inviqa/viper-gateway-service-user[InMemoryUserDataSource]
+  UserDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-user[InMemoryUserDataSourceProvider]
 
   UserApolloServerBuilder:
     class: //@inviqa/viper-apollo[ApolloServerBuilder]

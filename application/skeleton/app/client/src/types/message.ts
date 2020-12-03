@@ -9,5 +9,6 @@ export enum MessageType {
 export type Message = {
   type: MessageType;
   id: string;
+  location?: string;
   content: ReactNode;
 };

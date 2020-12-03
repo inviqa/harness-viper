@@ -1,0 +1,4 @@
+services:
+  CustomContentDataSourceProvider:
+    class: /CustomContent/DataSource/InMemory/InMemoryCustomContentDataSourceProvider
+    arguments: []

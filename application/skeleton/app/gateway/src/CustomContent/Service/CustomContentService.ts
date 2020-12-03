@@ -8,7 +8,8 @@ import {
   GatewayServiceType,
   GatewayServiceRunner
 } from '@inviqa/viper-gateway-service';
-import { ApolloServerBuilder, ResolverProvider } from '@inviqa/viper-apollo';
+import { DataSourceProvider, ResolverProvider } from '@inviqa/viper-gateway-graphql-service';
+import { ApolloServerBuilder } from '@inviqa/viper-apollo';
 import { CustomContentDataSource, DataSources } from '../DataSource';
 
 export class CustomContentService implements InternalGatewayService, RunnableGatewayService {
@@ -22,7 +23,7 @@ export class CustomContentService implements InternalGatewayService, RunnableGat
     public readonly path: string,
     private readonly typedefPointerOrPointers: TypedefFilePointerOrPointers,
     private readonly resolverProvider: ResolverProvider,
-    private readonly dataSource: CustomContentDataSource,
+    private readonly dataSourceProvider: DataSourceProvider<CustomContentDataSource>,
     private readonly serviceRunner: GatewayServiceRunner,
     private readonly serverBuilder: ApolloServerBuilder
   ) {}
@@ -42,7 +43,7 @@ export class CustomContentService implements InternalGatewayService, RunnableGat
         .setFederatedSchema(this.typedefPointerOrPointers, this.resolverProvider.getResolvers())
         .setContext(context => context)
         .setDataSources<DataSources>(() => ({
-          content: this.dataSource
+          content: this.dataSourceProvider.getDataSource()
         }))
         .finalise();
     }

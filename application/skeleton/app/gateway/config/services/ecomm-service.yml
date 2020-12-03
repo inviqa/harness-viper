@@ -9,43 +9,14 @@ services:
       - '%ecomm.path%'
       - './node_modules/@inviqa/viper-gateway-service-ecomm/src/typedef/schema.graphql'
       - '@EcommResolverProvider'
-      - '@CartDataSource'
-      - '@CheckoutDataSource'
-      - '@OrderDataSource'
+      - '@CartDataSourceProvider'
+      - '@CheckoutDataSourceProvider'
+      - '@OrderDataSourceProvider'
       - '@GatewayServiceRunner'
       - '@EcommApolloServerBuilder'
 
   EcommResolverProvider:
     class: //@inviqa/viper-gateway-service-ecomm[EcommResolverProvider]
-
-  OrderDataSource:
-    class: //@inviqa/viper-gateway-service-ecomm[MagentoOrderDataSource]
-    arguments:
-      - '@MagentoGraphqlClientProvider'
-      - '@OrderDataTransformer'
-
-  CheckoutDataSource:
-    class: //@inviqa/viper-gateway-service-ecomm[MagentoCheckoutDataSource]
-    arguments:
-      - '@MagentoGraphqlClientProvider'
-      - '@CheckoutDataTransformer'
-
-  CartDataSource:
-    class: //@inviqa/viper-gateway-service-ecomm[MagentoCartDataSource]
-    arguments:
-      - '@MagentoGraphqlClientProvider'
-      - '@CartDataTransformer'
-
-  OrderDataTransformer:
-    class: //@inviqa/viper-gateway-service-ecomm[MagentoOrderDataTransformer]
-    arguments: []
-
-  CheckoutDataTransformer:
-    class: //@inviqa/viper-gateway-service-ecomm[MagentoCheckoutDataTransformer]
-    arguments: ['@CartDataTransformer']
-
-  CartDataTransformer:
-    class: //@inviqa/viper-gateway-service-ecomm[MagentoCartDataTransformer]
 
   EcommApolloServerBuilder:
     class: //@inviqa/viper-apollo[ApolloServerBuilder]

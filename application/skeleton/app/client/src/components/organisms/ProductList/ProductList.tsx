@@ -1,21 +1,14 @@
 import { Grid, BoxOwnProps, Button } from 'theme-ui';
 import React, { FunctionComponent, HTMLAttributes, memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NetworkStatus, useReactiveVar } from '@apollo/client';
-import {
-  StyledToolbar as Toolbar,
-  styledToolbarOverrides,
-  ToolbarOverrides,
-  ToolbarProps
-} from '@inviqa/viper-ui-commerce';
-import { useTranslation } from '~lib/createI18n';
-import { Filter, Sort, useGetProductsQuery } from '~hooks/apollo';
+import { Toolbar, ToolbarProps } from '@inviqa/viper-ui-commerce';
+import { Filter, ProductSortCriteria, Sort, useGetProductsQuery } from '~hooks/apollo';
 import { currentFiltersVar, currentSortVar, normalizeFilterValue } from '~lib/cache';
 import Result from '../../utility/Result/Result';
 import TwoColumnsPageLayout from '../../templates/TwoColumnContentLayout/TwoColumnContentLayout';
 import Facets from '../../molecules/Facets/Facets';
 import ProductCard from '../../molecules/ProductCard/ProductCard';
-
-const { SortBy, Total, Field } = styledToolbarOverrides;
 
 const onSortChange = (value: string) => {
   const [criteria, order] = value.split('_') as [Sort['criteria'], Sort['order']];
@@ -57,38 +50,29 @@ const ProductList: FunctionComponent<
     notifyOnNetworkStatusChange: true
   });
   const { t } = useTranslation('catalog');
-  const toolbarOverrides: Partial<ToolbarOverrides> = useMemo(
-    () => ({
-      SortBy: ({ value, options, onChange, ...sortByProps }) => (
-        <SortBy value={value} options={options} onChange={onChange} {...sortByProps}>
-          {t('catalog:SortBy.Label')}
-          <Field name="sort_by" id="sort_by" value={value} options={options} onChange={onChange} />
-        </SortBy>
-      ),
-      Total: totalProps => (
-        <Total {...totalProps}>
-          {t('catalog:ProductListCount', { total: totalProps.totalItemCount, visible: totalProps.visibleItemCount })}
-        </Total>
-      )
-    }),
-    [t]
-  );
 
-  const { items = [], total = 0, facets = [] } = data?.products ?? {};
+  const { items = [], total = 0, facets = [], sortCriterias = [] } = data?.products ?? {};
   const isFetchingMore = networkStatus === NetworkStatus.fetchMore;
   const isNewDataLoading = !data && loading;
   const canLoadMore = items.length < total;
+
+  const filteredSortingOptions = useMemo(
+    () =>
+      sortingOptions.filter(sorting =>
+        sortCriterias.includes(sorting.value.replace(/_[A-Z]+$/, '') as ProductSortCriteria)
+      ),
+    [sortingOptions, sortCriterias]
+  );
 
   return (
     <>
       <Toolbar
         data-toolbar
-        sortingOptions={sortingOptions}
+        sortingOptions={filteredSortingOptions}
         selectedSort={`${currentSort.criteria}_${currentSort.order}`}
         onSortChange={onSortChange}
         totalItemCount={total}
         visibleItemCount={items.length}
-        overrides={toolbarOverrides}
       />
 
       <Result loading={isNewDataLoading} error={items.length === 0 ? t('catalog:NoProductsFound') : error?.message}>

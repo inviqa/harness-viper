@@ -6,7 +6,7 @@ describe(WebsiteSwitcher, () => {
   describe('When: website switcher is rendered', () => {
     it('Then: it renders a link to each website', () => {
       const { getByText } = render(<WebsiteSwitcher />);
-      expect(getByText('EN')).toHaveAttribute('href', '/en/test');
+      expect(getByText('EN')).toHaveAttribute('href', '/test');
       expect(getByText('DE')).toHaveAttribute('href', '/de/test');
     });
   });

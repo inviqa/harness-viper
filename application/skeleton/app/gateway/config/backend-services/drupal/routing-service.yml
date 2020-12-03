@@ -1,0 +1,10 @@
+services:
+  ContentRoutingDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-routing[DrupalRoutingDataSourceProvider]
+    arguments:
+      - '@DrupalApolloClientBuilder'
+      - '@ContentRoutingDataTransformer'
+
+  ContentRoutingDataTransformer:
+    class: //@inviqa/viper-gateway-service-routing[DrupalRoutingDataTransformer]
+    arguments: ['%drupal.defaultLocales%']

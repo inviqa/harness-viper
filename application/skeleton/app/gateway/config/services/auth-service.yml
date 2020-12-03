@@ -9,18 +9,12 @@ services:
       - '%auth.path%'
       - './node_modules/@inviqa/viper-gateway-service-auth/src/typedef/schema.graphql'
       - '@AuthResolverProvider'
-      - '@AuthDataSource'
+      - '@AuthDataSourceProvider'
       - '@GatewayServiceRunner'
       - '@AuthApolloServerBuilder'
 
   AuthResolverProvider:
     class: //@inviqa/viper-gateway-service-auth[AuthResolverProvider]
-
-  AuthDataSource:
-    class: //@inviqa/viper-gateway-service-auth[DrupalAuthDataSource]
-    arguments:
-      - '%env(AUTH_TOKEN_SECRET)%'
-      - '%drupal.rest.baseUrl%'
 
   AuthApolloServerBuilder:
     class: //@inviqa/viper-apollo[ApolloServerBuilder]

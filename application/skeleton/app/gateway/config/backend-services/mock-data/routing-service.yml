@@ -1,0 +1,8 @@
+services:
+  ContentRoutingDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-routing[InMemoryRoutingDataSourceProvider]
+    arguments: []
+
+  CatalogRoutingDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-routing[InMemoryRoutingDataSourceProvider]
+    arguments: []

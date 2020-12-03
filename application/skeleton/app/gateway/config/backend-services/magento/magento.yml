@@ -1,0 +1,50 @@
+parameters:
+  magento:
+    client: ~
+    http:
+      uri: https://magento-int.viper.webpipeline.net/graphql
+    logger:
+      prefix: magento
+      level: info
+      timestamp: true
+
+services:
+  MagentoGraphqlClientProvider:
+    class: //@inviqa/viper-backend-magento[MagentoGraphqlClientProvider]
+    arguments:
+      - '@MagentoApolloClientBuilder'
+      - '@MagentoDocumentOverrides'
+
+  MagentoDocumentOverrides:
+    class: //@inviqa/viper-backend-graphql[DocumentOverrides]
+
+  MagentoApolloClientBuilder:
+    class: //@inviqa/viper-apollo[ApolloClientBuilder]
+    factory: ['@ApolloClientBuilderFactory', 'create']
+    arguments:
+      - '%magento.client%'
+      - '@MagentoApolloLinkProviders'
+
+  MagentoApolloLinkProviders:
+    class: //@inviqa/viper-apollo[ApolloLinkProviderList]
+    factory: ['@ApolloLinkProviderListFactory', 'create']
+    arguments:
+      - '@MagentoLoggerLinkProvider'
+      - '@MagentoHttpLinkProvider'
+
+  MagentoHttpLinkProvider:
+    class: //@inviqa/viper-apollo[HttpLinkProvider]
+    factory: ['@HttpLinkProviderFactory', 'create']
+    arguments: ['%magento.http%']
+
+  MagentoLoggerLinkProvider:
+    class: //@inviqa/viper-apollo[LoggerLinkProvider]
+    factory: ['@LoggerLinkProviderFactory', 'create']
+    arguments: ['@MagentoLogger']
+
+  MagentoLogger:
+    class: //@inviqa/viper-logger[LogLevelNextLogger]
+    arguments:
+      - '%magento.logger.prefix%'
+      - '%magento.logger.level%'
+      - '%magento.logger.timestamp%'

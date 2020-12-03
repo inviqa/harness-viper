@@ -1,0 +1,76 @@
+parameters:
+  bigcommerce:
+    graphql:
+      client: ~
+      http:
+        uri: https://store-jtonevm7by.mybigcommerce.com/graphql
+    rest:
+      client:
+        baseURL: https://api.bigcommerce.com/stores/jtonevm7by/v3
+    logger:
+      prefix: bigcommerce
+      level: debug
+      timestamp: true
+
+services:
+  # REST
+  BigcommerceRestClientProvider:
+    class: //@inviqa/viper-backend-bigcommerce[BigcommerceRestClientProvider]
+    arguments:
+      - '@BigcommerceAxiosClientBuilder'
+      - '%env(BIGCOMMERCE__ACCESS_TOKEN)%'
+
+  BigcommerceAxiosClientBuilder:
+    class: //@inviqa/viper-axios[AxiosClientBuilder]
+    factory: ['@AxiosClientBuilderFactory', 'create']
+    arguments:
+      - '%bigcommerce.rest.client%'
+      - '@BigcommerceAxiosClientBuilderPluginList'
+
+  BigcommerceAxiosClientBuilderPluginList:
+    class: //@inviqa/viper-axios[AxiosClientBuilderPluginList]
+    factory: ['@AxiosClientBuilderPluginListFactory', 'create']
+    arguments: ['@BigcommerceAxiosClientLoggerPlugin']
+
+  BigcommerceAxiosClientLoggerPlugin:
+    class: //@inviqa/viper-axios[AxiosClientLoggerPlugin]
+    factory: ['@AxiosClientLoggerPluginFactory', 'create']
+    arguments: ['@BigcommerceLogger']
+
+  # GraphQL
+  BigcommerceGraphqlClientProvider:
+    class: //@inviqa/viper-backend-bigcommerce[BigcommerceGraphqlClientProvider]
+    arguments:
+      - '@BigcommerceApolloClientBuilder'
+      - '%env(BIGCOMMERCE__AUTH_TOKEN)%'
+
+  BigcommerceApolloClientBuilder:
+    class: //@inviqa/viper-apollo[ApolloClientBuilder]
+    factory: ['@ApolloClientBuilderFactory', 'create']
+    arguments:
+      - '%bigcommerce.graphql.client%'
+      - '@BigcommerceApolloLinkProviders'
+
+  BigcommerceApolloLinkProviders:
+    class: //@inviqa/viper-apollo[ApolloLinkProviderList]
+    factory: ['@ApolloLinkProviderListFactory', 'create']
+    arguments:
+      - '@BigcommerceLoggerLinkProvider'
+      - '@BigcommerceHttpLinkProvider'
+
+  BigcommerceHttpLinkProvider:
+    class: //@inviqa/viper-apollo[HttpLinkProvider]
+    factory: ['@HttpLinkProviderFactory', 'create']
+    arguments: ['%bigcommerce.graphql.http%']
+
+  BigcommerceLoggerLinkProvider:
+    class: //@inviqa/viper-apollo[LoggerLinkProvider]
+    factory: ['@LoggerLinkProviderFactory', 'create']
+    arguments: ['@BigcommerceLogger']
+
+  BigcommerceLogger:
+    class: //@inviqa/viper-logger[LogLevelNextLogger]
+    arguments:
+      - '%bigcommerce.logger.prefix%'
+      - '%bigcommerce.logger.level%'
+      - '%bigcommerce.logger.timestamp%'

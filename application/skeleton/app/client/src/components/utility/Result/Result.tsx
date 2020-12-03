@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Spinner } from 'theme-ui';
-import { useTranslation } from '~lib/createI18n';
 
 type Props = {
   loading?: boolean;

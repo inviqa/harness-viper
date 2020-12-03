@@ -8,7 +8,8 @@ import {
   GatewayServiceType,
   GatewayServiceRunner
 } from '@inviqa/viper-gateway-service';
-import { ApolloServerBuilder, ResolverProvider } from '@inviqa/viper-apollo';
+import { ResolverProvider } from '@inviqa/viper-gateway-graphql-service';
+import { ApolloServerBuilder } from '@inviqa/viper-apollo';
 import { HelloWorldDataSource, DataSources } from './DataSource';
 
 export class HelloWorldService implements InternalGatewayService, RunnableGatewayService {
@@ -40,6 +41,7 @@ export class HelloWorldService implements InternalGatewayService, RunnableGatewa
     if (!this.apolloServer) {
       this.apolloServer = this.serverBuilder
         .setFederatedSchema(this.typedefPointerOrPointers, this.resolverProvider.getResolvers())
+        .setContext(context => context)
         .setDataSources<DataSources>(() => ({
           helloWorld: this.dataSource
         }))

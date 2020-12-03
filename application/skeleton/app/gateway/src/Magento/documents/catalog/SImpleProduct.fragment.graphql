@@ -1,0 +1,3 @@
+fragment SimpleProductFragment on SimpleProduct {
+  ...ProductInterfaceFragment
+}

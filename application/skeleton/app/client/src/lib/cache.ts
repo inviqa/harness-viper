@@ -1,6 +1,14 @@
 import { InMemoryCache, makeVar } from '@apollo/client';
 import isEqual from 'react-fast-compare';
-import { FacetValue, Filter, ProductFilter, ProductSortCriteria, ProductSortOrder, Sort } from '~hooks/apollo';
+import {
+  FacetValue,
+  Filter,
+  ProductFilterInput,
+  ProductSortCriteria,
+  ProductSortOrder,
+  Sort,
+  TypedTypePolicies
+} from '~hooks/apollo';
 
 export const isMiniCartVisibleVar = makeVar(false);
 
@@ -32,68 +40,70 @@ export const normalizeFilterValue = (value: FacetValue): Omit<FacetValue, '__typ
     return validParameters;
   }, {});
 
-export const createCache = () => {
-  return new InMemoryCache({
-    typePolicies: {
-      ProductList: {
-        fields: {
-          items: {
-            merge(existing, incoming, { variables: { pagination, sort, filters } = {} }) {
-              if (!lastSortVar()) lastSortVar(sort);
-              if (!lastFiltersVar()) lastFiltersVar(filters);
+const typePolicies: TypedTypePolicies = {
+  ProductList: {
+    fields: {
+      items: {
+        merge(existing, incoming, { variables: { pagination, sort, filters } = {} }) {
+          if (!lastSortVar()) lastSortVar(sort);
+          if (!lastFiltersVar()) lastFiltersVar(filters);
 
-              if (!isEqual(lastSortVar(), sort)) {
-                lastSortVar(sort);
-                return incoming;
-              }
-
-              if (!isEqual(lastFiltersVar(), filters)) {
-                lastFiltersVar(filters);
-                return incoming;
-              }
-
-              const merged = existing ? existing.slice(0) : [];
-              const start = pagination.offset;
-              const end = start + incoming.length;
-              for (let i = start; i < end; ++i) {
-                merged[i] = incoming[i - start];
-              }
-              return merged;
-            }
+          if (!isEqual(lastSortVar(), sort)) {
+            lastSortVar(sort);
+            return incoming;
           }
-        }
-      },
-      FacetOption: {
-        fields: {
-          isSelected: {
-            read(_, { variables: { filters = [] } = {}, readField }) {
-              const fieldValue = readField('value') as FacetValue;
-              const facetName = readField('facetName');
 
-              if (!fieldValue || !facetName) {
-                return false;
-              }
-
-              const transformedValue = normalizeFilterValue(fieldValue);
-              const isPresentInFilters = filters.some((filter: ProductFilter) => {
-                return filter.name === facetName && isEqual(filter.value, transformedValue);
-              });
-
-              return isPresentInFilters;
-            }
+          if (!isEqual(lastFiltersVar(), filters)) {
+            lastFiltersVar(filters);
+            return incoming;
           }
-        }
-      },
-      Cart: {
-        fields: {
-          items: {
-            merge(_existing, incoming) {
-              return incoming;
-            }
+
+          const merged = existing ? existing.slice(0) : [];
+          const start = pagination.offset;
+          const end = start + incoming.length;
+          for (let i = start; i < end; ++i) {
+            merged[i] = incoming[i - start];
           }
+          return merged;
         }
       }
     }
+  },
+  FacetOption: {
+    fields: {
+      isSelected: {
+        read(_, { variables: { filters = [] } = {}, readField }) {
+          const fieldValue = readField('value') as FacetValue;
+          const facetName = readField('facetName');
+
+          if (!fieldValue || !facetName) {
+            return false;
+          }
+
+          const transformedValue = normalizeFilterValue(fieldValue);
+          const isPresentInFilters = filters.some((filter: ProductFilterInput) => {
+            return filter.name === facetName && isEqual(filter.value, transformedValue);
+          });
+
+          return isPresentInFilters;
+        }
+      }
+    }
+  },
+  Cart: {
+    fields: {
+      items: {
+        merge(_existing, incoming) {
+          return incoming;
+        }
+      }
+    }
+  }
+};
+
+export const createCache = () => {
+  return new InMemoryCache({
+    typePolicies
   });
 };
 

@@ -2,9 +2,9 @@ import { makeVar } from '@apollo/client';
 import { Message } from '~types/message';
 
 export enum MessageActionType {
-  AddMessage,
-  RemoveMessage,
-  ClearAllMessages
+  AddMessage = 'AddMessage',
+  RemoveMessage = 'RemoveMessage',
+  ClearAllMessages = 'ClearAllMessages'
 }
 
 export type MessageAction =

@@ -63,6 +63,17 @@ export type CmsArticlePage = Page & {
   locale: Scalars['String'];
 };
 
+/** CMS Basic page */
+export type CmsPagePage = Page & {
+  __typename?: 'CmsPagePage';
+  /** Page identifier */
+  id: Scalars['String'];
+  /** Page type */
+  type: Scalars['String'];
+  /** Page locale */
+  locale: Scalars['String'];
+};
+
 /** Product page */
 export type ProductPage = Page & {
   __typename?: 'ProductPage';
@@ -185,8 +196,9 @@ export type ResolversTypes = {
   PageInput: PageInput;
   String: ResolverTypeWrapper<Scalars['String']>;
   Query: ResolverTypeWrapper<{}>;
-  Page: ResolversTypes['CmsArticlePage'] | ResolversTypes['ProductPage'] | ResolversTypes['CategoryPage'] | ResolversTypes['CmsHomepagePage'];
+  Page: ResolversTypes['CmsArticlePage'] | ResolversTypes['CmsPagePage'] | ResolversTypes['ProductPage'] | ResolversTypes['CategoryPage'] | ResolversTypes['CmsHomepagePage'];
   CmsArticlePage: ResolverTypeWrapper<CmsArticlePage>;
+  CmsPagePage: ResolverTypeWrapper<CmsPagePage>;
   ProductPage: ResolverTypeWrapper<ProductPage>;
   CategoryPage: ResolverTypeWrapper<CategoryPage>;
   Route: ResolverTypeWrapper<Route>;
@@ -199,8 +211,9 @@ export type ResolversParentTypes = {
   PageInput: PageInput;
   String: Scalars['String'];
   Query: {};
-  Page: ResolversParentTypes['CmsArticlePage'] | ResolversParentTypes['ProductPage'] | ResolversParentTypes['CategoryPage'] | ResolversParentTypes['CmsHomepagePage'];
+  Page: ResolversParentTypes['CmsArticlePage'] | ResolversParentTypes['CmsPagePage'] | ResolversParentTypes['ProductPage'] | ResolversParentTypes['CategoryPage'] | ResolversParentTypes['CmsHomepagePage'];
   CmsArticlePage: CmsArticlePage;
+  CmsPagePage: CmsPagePage;
   ProductPage: ProductPage;
   CategoryPage: CategoryPage;
   Route: Route;
@@ -214,7 +227,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type PageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Page'] = ResolversParentTypes['Page']> = {
-  __resolveType: TypeResolveFn<'CmsArticlePage' | 'ProductPage' | 'CategoryPage' | 'CmsHomepagePage', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'CmsArticlePage' | 'CmsPagePage' | 'ProductPage' | 'CategoryPage' | 'CmsHomepagePage', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   locale?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -222,6 +235,14 @@ export type PageResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type CmsArticlePageResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsArticlePage'] = ResolversParentTypes['CmsArticlePage']> = {
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['CmsArticlePage']>, { __typename: 'CmsArticlePage' } & GraphQLRecursivePick<ParentType, {"id":true,"type":true,"locale":true}>, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  locale?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type CmsPagePageResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsPagePage'] = ResolversParentTypes['CmsPagePage']> = {
+  __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['CmsPagePage']>, { __typename: 'CmsPagePage' } & GraphQLRecursivePick<ParentType, {"id":true,"type":true,"locale":true}>, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   locale?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -263,6 +284,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Page?: PageResolvers<ContextType>;
   CmsArticlePage?: CmsArticlePageResolvers<ContextType>;
+  CmsPagePage?: CmsPagePageResolvers<ContextType>;
   ProductPage?: ProductPageResolvers<ContextType>;
   CategoryPage?: CategoryPageResolvers<ContextType>;
   Route?: RouteResolvers<ContextType>;

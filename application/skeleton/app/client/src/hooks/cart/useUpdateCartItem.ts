@@ -1,5 +1,6 @@
 import { useReactiveVar } from '@apollo/client';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   CartItemUpdateInput,
   Product,
@@ -8,32 +9,42 @@ import {
   useUpdateCartMutation
 } from '~hooks/apollo';
 import { MessageAction, MessageActionType } from '~hooks/useMessages';
-import { useResponseHandler } from '~hooks/useResponseHandler';
-import { useTranslation } from '~lib/createI18n';
 import { MessageType } from '~types/message';
 import { missingCartIdError } from './errors';
 import { cartIdVar } from './useCartId';
+import { useCartResponseHandler } from './useCartResponseHandler';
 
-export function useUpdateCartItem(product: Pick<Product, 'id' | 'name'>) {
+export function useUpdateCartItem(product: Pick<Product, 'id' | 'name'>, messageLocation?: string) {
   const cartId = useReactiveVar(cartIdVar);
   const { t } = useTranslation('commerce');
-  const responseHandlers = useResponseHandler<UpdateCartMutation, UpdateCartMutationVariables>(
-    product,
-    'commerce',
-    (data): MessageAction => {
+  const responseHandlers = useCartResponseHandler<UpdateCartMutation, UpdateCartMutationVariables>({
+    context: product,
+    i18nNs: 'commerce',
+    createSuccessAction: (data): MessageAction => {
       const updatedItem = data.updateCart.items.find(({ id }) => id === product.id);
       return {
         type: MessageActionType.AddMessage,
         payload: {
           id: `${product.id}-cart-item-updated`,
           type: MessageType.Success,
+          location: messageLocation,
           content: updatedItem
             ? t('Messages.UpdatedCartQuantity', { ...product, quantity: updatedItem.quantity })
             : t('Messages.RemovedFromCart', product)
         }
       };
-    }
-  );
+    },
+    createErrorAction: action =>
+      action.type === MessageActionType.AddMessage
+        ? {
+            ...action,
+            payload: {
+              ...action.payload,
+              location: messageLocation
+            }
+          }
+        : action
+  });
   const [updateCart, data] = useUpdateCartMutation(responseHandlers);
 
   const handleUpdateCartItem = useCallback(

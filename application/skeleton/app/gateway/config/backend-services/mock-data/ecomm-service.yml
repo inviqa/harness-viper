@@ -1,0 +1,24 @@
+services:
+  OrderDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-ecomm[InMemoryOrderDataSourceProvider]
+    arguments: ['@InMemoryOrderClient']
+
+  CheckoutDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-ecomm[InMemoryCheckoutDataSourceProvider]
+    arguments: ['@InMemoryCheckoutClient']
+
+  CartDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-ecomm[InMemoryCartDataSourceProvider]
+    arguments: ['@InMemoryCartClient']
+
+  InMemoryOrderClient:
+    class: //@inviqa/viper-gateway-service-ecomm[InMemoryOrderClient]
+    arguments: ['@InMemoryCheckoutClient']
+
+  InMemoryCheckoutClient:
+    class: //@inviqa/viper-gateway-service-ecomm[InMemoryCheckoutClient]
+    arguments: ['@InMemoryCartClient']
+
+  InMemoryCartClient:
+    class: //@inviqa/viper-gateway-service-ecomm[InMemoryCartClient]
+    arguments: ['@InMemoryCatalogClient']

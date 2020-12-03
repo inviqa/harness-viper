@@ -1,5 +1,6 @@
 import { useReactiveVar } from '@apollo/client';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   AddToCartMutation,
   AddToCartMutationVariables,
@@ -7,28 +8,47 @@ import {
   Product,
   useAddToCartMutation
 } from '~hooks/apollo';
-import { MessageAction, MessageActionType } from '~hooks/useMessages';
-import { useResponseHandler } from '~hooks/useResponseHandler';
-import { useTranslation } from '~lib/createI18n';
+import { MessageActionType } from '~hooks/useMessages';
 import { MessageType } from '~types/message';
+import { isMiniCartVisibleVar } from '~lib/cache';
 import { missingCartIdError } from './errors';
 import { cartIdVar } from './useCartId';
+import { useCartResponseHandler } from './useCartResponseHandler';
 
-export function useAddToCart(product: Pick<Product, 'id' | 'name' | 'sku'>) {
+export function useAddToCart(product: Pick<Product, 'id' | 'name' | 'sku'>, messageLocation?: string) {
   const cartId = useReactiveVar(cartIdVar);
   const { t } = useTranslation('commerce');
-  const responseHandlers = useResponseHandler<AddToCartMutation, AddToCartMutationVariables>(
-    product,
-    'commerce',
-    (): MessageAction => ({
+  const responseHandlers = useCartResponseHandler<AddToCartMutation, AddToCartMutationVariables>({
+    context: product,
+    i18nNs: 'commerce',
+    createSuccessAction: () => ({
       type: MessageActionType.AddMessage,
       payload: {
         id: `${product.id}-added-to-cart`,
+        location: messageLocation,
         type: MessageType.Success,
         content: t('Messages.AddedToCart', product)
       }
-    })
-  );
+    }),
+    createErrorAction: action =>
+      action.type === MessageActionType.AddMessage
+        ? {
+            ...action,
+            payload: {
+              ...action.payload,
+              location: messageLocation
+            }
+          }
+        : action,
+    successCallback: () => {
+      isMiniCartVisibleVar(true);
+    },
+    errorCallback: () => {
+      if (messageLocation === 'minicart') {
+        isMiniCartVisibleVar(true);
+      }
+    }
+  });
   const [addToCart, data] = useAddToCartMutation(responseHandlers);
 
   const handleAddToCart = useCallback(

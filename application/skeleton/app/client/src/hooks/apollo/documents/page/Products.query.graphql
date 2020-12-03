@@ -1,7 +1,7 @@
 query GetProducts(
-  $filters: [ProductFilter!]
-  $sort: ProductSort
-  $pagination: ProductPagination!
+  $filters: [ProductFilterInput!]
+  $sort: ProductSortInput
+  $pagination: ProductPaginationInput!
   $searchTerm: String
 ) {
   products(filters: $filters, sort: $sort, pagination: $pagination, searchTerm: $searchTerm)
@@ -33,5 +33,6 @@ query GetProducts(
         }
       }
     }
+    sortCriterias
   }
 }

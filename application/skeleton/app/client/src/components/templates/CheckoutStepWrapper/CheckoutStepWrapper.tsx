@@ -1,6 +1,6 @@
 import React, { FunctionComponent, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Flex, Box, Button } from 'theme-ui';
-import { useTranslation } from '~lib/createI18n';
 
 type Props = {
   name: string;

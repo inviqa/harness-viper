@@ -1,0 +1,9 @@
+services:
+  ConfigDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-config[MagentoConfigDataSourceProvider]
+    arguments:
+      - '@MagentoGraphqlClientProvider'
+      - '@ConfigDataTransformer'
+
+  ConfigDataTransformer:
+    class: //@inviqa/viper-gateway-service-config[MagentoConfigDataTransformer]

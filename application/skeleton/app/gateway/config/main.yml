@@ -1,0 +1,5 @@
+services:
+  /Gateway[Gateway]:
+    arguments:
+      - '@ServicesApp'
+      - '@GatewayApp'

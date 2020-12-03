@@ -1,0 +1,9 @@
+services:
+  GraphqlVoyagerService:
+    class: //@inviqa/viper-gateway-service-graphql-voyager[GraphqlVoyagerService]
+    factory: ['@GraphqlVoyagerServiceFactory', 'create']
+    arguments:
+      - graphql-voyager
+      - '%gateway.voyager.path%'
+      - '%gateway.path%'
+      - '@GatewayServiceRunner'

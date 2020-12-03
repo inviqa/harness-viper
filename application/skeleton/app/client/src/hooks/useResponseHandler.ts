@@ -4,20 +4,27 @@ import type { Namespace } from 'react-i18next';
 import { useErrorHandler } from './useErrorHandler';
 import { MessageAction, useMessages } from './useMessages';
 
-/**
- * @param context Any additional context you want to pass with the translated message that's not related to the query. E.g. product name
- * @param i18nNs Namespace used for i18n translations - forwarded to error handler
- * @param createSuccessAction Create a success message from response data
- * @param successCallback Other actions to perform on success
- */
-export function useResponseHandler<Data, Variables>(
-  context: Record<string, string>,
-  i18nNs: Namespace = 'common',
-  createSuccessAction?: (data: Data) => MessageAction,
-  successCallback?: (data: Data) => void
-): MutationHookOptions<Data, Variables> {
+export type ResponseHandlerOptions<Data> = {
+  context?: Record<string, string>;
+  i18nNs?: Namespace;
+  createSuccessAction?: (data: Data) => MessageAction;
+  createErrorAction?: (defaultErrorMessageAction: MessageAction, error: ApolloError) => MessageAction | null;
+  successCallback?: (data: Data) => void;
+  errorCallback?: (context: Record<string, string>, error: ApolloError) => void;
+};
+
+export type ResponseHandlerReturn<Data, Variables> = MutationHookOptions<Data, Variables>;
+
+export function useResponseHandler<Data, Variables>({
+  context = {},
+  i18nNs = 'common',
+  createSuccessAction,
+  createErrorAction,
+  successCallback,
+  errorCallback
+}: ResponseHandlerOptions<Data> = {}): ResponseHandlerReturn<Data, Variables> {
   const { dispatch } = useMessages();
-  const handleError = useErrorHandler(i18nNs);
+  const handleError = useErrorHandler(i18nNs, createErrorAction);
 
   const onCompleted = useCallback(
     (data: Data) => {
@@ -30,8 +37,9 @@ export function useResponseHandler<Data, Variables>(
   const onError = useCallback(
     (error: ApolloError) => {
       handleError(context, error);
+      errorCallback?.(context, error);
     },
-    [handleError, context]
+    [handleError, context, errorCallback]
   );
 
   return {

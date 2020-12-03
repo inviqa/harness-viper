@@ -9,17 +9,12 @@ services:
       - '%menu.path%'
       - './node_modules/@inviqa/viper-gateway-service-menu/src/typedef/schema.graphql'
       - '@MenuResolverProvider'
-      - '@MenuDataSource'
+      - '@MenuDataSourceProvider'
       - '@GatewayServiceRunner'
       - '@MenuApolloServerBuilder'
 
   MenuResolverProvider:
     class: //@inviqa/viper-gateway-service-menu[MenuResolverProvider]
-
-  MenuDataSource:
-    class: //@inviqa/viper-gateway-service-menu[DrupalMenuDataSource]
-    arguments:
-      - '@DrupalGraphqlClientProvider'
 
   MenuApolloServerBuilder:
     class: //@inviqa/viper-apollo[ApolloServerBuilder]

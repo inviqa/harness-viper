@@ -1,17 +1,19 @@
 import { ApolloClient, ApolloLink, HttpLink, NormalizedCacheObject } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { NextPageContext } from 'next';
+import type { AppContext } from 'next/app';
+import { NextRouter } from 'next/router';
 import fetch from 'isomorphic-unfetch';
+import { clientSchema } from '../typedef/clientSchema';
 import config from '../../config/default';
 import { cache } from './cache';
-import { Router } from './createI18n';
 import { websiteConfig } from '../../websiteConfig';
-import { getWebsiteIdFromPath } from './website';
 
-export default function createApolloClient(initialState: NormalizedCacheObject, ctx?: NextPageContext) {
-  // ctx is only defined on SSR and Router can only be used in CSR
-  const basePath = getWebsiteIdFromPath(ctx?.asPath ?? Router.asPath);
-  const configForCurrentWebsite = websiteConfig.find(({ baseUrlPath }) => baseUrlPath === `/${basePath}/`);
+export default function createApolloClient(
+  initialState: NormalizedCacheObject | undefined = {},
+  router: NextRouter,
+  ctx?: AppContext
+) {
+  const configForCurrentWebsite = websiteConfig.find(({ id }) => id === router.locale);
 
   return new ApolloClient({
     ssrMode: Boolean(ctx),
@@ -29,6 +31,7 @@ export default function createApolloClient(initialState: NormalizedCacheObject, 
         fetch
       })
     ]),
-    cache: cache.restore(initialState)
+    cache: cache.restore(initialState),
+    typeDefs: clientSchema
   });
 }

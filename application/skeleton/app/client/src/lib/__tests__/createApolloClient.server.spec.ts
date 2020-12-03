@@ -1,14 +1,15 @@
 /**
  * @jest-environment node
  */
-import { NextPageContext } from 'next';
+import { AppContext } from 'next/app';
+import { NextRouter } from 'next/router';
 import { InMemoryCache, ApolloLink } from '@apollo/client';
 import createApolloClient from '../createApolloClient';
 
 describe(createApolloClient, () => {
   describe('Given: initial state and server environment', () => {
     const initialState = { some: { apollo: 'state' } };
-    const client = createApolloClient(initialState, { asPath: '/en/' } as NextPageContext);
+    const client = createApolloClient(initialState, { locale: 'en' } as NextRouter, {} as AppContext);
 
     it('Then: it populates cache', () => {
       expect(client.cache).toBeInstanceOf(InMemoryCache);

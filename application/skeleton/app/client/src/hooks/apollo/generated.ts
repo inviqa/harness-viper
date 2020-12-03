@@ -1,5 +1,6 @@
 import { DocumentNode } from 'graphql';
 import * as Apollo from '@apollo/client';
+import { FieldPolicy, FieldReadFunction, TypePolicies } from '@apollo/client/cache';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -34,9 +35,9 @@ export type CategoryPage = Page & {
 
 /** Category page */
 export type CategoryPageProductsArgs = {
-  filters?: Maybe<Array<ProductFilter>>;
-  sort?: Maybe<ProductSort>;
-  pagination?: Maybe<ProductPagination>;
+  filters?: Maybe<Array<ProductFilterInput>>;
+  sort?: Maybe<ProductSortInput>;
+  pagination?: Maybe<ProductPaginationInput>;
 };
 
 /** CMS Article page */
@@ -50,6 +51,32 @@ export type CmsArticlePage = Page & {
   locale: Scalars['String'];
   /** Cms Article data */
   cmsArticle?: Maybe<CmsArticle>;
+};
+
+/** CMS Homepage page */
+export type CmsHomepagePage = Page & {
+  __typename?: 'CmsHomepagePage';
+  /** Page identifier */
+  id: Scalars['String'];
+  /** Page type */
+  type: Scalars['String'];
+  /** Page locale */
+  locale: Scalars['String'];
+  /** Cms Homepage data */
+  homePage?: Maybe<CmsHomepage>;
+};
+
+/** CMS Basic page */
+export type CmsPagePage = Page & {
+  __typename?: 'CmsPagePage';
+  /** Page identifier */
+  id: Scalars['String'];
+  /** Page type */
+  type: Scalars['String'];
+  /** Page locale */
+  locale: Scalars['String'];
+  /** Cms basic content data */
+  cmsBasicContent?: Maybe<CmsBasicContent>;
 };
 
 /** Page interface (all the pages should implement this) */
@@ -106,7 +133,7 @@ export type MenuItem = {
   items: Array<MenuItem>;
 };
 
-/** CMS article */
+/** CMS article data */
 export type CmsArticle = {
   __typename?: 'CmsArticle';
   /** ID */
@@ -129,34 +156,42 @@ export type CmsArticle = {
   layout?: Maybe<CmsLayout>;
 };
 
-/** CMS HTML field */
+/** CMS basic page data */
+export type CmsBasicContent = {
+  __typename?: 'CmsBasicContent';
+  /** ID */
+  id: Scalars['String'];
+  /** Article title */
+  title: Scalars['String'];
+  /** Article body */
+  body: CmsHtmlField;
+  /** Article summary (short text) */
+  summary: CmsHtmlField;
+  /** Article URL */
+  url: CmsUrl;
+  /** Created date */
+  createdAt: Scalars['String'];
+  /** Author */
+  author: CmsUser;
+};
+
 export type CmsHtmlField = {
   __typename?: 'CmsHtmlField';
-  /** Raw text format */
   raw: Scalars['String'];
-  /** HTML format */
   html: Scalars['String'];
 };
 
-/** CMS Image with all its sizes (transforamtions) */
 export type CmsImage = {
   __typename?: 'CmsImage';
-  /** Image alt text */
   alt: Scalars['String'];
-  /** The different sizes of the image */
   sizes: Array<CmsImageVersion>;
 };
 
-/** CMS Image version (transformed image) */
 export type CmsImageVersion = {
   __typename?: 'CmsImageVersion';
-  /** Size ID */
   size: Scalars['String'];
-  /** Image URL for this size */
   url: Scalars['String'];
-  /** Image width for this size */
   width?: Maybe<Scalars['Int']>;
-  /** Image height for this size */
   height?: Maybe<Scalars['Int']>;
 };
 
@@ -181,7 +216,7 @@ export type CmsLayoutItem = {
 /** Layout item component (what component to render, and how) */
 export type CmsLayoutItemComponent = {
   __typename?: 'CmsLayoutItemComponent';
-  /** The configuration for dispalying the layout item */
+  /** The configuration for displaying the layout item */
   configuration: CmsLayoutItemComponentConfig;
   /** The label of the layout item */
   label?: Maybe<Scalars['String']>;
@@ -275,7 +310,7 @@ export type FacetRangeValue = {
 
 export type FacetValue = FacetEqualValue | FacetMatchValue | FacetRangeValue;
 
-export type FilterValue = {
+export type FilterValueInput = {
   eq?: Maybe<Scalars['String']>;
   in?: Maybe<Array<Maybe<Scalars['String']>>>;
   match?: Maybe<Scalars['String']>;
@@ -309,9 +344,9 @@ export type Product = {
   variants?: Maybe<Array<ProductVariant>>;
 };
 
-export type ProductFilter = {
+export type ProductFilterInput = {
   name: Scalars['String'];
-  value: FilterValue;
+  value: FilterValueInput;
 };
 
 export type ProductImage = {
@@ -325,6 +360,7 @@ export type ProductList = {
   total: Scalars['Int'];
   items: Array<Product>;
   facets: Array<Facet>;
+  sortCriterias: Array<ProductSortCriteria>;
 };
 
 /**
@@ -355,14 +391,9 @@ export type ProductOptionValue = {
   label: Scalars['String'];
 };
 
-export type ProductPagination = {
+export type ProductPaginationInput = {
   offset: Scalars['Int'];
   limit: Scalars['Int'];
-};
-
-export type ProductSort = {
-  criteria: ProductSortCriteria;
-  order: ProductSortOrder;
 };
 
 export const ProductSortCriteria = {
@@ -373,6 +404,11 @@ export const ProductSortCriteria = {
 } as const;
 
 export type ProductSortCriteria = typeof ProductSortCriteria[keyof typeof ProductSortCriteria];
+export type ProductSortInput = {
+  criteria: ProductSortCriteria;
+  order: ProductSortOrder;
+};
+
 export const ProductSortOrder = {
   Asc: 'ASC',
   Desc: 'DESC'
@@ -560,6 +596,27 @@ export type WebsiteConfig = {
   countries: Array<Country>;
 };
 
+export type CmsHomepage = {
+  __typename?: 'CmsHomepage';
+  id: Scalars['String'];
+  locale: Scalars['String'];
+  productBanner: ProductBanner;
+  productGrid: ProductGridBanner;
+};
+
+export type ProductBanner = {
+  __typename?: 'ProductBanner';
+  text: CmsHtmlField;
+  image?: Maybe<CmsImage>;
+  product?: Maybe<Product>;
+};
+
+export type ProductGridBanner = {
+  __typename?: 'ProductGridBanner';
+  title: Scalars['String'];
+  products: Array<Maybe<Product>>;
+};
+
 export type Query = {
   __typename?: 'Query';
   helloWorld: Scalars['String'];
@@ -600,9 +657,9 @@ export type QueryCmsArticleArgs = {
 
 
 export type QueryProductsArgs = {
-  filters?: Maybe<Array<ProductFilter>>;
-  sort?: Maybe<ProductSort>;
-  pagination?: Maybe<ProductPagination>;
+  filters?: Maybe<Array<ProductFilterInput>>;
+  sort?: Maybe<ProductSortInput>;
+  pagination?: Maybe<ProductPaginationInput>;
   searchTerm?: Maybe<Scalars['String']>;
 };
 
@@ -712,8 +769,8 @@ export type Sort = {
   order: ProductSortOrder;
 };
 
-export type FilterValueClient = {
-  __typename?: 'FilterValueClient';
+export type FilterValue = {
+  __typename?: 'FilterValue';
   eq?: Maybe<Scalars['String']>;
   in?: Maybe<Array<Maybe<Scalars['String']>>>;
   match?: Maybe<Scalars['String']>;
@@ -724,7 +781,7 @@ export type FilterValueClient = {
 export type Filter = {
   __typename?: 'Filter';
   name: Scalars['String'];
-  value: FilterValueClient;
+  value: FilterValue;
 };
 
 
@@ -1082,6 +1139,74 @@ export type CmsArticlePageFragmentFragment = (
   )> }
 );
 
+export type CmsHomepagePageFragmentFragment = (
+  { __typename?: 'CmsHomepagePage' }
+  & Pick<CmsHomepagePage, 'id' | 'type' | 'locale'>
+  & { homePage?: Maybe<(
+    { __typename?: 'CmsHomepage' }
+    & { productBanner: (
+      { __typename?: 'ProductBanner' }
+      & { text: (
+        { __typename?: 'CmsHtmlField' }
+        & Pick<CmsHtmlField, 'raw' | 'html'>
+      ), image?: Maybe<(
+        { __typename?: 'CmsImage' }
+        & Pick<CmsImage, 'alt'>
+        & { sizes: Array<(
+          { __typename?: 'CmsImageVersion' }
+          & Pick<CmsImageVersion, 'size' | 'url' | 'width' | 'height'>
+        )> }
+      )>, product?: Maybe<(
+        { __typename?: 'Product' }
+        & Pick<Product, 'id' | 'type' | 'sku' | 'name' | 'url'>
+        & { price: (
+          { __typename?: 'Money' }
+          & Pick<Money, 'value' | 'currency'>
+        ), thumbnailImage?: Maybe<(
+          { __typename?: 'ProductImage' }
+          & Pick<ProductImage, 'alt' | 'url'>
+        )> }
+      )> }
+    ), productGrid: (
+      { __typename?: 'ProductGridBanner' }
+      & Pick<ProductGridBanner, 'title'>
+      & { products: Array<Maybe<(
+        { __typename?: 'Product' }
+        & Pick<Product, 'id' | 'type' | 'sku' | 'name' | 'url'>
+        & { price: (
+          { __typename?: 'Money' }
+          & Pick<Money, 'value' | 'currency'>
+        ), thumbnailImage?: Maybe<(
+          { __typename?: 'ProductImage' }
+          & Pick<ProductImage, 'alt' | 'url'>
+        )> }
+      )>> }
+    ) }
+  )> }
+);
+
+export type CmsPagePageFragmentFragment = (
+  { __typename?: 'CmsPagePage' }
+  & Pick<CmsPagePage, 'id' | 'type' | 'locale'>
+  & { cmsBasicContent?: Maybe<(
+    { __typename?: 'CmsBasicContent' }
+    & Pick<CmsBasicContent, 'id' | 'title' | 'createdAt'>
+    & { body: (
+      { __typename?: 'CmsHtmlField' }
+      & Pick<CmsHtmlField, 'raw' | 'html'>
+    ), summary: (
+      { __typename?: 'CmsHtmlField' }
+      & Pick<CmsHtmlField, 'raw' | 'html'>
+    ), url: (
+      { __typename?: 'CmsUrl' }
+      & Pick<CmsUrl, 'path' | 'alias'>
+    ), author: (
+      { __typename?: 'CmsUser' }
+      & Pick<CmsUser, 'id' | 'name'>
+    ) }
+  )> }
+);
+
 export type GetMenuQueryVariables = Exact<{
   name: Scalars['String'];
 }>;
@@ -1123,6 +1248,12 @@ export type GetPageByPathQuery = (
     ) | (
       { __typename?: 'CmsArticlePage' }
       & CmsArticlePageFragmentFragment
+    ) | (
+      { __typename?: 'CmsHomepagePage' }
+      & CmsHomepagePageFragmentFragment
+    ) | (
+      { __typename?: 'CmsPagePage' }
+      & CmsPagePageFragmentFragment
     ) | (
       { __typename?: 'ProductPage' }
       & ProductPageFragmentFragment
@@ -1182,9 +1313,9 @@ export type ProductPageFragmentFragment = (
 );
 
 export type GetProductsQueryVariables = Exact<{
-  filters?: Maybe<Array<ProductFilter>>;
-  sort?: Maybe<ProductSort>;
-  pagination: ProductPagination;
+  filters?: Maybe<Array<ProductFilterInput>>;
+  sort?: Maybe<ProductSortInput>;
+  pagination: ProductPaginationInput;
   searchTerm?: Maybe<Scalars['String']>;
 }>;
 
@@ -1193,7 +1324,7 @@ export type GetProductsQuery = (
   { __typename?: 'Query' }
   & { products: (
     { __typename?: 'ProductList' }
-    & Pick<ProductList, 'total'>
+    & Pick<ProductList, 'total' | 'sortCriterias'>
     & { items: Array<(
       { __typename?: 'Product' }
       & ProductListFragmentFragment
@@ -1227,6 +1358,8 @@ export const CheckoutFragmentFragmentDoc: DocumentNode = {"kind":"Document","def
 export const WebsiteConfigCountriesFragmentFragmentDoc: DocumentNode = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"WebsiteConfigCountriesFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"WebsiteConfig"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"countries"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]}]}}]}}]};
 export const CategoryPageFragmentFragmentDoc: DocumentNode = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CategoryPageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CategoryPage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"category"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"description"},"arguments":[],"directives":[]}]}}]}}]};
 export const CmsArticlePageFragmentFragmentDoc: DocumentNode = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CmsArticlePageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CmsArticlePage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"cmsArticle"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"body"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"raw"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"html"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"summary"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"raw"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"html"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"path"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"alias"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"author"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"image"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sizes"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"width"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"height"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"size"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"layout"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"items"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"layout"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"regions"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"region"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"configuration"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"width"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"components"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"configuration"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayLabel"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"component"},"arguments":[],"directives":[]}]}}]}}]}}]}}]}}]}}]};
+export const CmsHomepagePageFragmentFragmentDoc: DocumentNode = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CmsHomepagePageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CmsHomepagePage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"homePage"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"productBanner"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"text"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"raw"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"html"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"image"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sizes"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"size"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"width"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"height"},"arguments":[],"directives":[]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"thumbnailImage"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"productGrid"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"products"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"thumbnailImage"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}}]}}]}}]}}]}}]};
+export const CmsPagePageFragmentFragmentDoc: DocumentNode = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CmsPagePageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CmsPagePage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"cmsBasicContent"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"body"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"raw"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"html"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"summary"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"raw"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"html"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"path"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"alias"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"author"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]}]}}]}}]}}]};
 export const ProductListFragmentFragmentDoc: DocumentNode = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductListFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"thumbnailImage"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}}]}}]};
 export const ProductPageFragmentFragmentDoc: DocumentNode = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductPageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProductPage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"product"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"description"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"image"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"gallery"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"variants"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"options"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"option"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"options"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"values"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"option"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]}]}}]}}]}}]}}]};
 export const AddCouponCodeToCartDocument: DocumentNode = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddCouponCodeToCart"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"cartId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"couponCode"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addCouponCodeToCart"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"cartId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"cartId"}}},{"kind":"Argument","name":{"kind":"Name","value":"couponCode"},"value":{"kind":"Variable","name":{"kind":"Name","value":"couponCode"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CartFragment"},"directives":[]}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CartFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Cart"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"numberOfItems"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"items"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"quantity"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"rowTotal"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"thumbnailImage"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"productOptions"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"option"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"optionLabel"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totals"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subtotalIncludingTax"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"discounts"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"amount"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"grandTotal"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"couponCodes"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"code"},"arguments":[],"directives":[]}]}}]}}]};
@@ -1602,7 +1735,7 @@ export function useGetMenuLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
         }
 export type GetMenuQueryHookResult = ReturnType<typeof useGetMenuQuery>;
 export type GetMenuLazyQueryHookResult = ReturnType<typeof useGetMenuLazyQuery>;
-export const GetPageByPathDocument: DocumentNode = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetPageByPath"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"path"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"routeByPath"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"path"},"value":{"kind":"Variable","name":{"kind":"Name","value":"path"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"path"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"page"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CmsArticlePageFragment"},"directives":[]},{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductPageFragment"},"directives":[]},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CategoryPageFragment"},"directives":[]}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CategoryPageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CategoryPage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"category"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"description"},"arguments":[],"directives":[]}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CmsArticlePageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CmsArticlePage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"cmsArticle"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"body"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"raw"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"html"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"summary"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"raw"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"html"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"path"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"alias"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"author"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"image"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sizes"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"width"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"height"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"size"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"layout"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"items"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"layout"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"regions"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"region"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"configuration"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"width"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"components"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"configuration"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayLabel"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"component"},"arguments":[],"directives":[]}]}}]}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductPageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProductPage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"product"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"description"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"image"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"gallery"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"variants"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"options"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"option"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"options"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"values"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"option"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]}]}}]}}]}}]}}]};
+export const GetPageByPathDocument: DocumentNode = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetPageByPath"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"path"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"routeByPath"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"path"},"value":{"kind":"Variable","name":{"kind":"Name","value":"path"}}}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"path"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"page"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CmsHomepagePageFragment"},"directives":[]},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CmsPagePageFragment"},"directives":[]},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CmsArticlePageFragment"},"directives":[]},{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductPageFragment"},"directives":[]},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CategoryPageFragment"},"directives":[]}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CategoryPageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CategoryPage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"category"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"description"},"arguments":[],"directives":[]}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CmsArticlePageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CmsArticlePage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"cmsArticle"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"body"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"raw"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"html"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"summary"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"raw"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"html"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"path"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"alias"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"author"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"image"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sizes"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"width"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"height"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"size"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"layout"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"items"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"layout"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"regions"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"region"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"configuration"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"width"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"components"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"configuration"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayLabel"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"component"},"arguments":[],"directives":[]}]}}]}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CmsHomepagePageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CmsHomepagePage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"homePage"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"productBanner"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"text"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"raw"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"html"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"image"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sizes"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"size"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"width"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"height"},"arguments":[],"directives":[]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"thumbnailImage"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"productGrid"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"products"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"thumbnailImage"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CmsPagePageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CmsPagePage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"cmsBasicContent"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"body"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"raw"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"html"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"summary"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"raw"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"html"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"path"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"alias"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"author"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductPageFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProductPage"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"locale"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"product"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"title"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"description"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"image"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"gallery"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"variants"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"options"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"option"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"product"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"options"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"values"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"option"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]}]}}]}}]}}]}}]};
 
 /**
  * __useGetPageByPathQuery__
@@ -1628,7 +1761,7 @@ export function useGetPageByPathLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
         }
 export type GetPageByPathQueryHookResult = ReturnType<typeof useGetPageByPathQuery>;
 export type GetPageByPathLazyQueryHookResult = ReturnType<typeof useGetPageByPathLazyQuery>;
-export const GetProductsDocument: DocumentNode = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetProducts"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filters"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ProductFilter"}}}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"sort"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ProductSort"}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ProductPagination"}}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"searchTerm"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"products"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filters"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filters"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"Variable","name":{"kind":"Name","value":"sort"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}},{"kind":"Argument","name":{"kind":"Name","value":"searchTerm"},"value":{"kind":"Variable","name":{"kind":"Name","value":"searchTerm"}}}],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"connection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"key"},"value":{"kind":"StringValue","value":"products","block":false}},{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ListValue","values":[{"kind":"StringValue","value":"filters","block":false},{"kind":"StringValue","value":"sort","block":false},{"kind":"StringValue","value":"searchTerm","block":false}]}}]}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"total"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"items"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductListFragment"},"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"facets"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"options"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"facetName"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"count"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"isSelected"},"arguments":[],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"client"},"arguments":[]}]},{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FacetEqualValue"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"eq"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"in"},"arguments":[],"directives":[]}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FacetMatchValue"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"match"},"arguments":[],"directives":[]}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FacetRangeValue"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"to"},"arguments":[],"directives":[]}]}}]}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductListFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"thumbnailImage"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}}]}}]};
+export const GetProductsDocument: DocumentNode = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetProducts"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filters"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ProductFilterInput"}}}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"sort"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ProductSortInput"}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ProductPaginationInput"}}},"directives":[]},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"searchTerm"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}},"directives":[]}],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"products"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filters"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filters"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"Variable","name":{"kind":"Name","value":"sort"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}},{"kind":"Argument","name":{"kind":"Name","value":"searchTerm"},"value":{"kind":"Variable","name":{"kind":"Name","value":"searchTerm"}}}],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"connection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"key"},"value":{"kind":"StringValue","value":"products","block":false}},{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ListValue","values":[{"kind":"StringValue","value":"filters","block":false},{"kind":"StringValue","value":"sort","block":false},{"kind":"StringValue","value":"searchTerm","block":false}]}}]}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"total"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"items"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProductListFragment"},"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"facets"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"options"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"facetName"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"count"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"label"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"isSelected"},"arguments":[],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"client"},"arguments":[]}]},{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FacetEqualValue"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"eq"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"in"},"arguments":[],"directives":[]}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FacetMatchValue"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"match"},"arguments":[],"directives":[]}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FacetRangeValue"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"to"},"arguments":[],"directives":[]}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"sortCriterias"},"arguments":[],"directives":[]}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProductListFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Product"}},"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"type"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"sku"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"name"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"price"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"currency"},"arguments":[],"directives":[]}]}},{"kind":"Field","name":{"kind":"Name","value":"thumbnailImage"},"arguments":[],"directives":[],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alt"},"arguments":[],"directives":[]},{"kind":"Field","name":{"kind":"Name","value":"url"},"arguments":[],"directives":[]}]}}]}}]};
 
 /**
  * __useGetProductsQuery__
@@ -1657,3 +1790,834 @@ export function useGetProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
         }
 export type GetProductsQueryHookResult = ReturnType<typeof useGetProductsQuery>;
 export type GetProductsLazyQueryHookResult = ReturnType<typeof useGetProductsLazyQuery>;
+export type CategoryPageKeySpecifier = ('id' | 'type' | 'locale' | 'category' | 'products' | CategoryPageKeySpecifier)[];
+export type CategoryPageFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>,
+	locale?: FieldPolicy<any> | FieldReadFunction<any>,
+	category?: FieldPolicy<any> | FieldReadFunction<any>,
+	products?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsArticlePageKeySpecifier = ('id' | 'type' | 'locale' | 'cmsArticle' | CmsArticlePageKeySpecifier)[];
+export type CmsArticlePageFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>,
+	locale?: FieldPolicy<any> | FieldReadFunction<any>,
+	cmsArticle?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsHomepagePageKeySpecifier = ('id' | 'type' | 'locale' | 'homePage' | CmsHomepagePageKeySpecifier)[];
+export type CmsHomepagePageFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>,
+	locale?: FieldPolicy<any> | FieldReadFunction<any>,
+	homePage?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsPagePageKeySpecifier = ('id' | 'type' | 'locale' | 'cmsBasicContent' | CmsPagePageKeySpecifier)[];
+export type CmsPagePageFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>,
+	locale?: FieldPolicy<any> | FieldReadFunction<any>,
+	cmsBasicContent?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type PageKeySpecifier = ('id' | 'type' | 'locale' | PageKeySpecifier)[];
+export type PageFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>,
+	locale?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductPageKeySpecifier = ('id' | 'type' | 'locale' | 'product' | ProductPageKeySpecifier)[];
+export type ProductPageFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>,
+	locale?: FieldPolicy<any> | FieldReadFunction<any>,
+	product?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type RouteKeySpecifier = ('path' | 'page' | RouteKeySpecifier)[];
+export type RouteFieldPolicy = {
+	path?: FieldPolicy<any> | FieldReadFunction<any>,
+	page?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type MenuKeySpecifier = ('name' | 'items' | MenuKeySpecifier)[];
+export type MenuFieldPolicy = {
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	items?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type MenuItemKeySpecifier = ('name' | 'link' | 'level' | 'items' | MenuItemKeySpecifier)[];
+export type MenuItemFieldPolicy = {
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	link?: FieldPolicy<any> | FieldReadFunction<any>,
+	level?: FieldPolicy<any> | FieldReadFunction<any>,
+	items?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsArticleKeySpecifier = ('id' | 'title' | 'body' | 'summary' | 'url' | 'createdAt' | 'author' | 'image' | 'layout' | CmsArticleKeySpecifier)[];
+export type CmsArticleFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	title?: FieldPolicy<any> | FieldReadFunction<any>,
+	body?: FieldPolicy<any> | FieldReadFunction<any>,
+	summary?: FieldPolicy<any> | FieldReadFunction<any>,
+	url?: FieldPolicy<any> | FieldReadFunction<any>,
+	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
+	author?: FieldPolicy<any> | FieldReadFunction<any>,
+	image?: FieldPolicy<any> | FieldReadFunction<any>,
+	layout?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsBasicContentKeySpecifier = ('id' | 'title' | 'body' | 'summary' | 'url' | 'createdAt' | 'author' | CmsBasicContentKeySpecifier)[];
+export type CmsBasicContentFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	title?: FieldPolicy<any> | FieldReadFunction<any>,
+	body?: FieldPolicy<any> | FieldReadFunction<any>,
+	summary?: FieldPolicy<any> | FieldReadFunction<any>,
+	url?: FieldPolicy<any> | FieldReadFunction<any>,
+	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
+	author?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsHtmlFieldKeySpecifier = ('raw' | 'html' | CmsHtmlFieldKeySpecifier)[];
+export type CmsHtmlFieldFieldPolicy = {
+	raw?: FieldPolicy<any> | FieldReadFunction<any>,
+	html?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsImageKeySpecifier = ('alt' | 'sizes' | CmsImageKeySpecifier)[];
+export type CmsImageFieldPolicy = {
+	alt?: FieldPolicy<any> | FieldReadFunction<any>,
+	sizes?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsImageVersionKeySpecifier = ('size' | 'url' | 'width' | 'height' | CmsImageVersionKeySpecifier)[];
+export type CmsImageVersionFieldPolicy = {
+	size?: FieldPolicy<any> | FieldReadFunction<any>,
+	url?: FieldPolicy<any> | FieldReadFunction<any>,
+	width?: FieldPolicy<any> | FieldReadFunction<any>,
+	height?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsLayoutKeySpecifier = ('items' | CmsLayoutKeySpecifier)[];
+export type CmsLayoutFieldPolicy = {
+	items?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsLayoutItemKeySpecifier = ('layout' | 'label' | 'regions' | CmsLayoutItemKeySpecifier)[];
+export type CmsLayoutItemFieldPolicy = {
+	layout?: FieldPolicy<any> | FieldReadFunction<any>,
+	label?: FieldPolicy<any> | FieldReadFunction<any>,
+	regions?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsLayoutItemComponentKeySpecifier = ('configuration' | 'label' | 'component' | CmsLayoutItemComponentKeySpecifier)[];
+export type CmsLayoutItemComponentFieldPolicy = {
+	configuration?: FieldPolicy<any> | FieldReadFunction<any>,
+	label?: FieldPolicy<any> | FieldReadFunction<any>,
+	component?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsLayoutItemComponentConfigKeySpecifier = ('displayLabel' | CmsLayoutItemComponentConfigKeySpecifier)[];
+export type CmsLayoutItemComponentConfigFieldPolicy = {
+	displayLabel?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsLayoutItemRegionKeySpecifier = ('region' | 'configuration' | 'components' | CmsLayoutItemRegionKeySpecifier)[];
+export type CmsLayoutItemRegionFieldPolicy = {
+	region?: FieldPolicy<any> | FieldReadFunction<any>,
+	configuration?: FieldPolicy<any> | FieldReadFunction<any>,
+	components?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsLayoutItemRegionConfigKeySpecifier = ('width' | CmsLayoutItemRegionConfigKeySpecifier)[];
+export type CmsLayoutItemRegionConfigFieldPolicy = {
+	width?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsUrlKeySpecifier = ('path' | 'alias' | CmsUrlKeySpecifier)[];
+export type CmsUrlFieldPolicy = {
+	path?: FieldPolicy<any> | FieldReadFunction<any>,
+	alias?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsUserKeySpecifier = ('id' | 'name' | CmsUserKeySpecifier)[];
+export type CmsUserFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CategoryKeySpecifier = ('id' | 'name' | 'title' | 'description' | CategoryKeySpecifier)[];
+export type CategoryFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	title?: FieldPolicy<any> | FieldReadFunction<any>,
+	description?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type FacetKeySpecifier = ('name' | 'label' | 'options' | FacetKeySpecifier)[];
+export type FacetFieldPolicy = {
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	label?: FieldPolicy<any> | FieldReadFunction<any>,
+	options?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type FacetEqualValueKeySpecifier = ('eq' | 'in' | FacetEqualValueKeySpecifier)[];
+export type FacetEqualValueFieldPolicy = {
+	eq?: FieldPolicy<any> | FieldReadFunction<any>,
+	in?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type FacetMatchValueKeySpecifier = ('match' | FacetMatchValueKeySpecifier)[];
+export type FacetMatchValueFieldPolicy = {
+	match?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type FacetOptionKeySpecifier = ('count' | 'facetName' | 'isSelected' | 'label' | 'value' | FacetOptionKeySpecifier)[];
+export type FacetOptionFieldPolicy = {
+	count?: FieldPolicy<any> | FieldReadFunction<any>,
+	facetName?: FieldPolicy<any> | FieldReadFunction<any>,
+	isSelected?: FieldPolicy<any> | FieldReadFunction<any>,
+	label?: FieldPolicy<any> | FieldReadFunction<any>,
+	value?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type FacetRangeValueKeySpecifier = ('from' | 'to' | FacetRangeValueKeySpecifier)[];
+export type FacetRangeValueFieldPolicy = {
+	from?: FieldPolicy<any> | FieldReadFunction<any>,
+	to?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type MoneyKeySpecifier = ('value' | 'currency' | MoneyKeySpecifier)[];
+export type MoneyFieldPolicy = {
+	value?: FieldPolicy<any> | FieldReadFunction<any>,
+	currency?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductKeySpecifier = ('id' | 'sku' | 'name' | 'title' | 'price' | 'description' | 'image' | 'thumbnailImage' | 'type' | 'url' | 'gallery' | 'options' | 'variants' | ProductKeySpecifier)[];
+export type ProductFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	sku?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	title?: FieldPolicy<any> | FieldReadFunction<any>,
+	price?: FieldPolicy<any> | FieldReadFunction<any>,
+	description?: FieldPolicy<any> | FieldReadFunction<any>,
+	image?: FieldPolicy<any> | FieldReadFunction<any>,
+	thumbnailImage?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>,
+	url?: FieldPolicy<any> | FieldReadFunction<any>,
+	gallery?: FieldPolicy<any> | FieldReadFunction<any>,
+	options?: FieldPolicy<any> | FieldReadFunction<any>,
+	variants?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductImageKeySpecifier = ('alt' | 'url' | ProductImageKeySpecifier)[];
+export type ProductImageFieldPolicy = {
+	alt?: FieldPolicy<any> | FieldReadFunction<any>,
+	url?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductListKeySpecifier = ('total' | 'items' | 'facets' | 'sortCriterias' | ProductListKeySpecifier)[];
+export type ProductListFieldPolicy = {
+	total?: FieldPolicy<any> | FieldReadFunction<any>,
+	items?: FieldPolicy<any> | FieldReadFunction<any>,
+	facets?: FieldPolicy<any> | FieldReadFunction<any>,
+	sortCriterias?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductOptionKeySpecifier = ('name' | 'label' | 'values' | ProductOptionKeySpecifier)[];
+export type ProductOptionFieldPolicy = {
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	label?: FieldPolicy<any> | FieldReadFunction<any>,
+	values?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductOptionValueKeySpecifier = ('option' | 'id' | 'label' | ProductOptionValueKeySpecifier)[];
+export type ProductOptionValueFieldPolicy = {
+	option?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	label?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductVariantKeySpecifier = ('options' | 'product' | ProductVariantKeySpecifier)[];
+export type ProductVariantFieldPolicy = {
+	options?: FieldPolicy<any> | FieldReadFunction<any>,
+	product?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type UserKeySpecifier = ('id' | 'firstName' | 'lastName' | UserKeySpecifier)[];
+export type UserFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	firstName?: FieldPolicy<any> | FieldReadFunction<any>,
+	lastName?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type AuthUserKeySpecifier = ('authToken' | 'refreshToken' | 'user' | AuthUserKeySpecifier)[];
+export type AuthUserFieldPolicy = {
+	authToken?: FieldPolicy<any> | FieldReadFunction<any>,
+	refreshToken?: FieldPolicy<any> | FieldReadFunction<any>,
+	user?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type AddressKeySpecifier = ('firstName' | 'lastName' | 'country' | 'city' | 'postcode' | 'address1' | 'address2' | 'phoneNumber' | 'company' | 'email' | AddressKeySpecifier)[];
+export type AddressFieldPolicy = {
+	firstName?: FieldPolicy<any> | FieldReadFunction<any>,
+	lastName?: FieldPolicy<any> | FieldReadFunction<any>,
+	country?: FieldPolicy<any> | FieldReadFunction<any>,
+	city?: FieldPolicy<any> | FieldReadFunction<any>,
+	postcode?: FieldPolicy<any> | FieldReadFunction<any>,
+	address1?: FieldPolicy<any> | FieldReadFunction<any>,
+	address2?: FieldPolicy<any> | FieldReadFunction<any>,
+	phoneNumber?: FieldPolicy<any> | FieldReadFunction<any>,
+	company?: FieldPolicy<any> | FieldReadFunction<any>,
+	email?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CartKeySpecifier = ('id' | 'numberOfItems' | 'items' | 'totals' | 'couponCodes' | CartKeySpecifier)[];
+export type CartFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	numberOfItems?: FieldPolicy<any> | FieldReadFunction<any>,
+	items?: FieldPolicy<any> | FieldReadFunction<any>,
+	totals?: FieldPolicy<any> | FieldReadFunction<any>,
+	couponCodes?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CartItemKeySpecifier = ('id' | 'quantity' | 'unitPrice' | 'rowTotal' | 'rowTotalDiscount' | 'product' | 'productOptions' | CartItemKeySpecifier)[];
+export type CartItemFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	quantity?: FieldPolicy<any> | FieldReadFunction<any>,
+	unitPrice?: FieldPolicy<any> | FieldReadFunction<any>,
+	rowTotal?: FieldPolicy<any> | FieldReadFunction<any>,
+	rowTotalDiscount?: FieldPolicy<any> | FieldReadFunction<any>,
+	product?: FieldPolicy<any> | FieldReadFunction<any>,
+	productOptions?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CartItemProductOptionValueKeySpecifier = ('option' | 'optionLabel' | 'id' | 'label' | CartItemProductOptionValueKeySpecifier)[];
+export type CartItemProductOptionValueFieldPolicy = {
+	option?: FieldPolicy<any> | FieldReadFunction<any>,
+	optionLabel?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	label?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CartTotalsKeySpecifier = ('taxes' | 'discounts' | 'grandTotal' | 'subtotalExcludingTax' | 'subtotalIncludingTax' | 'subtotalWithDiscountExcludingTax' | CartTotalsKeySpecifier)[];
+export type CartTotalsFieldPolicy = {
+	taxes?: FieldPolicy<any> | FieldReadFunction<any>,
+	discounts?: FieldPolicy<any> | FieldReadFunction<any>,
+	grandTotal?: FieldPolicy<any> | FieldReadFunction<any>,
+	subtotalExcludingTax?: FieldPolicy<any> | FieldReadFunction<any>,
+	subtotalIncludingTax?: FieldPolicy<any> | FieldReadFunction<any>,
+	subtotalWithDiscountExcludingTax?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CheckoutKeySpecifier = ('id' | 'cart' | 'customer' | 'shippingAddress' | 'billingAddress' | 'shippingMethod' | 'paymentMethod' | 'availableShippingMethods' | 'availablePaymentMethods' | CheckoutKeySpecifier)[];
+export type CheckoutFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	cart?: FieldPolicy<any> | FieldReadFunction<any>,
+	customer?: FieldPolicy<any> | FieldReadFunction<any>,
+	shippingAddress?: FieldPolicy<any> | FieldReadFunction<any>,
+	billingAddress?: FieldPolicy<any> | FieldReadFunction<any>,
+	shippingMethod?: FieldPolicy<any> | FieldReadFunction<any>,
+	paymentMethod?: FieldPolicy<any> | FieldReadFunction<any>,
+	availableShippingMethods?: FieldPolicy<any> | FieldReadFunction<any>,
+	availablePaymentMethods?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CouponCodeKeySpecifier = ('code' | CouponCodeKeySpecifier)[];
+export type CouponCodeFieldPolicy = {
+	code?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CustomerKeySpecifier = ('email' | CustomerKeySpecifier)[];
+export type CustomerFieldPolicy = {
+	email?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type MoneyWithLabelKeySpecifier = ('label' | 'amount' | MoneyWithLabelKeySpecifier)[];
+export type MoneyWithLabelFieldPolicy = {
+	label?: FieldPolicy<any> | FieldReadFunction<any>,
+	amount?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type OrderKeySpecifier = ('orderNumber' | OrderKeySpecifier)[];
+export type OrderFieldPolicy = {
+	orderNumber?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type PaymentMethodKeySpecifier = ('id' | 'label' | 'note' | PaymentMethodKeySpecifier)[];
+export type PaymentMethodFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	label?: FieldPolicy<any> | FieldReadFunction<any>,
+	note?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type PlaceOrderResultKeySpecifier = ('order' | 'checkout' | PlaceOrderResultKeySpecifier)[];
+export type PlaceOrderResultFieldPolicy = {
+	order?: FieldPolicy<any> | FieldReadFunction<any>,
+	checkout?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ShippingMethodKeySpecifier = ('id' | 'label' | 'note' | 'priceIncludingTax' | 'priceExcludingTax' | ShippingMethodKeySpecifier)[];
+export type ShippingMethodFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	label?: FieldPolicy<any> | FieldReadFunction<any>,
+	note?: FieldPolicy<any> | FieldReadFunction<any>,
+	priceIncludingTax?: FieldPolicy<any> | FieldReadFunction<any>,
+	priceExcludingTax?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CountryKeySpecifier = ('id' | 'name' | CountryKeySpecifier)[];
+export type CountryFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type WebsiteConfigKeySpecifier = ('id' | 'locale' | 'baseUrlPath' | 'currency' | 'countries' | WebsiteConfigKeySpecifier)[];
+export type WebsiteConfigFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	locale?: FieldPolicy<any> | FieldReadFunction<any>,
+	baseUrlPath?: FieldPolicy<any> | FieldReadFunction<any>,
+	currency?: FieldPolicy<any> | FieldReadFunction<any>,
+	countries?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CmsHomepageKeySpecifier = ('id' | 'locale' | 'productBanner' | 'productGrid' | CmsHomepageKeySpecifier)[];
+export type CmsHomepageFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	locale?: FieldPolicy<any> | FieldReadFunction<any>,
+	productBanner?: FieldPolicy<any> | FieldReadFunction<any>,
+	productGrid?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductBannerKeySpecifier = ('text' | 'image' | 'product' | ProductBannerKeySpecifier)[];
+export type ProductBannerFieldPolicy = {
+	text?: FieldPolicy<any> | FieldReadFunction<any>,
+	image?: FieldPolicy<any> | FieldReadFunction<any>,
+	product?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ProductGridBannerKeySpecifier = ('title' | 'products' | ProductGridBannerKeySpecifier)[];
+export type ProductGridBannerFieldPolicy = {
+	title?: FieldPolicy<any> | FieldReadFunction<any>,
+	products?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type QueryKeySpecifier = ('helloWorld' | 'routeByPath' | 'routeByPage' | 'menu' | 'cmsArticle' | 'products' | 'userById' | 'me' | 'cart' | 'checkout' | 'websiteConfig' | QueryKeySpecifier)[];
+export type QueryFieldPolicy = {
+	helloWorld?: FieldPolicy<any> | FieldReadFunction<any>,
+	routeByPath?: FieldPolicy<any> | FieldReadFunction<any>,
+	routeByPage?: FieldPolicy<any> | FieldReadFunction<any>,
+	menu?: FieldPolicy<any> | FieldReadFunction<any>,
+	cmsArticle?: FieldPolicy<any> | FieldReadFunction<any>,
+	products?: FieldPolicy<any> | FieldReadFunction<any>,
+	userById?: FieldPolicy<any> | FieldReadFunction<any>,
+	me?: FieldPolicy<any> | FieldReadFunction<any>,
+	cart?: FieldPolicy<any> | FieldReadFunction<any>,
+	checkout?: FieldPolicy<any> | FieldReadFunction<any>,
+	websiteConfig?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type MutationKeySpecifier = ('login' | 'refreshAuthToken' | 'createCart' | 'addToCart' | 'updateCart' | 'addCouponCodeToCart' | 'removeCouponCodeFromCart' | 'createCheckout' | 'setCheckoutShippingAddress' | 'setCheckoutBillingAddress' | 'setCheckoutShippingMethod' | 'setCheckoutPaymentMethod' | 'placeOrder' | MutationKeySpecifier)[];
+export type MutationFieldPolicy = {
+	login?: FieldPolicy<any> | FieldReadFunction<any>,
+	refreshAuthToken?: FieldPolicy<any> | FieldReadFunction<any>,
+	createCart?: FieldPolicy<any> | FieldReadFunction<any>,
+	addToCart?: FieldPolicy<any> | FieldReadFunction<any>,
+	updateCart?: FieldPolicy<any> | FieldReadFunction<any>,
+	addCouponCodeToCart?: FieldPolicy<any> | FieldReadFunction<any>,
+	removeCouponCodeFromCart?: FieldPolicy<any> | FieldReadFunction<any>,
+	createCheckout?: FieldPolicy<any> | FieldReadFunction<any>,
+	setCheckoutShippingAddress?: FieldPolicy<any> | FieldReadFunction<any>,
+	setCheckoutBillingAddress?: FieldPolicy<any> | FieldReadFunction<any>,
+	setCheckoutShippingMethod?: FieldPolicy<any> | FieldReadFunction<any>,
+	setCheckoutPaymentMethod?: FieldPolicy<any> | FieldReadFunction<any>,
+	placeOrder?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type SortKeySpecifier = ('criteria' | 'order' | SortKeySpecifier)[];
+export type SortFieldPolicy = {
+	criteria?: FieldPolicy<any> | FieldReadFunction<any>,
+	order?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type FilterValueKeySpecifier = ('eq' | 'in' | 'match' | 'from' | 'to' | FilterValueKeySpecifier)[];
+export type FilterValueFieldPolicy = {
+	eq?: FieldPolicy<any> | FieldReadFunction<any>,
+	in?: FieldPolicy<any> | FieldReadFunction<any>,
+	match?: FieldPolicy<any> | FieldReadFunction<any>,
+	from?: FieldPolicy<any> | FieldReadFunction<any>,
+	to?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type FilterKeySpecifier = ('name' | 'value' | FilterKeySpecifier)[];
+export type FilterFieldPolicy = {
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	value?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type TypedTypePolicies = TypePolicies & {
+	CategoryPage?: {
+		keyFields?: false | CategoryPageKeySpecifier | (() => undefined | CategoryPageKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CategoryPageFieldPolicy,
+	},
+	CmsArticlePage?: {
+		keyFields?: false | CmsArticlePageKeySpecifier | (() => undefined | CmsArticlePageKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsArticlePageFieldPolicy,
+	},
+	CmsHomepagePage?: {
+		keyFields?: false | CmsHomepagePageKeySpecifier | (() => undefined | CmsHomepagePageKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsHomepagePageFieldPolicy,
+	},
+	CmsPagePage?: {
+		keyFields?: false | CmsPagePageKeySpecifier | (() => undefined | CmsPagePageKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsPagePageFieldPolicy,
+	},
+	Page?: {
+		keyFields?: false | PageKeySpecifier | (() => undefined | PageKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: PageFieldPolicy,
+	},
+	ProductPage?: {
+		keyFields?: false | ProductPageKeySpecifier | (() => undefined | ProductPageKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: ProductPageFieldPolicy,
+	},
+	Route?: {
+		keyFields?: false | RouteKeySpecifier | (() => undefined | RouteKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: RouteFieldPolicy,
+	},
+	Menu?: {
+		keyFields?: false | MenuKeySpecifier | (() => undefined | MenuKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: MenuFieldPolicy,
+	},
+	MenuItem?: {
+		keyFields?: false | MenuItemKeySpecifier | (() => undefined | MenuItemKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: MenuItemFieldPolicy,
+	},
+	CmsArticle?: {
+		keyFields?: false | CmsArticleKeySpecifier | (() => undefined | CmsArticleKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsArticleFieldPolicy,
+	},
+	CmsBasicContent?: {
+		keyFields?: false | CmsBasicContentKeySpecifier | (() => undefined | CmsBasicContentKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsBasicContentFieldPolicy,
+	},
+	CmsHtmlField?: {
+		keyFields?: false | CmsHtmlFieldKeySpecifier | (() => undefined | CmsHtmlFieldKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsHtmlFieldFieldPolicy,
+	},
+	CmsImage?: {
+		keyFields?: false | CmsImageKeySpecifier | (() => undefined | CmsImageKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsImageFieldPolicy,
+	},
+	CmsImageVersion?: {
+		keyFields?: false | CmsImageVersionKeySpecifier | (() => undefined | CmsImageVersionKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsImageVersionFieldPolicy,
+	},
+	CmsLayout?: {
+		keyFields?: false | CmsLayoutKeySpecifier | (() => undefined | CmsLayoutKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsLayoutFieldPolicy,
+	},
+	CmsLayoutItem?: {
+		keyFields?: false | CmsLayoutItemKeySpecifier | (() => undefined | CmsLayoutItemKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsLayoutItemFieldPolicy,
+	},
+	CmsLayoutItemComponent?: {
+		keyFields?: false | CmsLayoutItemComponentKeySpecifier | (() => undefined | CmsLayoutItemComponentKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsLayoutItemComponentFieldPolicy,
+	},
+	CmsLayoutItemComponentConfig?: {
+		keyFields?: false | CmsLayoutItemComponentConfigKeySpecifier | (() => undefined | CmsLayoutItemComponentConfigKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsLayoutItemComponentConfigFieldPolicy,
+	},
+	CmsLayoutItemRegion?: {
+		keyFields?: false | CmsLayoutItemRegionKeySpecifier | (() => undefined | CmsLayoutItemRegionKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsLayoutItemRegionFieldPolicy,
+	},
+	CmsLayoutItemRegionConfig?: {
+		keyFields?: false | CmsLayoutItemRegionConfigKeySpecifier | (() => undefined | CmsLayoutItemRegionConfigKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsLayoutItemRegionConfigFieldPolicy,
+	},
+	CmsUrl?: {
+		keyFields?: false | CmsUrlKeySpecifier | (() => undefined | CmsUrlKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsUrlFieldPolicy,
+	},
+	CmsUser?: {
+		keyFields?: false | CmsUserKeySpecifier | (() => undefined | CmsUserKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsUserFieldPolicy,
+	},
+	Category?: {
+		keyFields?: false | CategoryKeySpecifier | (() => undefined | CategoryKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CategoryFieldPolicy,
+	},
+	Facet?: {
+		keyFields?: false | FacetKeySpecifier | (() => undefined | FacetKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: FacetFieldPolicy,
+	},
+	FacetEqualValue?: {
+		keyFields?: false | FacetEqualValueKeySpecifier | (() => undefined | FacetEqualValueKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: FacetEqualValueFieldPolicy,
+	},
+	FacetMatchValue?: {
+		keyFields?: false | FacetMatchValueKeySpecifier | (() => undefined | FacetMatchValueKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: FacetMatchValueFieldPolicy,
+	},
+	FacetOption?: {
+		keyFields?: false | FacetOptionKeySpecifier | (() => undefined | FacetOptionKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: FacetOptionFieldPolicy,
+	},
+	FacetRangeValue?: {
+		keyFields?: false | FacetRangeValueKeySpecifier | (() => undefined | FacetRangeValueKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: FacetRangeValueFieldPolicy,
+	},
+	Money?: {
+		keyFields?: false | MoneyKeySpecifier | (() => undefined | MoneyKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: MoneyFieldPolicy,
+	},
+	Product?: {
+		keyFields?: false | ProductKeySpecifier | (() => undefined | ProductKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: ProductFieldPolicy,
+	},
+	ProductImage?: {
+		keyFields?: false | ProductImageKeySpecifier | (() => undefined | ProductImageKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: ProductImageFieldPolicy,
+	},
+	ProductList?: {
+		keyFields?: false | ProductListKeySpecifier | (() => undefined | ProductListKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: ProductListFieldPolicy,
+	},
+	ProductOption?: {
+		keyFields?: false | ProductOptionKeySpecifier | (() => undefined | ProductOptionKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: ProductOptionFieldPolicy,
+	},
+	ProductOptionValue?: {
+		keyFields?: false | ProductOptionValueKeySpecifier | (() => undefined | ProductOptionValueKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: ProductOptionValueFieldPolicy,
+	},
+	ProductVariant?: {
+		keyFields?: false | ProductVariantKeySpecifier | (() => undefined | ProductVariantKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: ProductVariantFieldPolicy,
+	},
+	User?: {
+		keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: UserFieldPolicy,
+	},
+	AuthUser?: {
+		keyFields?: false | AuthUserKeySpecifier | (() => undefined | AuthUserKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: AuthUserFieldPolicy,
+	},
+	Address?: {
+		keyFields?: false | AddressKeySpecifier | (() => undefined | AddressKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: AddressFieldPolicy,
+	},
+	Cart?: {
+		keyFields?: false | CartKeySpecifier | (() => undefined | CartKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CartFieldPolicy,
+	},
+	CartItem?: {
+		keyFields?: false | CartItemKeySpecifier | (() => undefined | CartItemKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CartItemFieldPolicy,
+	},
+	CartItemProductOptionValue?: {
+		keyFields?: false | CartItemProductOptionValueKeySpecifier | (() => undefined | CartItemProductOptionValueKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CartItemProductOptionValueFieldPolicy,
+	},
+	CartTotals?: {
+		keyFields?: false | CartTotalsKeySpecifier | (() => undefined | CartTotalsKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CartTotalsFieldPolicy,
+	},
+	Checkout?: {
+		keyFields?: false | CheckoutKeySpecifier | (() => undefined | CheckoutKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CheckoutFieldPolicy,
+	},
+	CouponCode?: {
+		keyFields?: false | CouponCodeKeySpecifier | (() => undefined | CouponCodeKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CouponCodeFieldPolicy,
+	},
+	Customer?: {
+		keyFields?: false | CustomerKeySpecifier | (() => undefined | CustomerKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CustomerFieldPolicy,
+	},
+	MoneyWithLabel?: {
+		keyFields?: false | MoneyWithLabelKeySpecifier | (() => undefined | MoneyWithLabelKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: MoneyWithLabelFieldPolicy,
+	},
+	Order?: {
+		keyFields?: false | OrderKeySpecifier | (() => undefined | OrderKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: OrderFieldPolicy,
+	},
+	PaymentMethod?: {
+		keyFields?: false | PaymentMethodKeySpecifier | (() => undefined | PaymentMethodKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: PaymentMethodFieldPolicy,
+	},
+	PlaceOrderResult?: {
+		keyFields?: false | PlaceOrderResultKeySpecifier | (() => undefined | PlaceOrderResultKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: PlaceOrderResultFieldPolicy,
+	},
+	ShippingMethod?: {
+		keyFields?: false | ShippingMethodKeySpecifier | (() => undefined | ShippingMethodKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: ShippingMethodFieldPolicy,
+	},
+	Country?: {
+		keyFields?: false | CountryKeySpecifier | (() => undefined | CountryKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CountryFieldPolicy,
+	},
+	WebsiteConfig?: {
+		keyFields?: false | WebsiteConfigKeySpecifier | (() => undefined | WebsiteConfigKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: WebsiteConfigFieldPolicy,
+	},
+	CmsHomepage?: {
+		keyFields?: false | CmsHomepageKeySpecifier | (() => undefined | CmsHomepageKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: CmsHomepageFieldPolicy,
+	},
+	ProductBanner?: {
+		keyFields?: false | ProductBannerKeySpecifier | (() => undefined | ProductBannerKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: ProductBannerFieldPolicy,
+	},
+	ProductGridBanner?: {
+		keyFields?: false | ProductGridBannerKeySpecifier | (() => undefined | ProductGridBannerKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: ProductGridBannerFieldPolicy,
+	},
+	Query?: {
+		keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: QueryFieldPolicy,
+	},
+	Mutation?: {
+		keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: MutationFieldPolicy,
+	},
+	Sort?: {
+		keyFields?: false | SortKeySpecifier | (() => undefined | SortKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: SortFieldPolicy,
+	},
+	FilterValue?: {
+		keyFields?: false | FilterValueKeySpecifier | (() => undefined | FilterValueKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: FilterValueFieldPolicy,
+	},
+	Filter?: {
+		keyFields?: false | FilterKeySpecifier | (() => undefined | FilterKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: FilterFieldPolicy,
+	}
+};

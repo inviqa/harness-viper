@@ -1,5 +1,5 @@
-extend type Product @key(fields: "sku") {
-  sku: String! @external
+extend type Product @key(fields: "id") {
+  id: ID! @external
 }
 
 type CmsImageVersion {

@@ -3,18 +3,16 @@ import { FunctionComponent, useEffect, useMemo } from 'react';
 import { jsx, Box, BoxProps } from 'theme-ui';
 import cx from 'classnames';
 import { useReactiveVar } from '@apollo/client';
-import { CartItem, CartTableTotal, StyledProductPrice } from '@inviqa/viper-ui-commerce';
-import { useTranslation } from '~lib/createI18n';
+import { CartItem, CartTableTotal, ProductPrice } from '@inviqa/viper-ui-commerce';
+import { useTranslation } from 'react-i18next';
 import { checkoutIdVar } from '~hooks/cart';
 import { useGetCheckoutLazyQuery } from '~hooks/apollo';
 import CartItemCard from '../Cart/CartItemCard';
 import Result from '../../utility/Result/Result';
-import useWebsiteConfig from '~hooks/useWebsiteConfig';
 import Heading from '../../atoms/Heading/Heading';
 
 const OrderSummary: FunctionComponent<BoxProps> = ({ className, ...props }) => {
   const { t } = useTranslation('commerce');
-  const websiteConfig = useWebsiteConfig();
   const checkoutId = useReactiveVar(checkoutIdVar);
   const [getCheckout, { data, loading, error, called }] = useGetCheckoutLazyQuery();
   const cart = data?.checkout?.cart;
@@ -68,7 +66,7 @@ const OrderSummary: FunctionComponent<BoxProps> = ({ className, ...props }) => {
   return (
     <Box className={cx('order-summary', className)} {...props}>
       <Result loading={loading || !called} error={error?.message}>
-        <Heading level={2}>{t('Order Summary')}</Heading>
+        <Heading level={2}>{t('Checkout.OrderSummary')}</Heading>
         {/* voiceover will remove these semantics if list does not have list styling so role is necessary */}
         {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
         <ul role="list" sx={{ variant: 'lists.plain' }} className="order-summary__list">
@@ -85,7 +83,7 @@ const OrderSummary: FunctionComponent<BoxProps> = ({ className, ...props }) => {
               <tr key={label}>
                 <th>{label}</th>
                 <td>
-                  <StyledProductPrice locale={websiteConfig?.locale} price={price} sx={{ fontSize: 1 }} />
+                  <ProductPrice price={price} sx={{ fontSize: 1 }} />
                 </td>
               </tr>
             ))}

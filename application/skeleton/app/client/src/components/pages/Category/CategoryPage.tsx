@@ -1,12 +1,12 @@
 /** @jsx jsx */
 import { FunctionComponent, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { jsx, Heading } from 'theme-ui';
 import ProductList from '../../organisms/ProductList/ProductList';
 import DocumentTitle from '../../DocumentTitle';
 import { PageProps } from '../types';
 import { CategoryPageFragmentFragment, ProductSortCriteria, ProductSortOrder } from '~hooks/apollo';
 import { parseHtml } from '~lib/parseHtml';
-import { useTranslation } from '~lib/createI18n';
 
 export const CategoryPage: FunctionComponent<PageProps> = ({ queryResult }) => {
   const page = queryResult.data?.routeByPath?.page as CategoryPageFragmentFragment;

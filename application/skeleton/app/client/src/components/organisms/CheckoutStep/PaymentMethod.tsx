@@ -1,6 +1,11 @@
 import { MutationTuple } from '@apollo/client';
-import { StyledPaymentMethodSelector, PaymentMethod as PaymentMethodUI } from '@inviqa/viper-ui-commerce';
-import React, { FunctionComponent, useMemo } from 'react';
+import {
+  PaymentMethodSelector,
+  PaymentMethod as PaymentMethodUI,
+  PaymentMethodSelectorValues
+} from '@inviqa/viper-ui-commerce';
+import React, { FunctionComponent, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   SetCheckoutPaymentMethodMutation,
   SetCheckoutPaymentMethodMutationVariables,
@@ -10,7 +15,6 @@ import {
 } from '~hooks/apollo';
 import { CheckoutStep, useCheckoutSteps } from '~hooks/checkout';
 import { useResponseHandler } from '~hooks/useResponseHandler';
-import { useTranslation } from '~lib/createI18n';
 import Heading from '../../atoms/Heading/Heading';
 import CheckoutStepWrapper from '../../templates/CheckoutStepWrapper/CheckoutStepWrapper';
 
@@ -28,12 +32,15 @@ export const PaymentMethodStep: FunctionComponent<Props> = ({
   placeOrderMutation
 }) => {
   const { t } = useTranslation('commerce');
-  const { currentCheckoutStep, setCurrentCheckoutStep, goToNextCheckoutStep } = useCheckoutSteps();
+  const { currentCheckoutStep, setCurrentCheckoutStep, clearCheckout } = useCheckoutSteps();
   const responseHandlers = useResponseHandler<
     SetCheckoutPaymentMethodMutation,
     SetCheckoutPaymentMethodMutationVariables
-  >({}, 'commerce', undefined, () => {
-    goToNextCheckoutStep();
+  >({
+    i18nNs: 'commerce',
+    successCallback: () => {
+      clearCheckout();
+    }
   });
   const [setPaymentMethod, { loading }] = useSetCheckoutPaymentMethodMutation(responseHandlers);
   const [placeOrder, { loading: placeOrderLoading }] = placeOrderMutation;
@@ -47,23 +54,31 @@ export const PaymentMethodStep: FunctionComponent<Props> = ({
     [availablePaymentMethods]
   );
 
+  const onSubmit = useCallback(
+    async (values: PaymentMethodSelectorValues) => {
+      await setPaymentMethod({ variables: { checkoutId, paymentMethodId: values['payment-method'] } });
+      await placeOrder({ variables: { checkoutId } });
+    },
+    [setPaymentMethod, placeOrder, checkoutId]
+  );
+
+  const onEdit = useCallback(() => {
+    setCurrentCheckoutStep(CheckoutStep.PaymentMethod);
+  }, [setCurrentCheckoutStep]);
+
   return (
     <CheckoutStepWrapper
       name={CheckoutStep.PaymentMethod}
       heading={<Heading level={2}>{t('Checkout.PaymentMethod')}</Heading>}
       visible={currentCheckoutStep === CheckoutStep.PaymentMethod}
       preview={paymentMethod?.label}
-      onEditCallback={() => setCurrentCheckoutStep(CheckoutStep.PaymentMethod)}
+      onEditCallback={onEdit}
     >
-      <StyledPaymentMethodSelector
+      <PaymentMethodSelector
         paymentMethods={paymentMethods}
-        buttonLabel={t('Checkout.PlaceOrder')}
         currentPaymentMethod={paymentMethod?.id}
         isLoading={loading || placeOrderLoading}
-        onSubmit={async values => {
-          await setPaymentMethod({ variables: { checkoutId, paymentMethodId: values['payment-method'] } });
-          await placeOrder({ variables: { checkoutId } });
-        }}
+        onSubmit={onSubmit}
       />
     </CheckoutStepWrapper>
   );

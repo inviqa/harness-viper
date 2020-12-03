@@ -1,0 +1,130 @@
+{
+  "Address": {
+    "BillingAddress": {
+      "Save": "Rechnungsadresse speichern"
+    },
+    "ShippingAddress": {
+      "Save": "Lieferadresse speichern"
+    },
+    "Field": {
+      "firstName": "Vorname",
+      "lastName": "Familienname",
+      "address1": "Anschrift Zeile 1",
+      "address2": "Anschrift Zeile 2",
+      "city": "Stadt",
+      "country": "Land",
+      "phoneNumber": "Telefonnummer",
+      "postcode": "Postleitzahl",
+      "company": "Unternehmen"
+    },
+    "Submit": "Adresse speichern"
+  },
+  "Customer": {
+    "Field": {
+      "EmailAddress": "E-Mail-Addresse"
+    }
+  },
+  "Cart": {
+    "Title": "Dein Korb",
+    "IsEmpty": "Ihr Warenkorb ist leer. <0>Stöbern Sie in unserem Katalog</0>.",
+    "Empty": "Leere deinen Korb",
+    "View": "Warenkorb anzeigen und bearbeiten",
+    "Close": "Korb schließen",
+    "Toggle": "Korb umschalten",
+    "AddToCart": "Kaufe jetzt",
+    "ProceedToCheckout": "Zur Kasse",
+    "Table": {
+      "Product": "Produkt",
+      "Description": "Beschreibung",
+      "Quantity": "Menge",
+      "Total": "Gesamt"
+    },
+    "Total": {
+      "Subtotal": "Zwischensumme",
+      "GrandTotal": "Gesamtsumme",
+      "Shipping": "Versand ({{ method }})"
+    },
+    "Item": {
+      "Quantity": "Menge",
+      "Remove": {
+        "Full": "Entfernen Sie {{ name }} aus Ihrem Warenkorb",
+        "Short": "Entfernen"
+      }
+    },
+    "Coupon": {
+      "Form": {
+        "Label": "Fügen Sie einen Gutscheincode hinzu",
+        "Remove": "Gutschein entfernen",
+        "Add": "Gutschein hinzufügen"
+      }
+    }
+  },
+  "Checkout": {
+    "Title": "Auschecken",
+    "Customer": "Kundin",
+    "AsGuest": "Als Gast fortfahren",
+    "ShippingMethod": "Versandart",
+    "SelectShippingMethod": "Wählen Sie eine Versandart",
+    "SaveShippingMethod": "Versandart speichern",
+    "ShippingAddressForm": "Lieferanschrift",
+    "BillingAddressForm": "Rechnungsadresse",
+    "PaymentMethod": "Zahlungsmethode",
+    "SelectPaymentMethod": "Wählen Sie eine Zahlungsmethode",
+    "UseShippingForBilling": "Verwenden Sie die Lieferadresse für die Abrechnung",
+    "PlaceOrder": "Bestellung aufgeben",
+    "OrderSummary": "Bestellübersicht"
+  },
+  "CheckoutSuccess": {
+    "Title": "Wir haben Ihre Bestellung erhalten",
+    "OrderNumber": "Ihre Bestellnummer lautet: <0>{{ orderNumber }}</0>.",
+    "Message": "Wir haben Ihre Bestellung erhalten und Sie erhalten in Kürze eine Bestätigungs-E-Mail."
+  },
+  "Messages": {
+    "AddedToCart": "{{ name }} wurde erfolgreich in Ihren Warenkorb gelegt.",
+    "RemovedFromCart": "{{ name }} wurde erfolgreich aus Ihrem Warenkorb entfernt.",
+    "UpdatedCartQuantity": "Die Menge für {{ name }} wurde auf {{ quantity }} aktualisiert.",
+    "AddedCouponCodeToCart": "Der Gutscheincode wurde erfolgreich auf Ihren Warenkorb angewendet.",
+    "CouponCodeRemovedFromCart": "Der Gutscheincode wurde erfolgreich aus Ihrem Warenkorb entfernt.",
+    "SetShippingFormSuccess": "Versandformular wurde erfolgreich gespeichert.",
+    "SetShippingFormFailed": "Beim Speichern des Versandformulars ist ein Fehler aufgetreten.",
+    "UnexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
+    "Errors": {
+      "INVALID_QUANTITY_ERROR": "Die angeforderte Menge ist nicht verfügbar.",
+      "INSUFFICIENT_STOCK_ERROR": "Die angeforderte Menge ist nicht verfügbar.",
+      "INVALID_COUPON_CODE_ERROR": "Der Gutscheincode {{ couponCode }} ist nicht gültig.",
+      "CART_ADDCOUPON_ERROR": "Fehler beim Hinzufügen des Coupons: {{ couponCode }}.",
+      "CART_ADDTO_ERROR": "Beim Hinzufügen eines Produkts zum Warenkorb ist ein Fehler aufgetreten.",
+      "CART_AUTHORIZATION_ERROR": "Der aktuelle Benutzer kann keine Aktionen im Warenkorb durchführen.",
+      "CART_CREATE_ERROR": "Beim Erstellen des Warenkorbs ist ein Fehler aufgetreten.",
+      "CART_MISSING_REQUIRED_OPTIONS_ERROR": "Die für das Produkt erforderliche(n) Option(en) wurde(n) nicht eingegeben.",
+      "EMPTY_CART_ERROR": "Der Warenkorb enthält keine Produkte.",
+      "INACTIVE_CART_ERROR": "Die Bestellung wurde abgeschlossen. Der Warenkorb ist leer.",
+      "NO_CART_FOUND_ERROR": "Warenkorb nicht gefunden.",
+      "NO_CART_ITEM_FOUND_ERROR": "Der Artikel befindet sich nicht im Warenkorb.",
+      "NO_VARIANT_FOUND_ERROR": "Das Produkt mit konfigurierbarer SKU konnte nicht in den Warenkorb gelegt werden: Das angeforderte Produkt existiert nicht. Überprüfen Sie das Produkt und versuchen Sie es erneut.",
+      "NO_VARIANT_SELECTED_ERROR": "Bitte geben sie Produkt Optionen an.",
+      "ONE_COUPON_RESTRICTION_ERROR": "Ein Coupon wurde bereits für diesen Warenkorb verwendet: {{ couponCode }}.",
+      "CART_REMOVECOUPON_DENIED_ERROR": "Der Gutschein konnte nicht gelöscht werden.",
+      "CART_REMOVECOUPON_ERROR": "Beim Entfernen eines Gutscheins aus dem Warencorb ist ein Fehler aufgetreten.",
+      "CART_UPDATE_ERROR": "Beim Aktualisieren des Warenkorbs ist ein Fehler aufgetreten",
+      "BILLING_ADDRESS_REQUIRED_ERROR": "Die Rechnungsadresse ist erforderlich.",
+      "BILLING_ADDRESS_SAVING_ERROR": "Beim Speichern der Rechnungsadresse ist ein Fehler aufgetreten.",
+      "CHECKOUT_ALREADY_CREATED_ERROR": "Zur Kasse wurde bereits für den Warenkorb erstellt.",
+      "CHECKOUT_CREATE_ERROR": "Beim Bestellvorgang ist ein Fehler aufgetreten.",
+      "EMAIL_REQUIRED_ERROR": "Die E-Mail-Adresse ist erforderlich.",
+      "EMAIL_ADDRESS_SAVING_ERROR": "Beim Speichern der E-Mail ist ein Fehler aufgetreten.",
+      "NO_CHECKOUT_FOUND_ERROR": "Keine Kasse gefunden.",
+      "OUT_OF_STOCK_PRODUCT_IN_CART_ERROR": "Einige der Produkte sind nicht auf Lager.",
+      "PAYMENT_METHOD_NOT_AVAILABLE_ERROR": "Die Zahlungsmethode ist nicht verfügbar.",
+      "PAYMENT_METHOD_REQUIRED_ERROR": "Keine Zahlungsmethode ausgewählt.",
+      "PAYMENT_METHOD_SAVING_FOUND_ERROR": "Beim Aufgeben der Bestellung ist ein Fehler aufgetreten.",
+      "PLACE_ORDER_ERROR": "Beim Aufgeben der Bestellung ist ein Fehler aufgetreten.",
+      "SHIPPING_ADDRESS_REQUIRED_ERROR": "Die Lieferadresse ist erforderlich.",
+      "SHIPPING_ADDRESS_RESTRICTION_ERROR": "Einige Adressen sind aufgrund der Konfigurationen für bestimmte Länder ausgeschlossen.",
+      "SHIPPING_ADDRESS_SAVING_ERROR": "Beim Speichern der Lieferadresse ist ein Fehler aufgetreten.",
+      "SHIPPING_METHOD_NOT_AVAILABLE_ERROR": "Die Versandmethode ist nicht verfügbar.",
+      "SHIPPING_METHOD_REQUIRED_ERROR": "Keine Versandmethode angegeben.",
+      "SHIPPING_METHOD_SAVING_FOUND_ERROR": "Beim Speichern der Versandmethode ist ein Fehler aufgetreten."
+    }
+  }
+}

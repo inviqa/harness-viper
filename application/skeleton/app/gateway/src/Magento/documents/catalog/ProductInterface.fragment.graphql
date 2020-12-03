@@ -1,0 +1,89 @@
+fragment ProductInterfaceFragment on ProductInterface {
+  id
+  sku
+  name
+  meta_title
+  meta_keyword
+  meta_description
+  canonical_url
+  stock_status
+  url_rewrites {
+    url
+    parameters {
+      name
+      value
+    }
+  }
+  categories {
+    id
+    path
+    name
+  }
+  description {
+    html
+  }
+  price_range {
+    minimum_price {
+      regular_price {
+        value
+        currency
+      }
+      discount {
+        amount_off
+        percent_off
+      }
+      final_price {
+        currency
+        value
+      }
+      fixed_product_taxes {
+        amount {
+          currency
+          value
+        }
+        label
+      }
+    }
+    maximum_price {
+      regular_price {
+        value
+        currency
+      }
+      discount {
+        amount_off
+        percent_off
+      }
+      final_price {
+        currency
+        value
+      }
+      fixed_product_taxes {
+        amount {
+          currency
+          value
+        }
+        label
+      }
+    }
+  }
+  thumbnail {
+    label
+    url
+  }
+  image {
+    label
+    url
+  }
+  small_image {
+    label
+    url
+  }
+  media_gallery {
+    disabled
+    label
+    position
+    url
+  }
+  color
+  size
+}

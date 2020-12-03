@@ -1,0 +1,24 @@
+{
+  "Menu": {
+    "Toggle": "Menü umschalten",
+    "Home": "Zuhause",
+    "SubmenuLabel": "Untermenü {{ name }}"
+  },
+  "Loading": "Wird geladen",
+  "Edit":  "Edieren",
+  "Search": {
+    "Title": "Suche: {{ term }}",
+    "Label": "Durchsuchen Sie unseren Katalog",
+    "Placeholder": "Wonach suchen Sie?",
+    "Submit": "Suche",
+    "Toggle": "Suche umschalten"
+  },
+  "Messages": {
+    "Dismiss": "Nachricht abweisen"
+  },
+  "Validation": {
+    "RequiredField": "{{ label }} ist erforderlich.",
+    "MinLength": "{{ label }} sollte mindestens {{ minLength }} Zeichen enthalten.",
+    "ValidEmailAddress": "Email Adresse ist nicht gültig."
+  }
+}

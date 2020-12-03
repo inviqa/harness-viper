@@ -1,0 +1,55 @@
+fragment CmsHomepagePageFragment on CmsHomepagePage {
+  id
+  type
+  locale
+  homePage {
+    productBanner {
+      text {
+        raw
+        html
+      }
+      image {
+        alt
+        sizes {
+          size
+          url
+          width
+          height
+        }
+      }
+      product {
+        id
+        type
+        sku
+        name
+        url
+        price {
+          value
+          currency
+        }
+        thumbnailImage {
+          alt
+          url
+        }
+      }
+    }
+    productGrid {
+      title
+      products {
+        id
+        type
+        sku
+        name
+        url
+        price {
+          value
+          currency
+        }
+        thumbnailImage {
+          alt
+          url
+        }
+      }
+    }
+  }
+}

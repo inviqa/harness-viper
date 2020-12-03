@@ -1,0 +1,26 @@
+fragment CmsPagePageFragment on CmsPagePage {
+  id
+  type
+  locale
+  cmsBasicContent {
+    id
+    title
+    body {
+      raw
+      html
+    }
+    summary {
+      raw
+      html
+    }
+    url {
+      path
+      alias
+    }
+    createdAt
+    author {
+      id
+      name
+    }
+  }
+}

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { FunctionComponent, useState, forwardRef, useMemo, useEffect } from 'react';
+import { FunctionComponent, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Container, Flex, Box, IconButton, Link as ThemeLink, jsx, useThemeUI, Badge } from 'theme-ui';
 import {
@@ -9,17 +9,11 @@ import {
   CgShoppingBag as CartIcon
 } from 'react-icons/cg';
 import { FocusOn } from 'react-focus-on';
+import { useTranslation } from 'react-i18next';
+import Link from 'next/link';
 import cx from 'classnames';
-import {
-  StyledMenu,
-  styledMenuOverrides,
-  MenuOverrides,
-  StyledSearchForm,
-  styledSearchFormOverrides,
-  SearchFormOverrides
-} from '@inviqa/viper-ui';
+import { Menu, SearchForm } from '@inviqa/viper-ui';
 import { useReactiveVar } from '@apollo/client';
-import { useTranslation, Link, Router } from '~lib/createI18n';
 import useBreakpoint from '~hooks/useBreakpoint';
 import { cartIdVar } from '~hooks/cart';
 import { useGetCartLazyQuery, useGetMenuQuery } from '~hooks/apollo';
@@ -29,17 +23,6 @@ import WebsiteSwitcher from '../../molecules/WebsiteSwitcher/WebsiteSwitcher';
 import SideSheet from '../../templates/SideSheet/SideSheet';
 import Cart from '../Cart/Cart';
 import Messages from '../../molecules/Messages/Messages';
-
-const { Link: DefaultMenuLink } = styledMenuOverrides;
-const menuOverrides: MenuOverrides = {
-  Link: forwardRef(({ href, ...props }, ref) => (
-    <Link href="/[...all]" as={href} passHref>
-      <DefaultMenuLink ref={ref} {...props} />
-    </Link>
-  ))
-};
-
-const { Button, Input } = styledSearchFormOverrides;
 
 const Header: FunctionComponent = () => {
   const router = useRouter();
@@ -72,14 +55,6 @@ const Header: FunctionComponent = () => {
     if (cartId) getCart({ variables: { cartId } });
   }, [cartId, getCart]);
 
-  const searchFormOverrides: SearchFormOverrides = useMemo(
-    () => ({
-      Input: props => <Input aria-label={t('Search.Label')} placeholder={t('Search.Placeholder')} {...props} />,
-      Button: props => <Button {...props}>{t('Search.Submit')}</Button>
-    }),
-    [t]
-  );
-
   return (
     <Container
       className="header"
@@ -88,7 +63,7 @@ const Header: FunctionComponent = () => {
     >
       <FocusOn enabled={!isLargeFormat && isMenuVisible} returnFocus>
         <Flex sx={{ flexWrap: ['wrap', 'nowrap'], alignItems: 'center', justifyContent: ['space-between', 'start'] }}>
-          <Link href="/" as="/" passHref>
+          <Link href="/" passHref>
             <a className="header__logo" aria-label={t('Menu.Home')} sx={{ mr: [null, 4] }}>
               <InviqaLogo sx={{ width: [75, 90], height: [75, 90] }} />
             </a>
@@ -106,12 +81,11 @@ const Header: FunctionComponent = () => {
               {isMenuVisible ? <CloseIcon /> : <MenuIcon />}
             </IconButton>
             {!!menuResult?.menu && (
-              <StyledMenu
+              <Menu
                 name={menuResult.menu.name}
                 items={menuResult.menu.items}
                 className="header__nav-menu"
                 aria-hidden={!isLargeFormat && !isMenuVisible}
-                overrides={menuOverrides}
                 sx={{
                   position: ['absolute', 'static'],
                   top: '100%',
@@ -153,13 +127,12 @@ const Header: FunctionComponent = () => {
               zIndex: isSearchVisible ? '11' : 'auto'
             }}
           >
-            <StyledSearchForm
+            <SearchForm
               role="search"
               aria-hidden={!isSearchVisible}
               sx={{ variant: 'panels.secondary', py: 4 }}
-              overrides={searchFormOverrides}
               onSubmit={value => {
-                Router.push(`/search?q=${encodeURIComponent(value)}`);
+                router.push(`/search?q=${encodeURIComponent(value)}`);
                 setSearchVisible(false);
               }}
             />
@@ -191,6 +164,7 @@ const Header: FunctionComponent = () => {
             dismissLabel={t('commerce:Cart.Close')}
             className="header__cart"
           >
+            <Messages sx={{ m: 3 }} location="minicart" />
             <Cart sx={{ p: 3, backgroundColor: 'muted' }} />
             <Link href="/cart" passHref>
               <ThemeLink sx={{ display: 'block', mt: 3, textAlign: 'center' }}>{t('commerce:Cart.View')}</ThemeLink>

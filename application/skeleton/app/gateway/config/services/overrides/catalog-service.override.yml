@@ -1,0 +1,14 @@
+services:
+  CatalogService:
+    class: //@inviqa/viper-gateway-service-catalog[CatalogService]
+    arguments:
+      - '%catalog.path%'
+      - [
+          './node_modules/@inviqa/viper-gateway-service-catalog/src/typedef/schema.graphql',
+          './src/Catalog/typedef/product.schema.graphql',
+          './node_modules/@inviqa/viper-gateway-service-catalog/src/typedef/category.schema.graphql',
+        ]
+      - '@CatalogResolverProvider'
+      - '@CatalogDataSourceProvider'
+      - '@GatewayServiceRunner'
+      - '@CatalogApolloServerBuilder'

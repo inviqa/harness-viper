@@ -1,11 +1,12 @@
 /* @jsx jsx */
 import { useEffect } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { NextComponentType, NextPageContext } from 'next';
+import { useRouter } from 'next/router';
 import { jsx } from 'theme-ui';
 import DocumentTitle from '../../../components/DocumentTitle';
 import Heading from '../../../components/atoms/Heading/Heading';
 import Paragraph from '../../../components/atoms/Paragraph/Paragraph';
-import { useTranslation, Trans, Router } from '~lib/createI18n';
 
 type Props = {
   orderNumber?: string;
@@ -14,12 +15,13 @@ type Props = {
 
 export const CheckoutSuccess: NextComponentType<NextPageContext, Props, Props> = ({ orderNumber }) => {
   const { t } = useTranslation('commerce');
+  const router = useRouter();
 
   useEffect(() => {
     if (!orderNumber) {
-      Router.push('/');
+      router.push('/');
     }
-  }, [orderNumber]);
+  }, [orderNumber, router]);
 
   return (
     <>

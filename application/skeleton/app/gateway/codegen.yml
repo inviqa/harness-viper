@@ -33,3 +33,17 @@ generates:
       enumsAsConst: true
       federation: true
       noSchemaStitching: true
+
+  src/Catalog/typedef/types.ts:
+    schema:
+      - ./node_modules/@inviqa/viper-gateway-service-catalog/src/typedef/schema.graphql
+      - ./src/Catalog/typedef/product.schema.graphql
+      - ./node_modules/@inviqa/viper-gateway-service-catalog/src/typedef/category.schema.graphql
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-resolvers
+    config:
+      enumsAsConst: true
+      federation: true
+      noSchemaStitching: true

@@ -16,10 +16,10 @@ const throw404 = () => {
 };
 
 export const Index: NextComponentType = () => {
-  const router = useRouter();
+  const { locale, asPath } = useRouter();
   const queryResult = useGetPageByPathQuery({
     variables: {
-      path: router.asPath
+      path: `/${locale}${asPath === '/' ? '' : asPath}`
     }
   });
 
@@ -38,7 +38,7 @@ export const Index: NextComponentType = () => {
   if (loading) return <></>;
 
   // TODO: need to verify this works as expected once we start persisting page state in the url (e.g. page number/sorts/filters)
-  return <PageDistribution key={router.asPath} queryResult={queryResult} />;
+  return <PageDistribution key={asPath} queryResult={queryResult} />;
 };
 
 Index.getInitialProps = async () => ({

@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { ResolverProvider } from '@inviqa/viper-apollo';
-import { Context } from '@inviqa/viper-gateway-graphql-service';
+import { ResolverProvider, Context } from '@inviqa/viper-gateway-graphql-service';
 import { Resolvers, CmsHomepagePage } from '../typedef';
 import { DataSources } from '../DataSource';
 

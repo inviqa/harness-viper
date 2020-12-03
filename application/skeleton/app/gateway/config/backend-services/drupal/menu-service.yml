@@ -1,0 +1,5 @@
+services:
+  MenuDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-menu[DrupalMenuDataSourceProvider]
+    arguments:
+      - '@DrupalGraphqlClientProvider'

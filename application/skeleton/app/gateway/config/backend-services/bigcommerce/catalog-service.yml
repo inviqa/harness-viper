@@ -1,0 +1,10 @@
+services:
+  CatalogDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-catalog[BigcommerceCatalogDataSourceProvider]
+    arguments:
+      - '@BigcommerceGraphqlClientProvider'
+      - '@BigcommerceRestClientProvider'
+      - '@CatalogProductDataTransformer'
+
+  CatalogProductDataTransformer:
+    class: //@inviqa/viper-gateway-service-catalog[BigcommerceProductDataTransformer]

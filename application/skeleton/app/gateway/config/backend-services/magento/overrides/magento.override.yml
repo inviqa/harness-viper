@@ -1,0 +1,3 @@
+services:
+  MagentoDocumentOverrides:
+    class: /Magento/Document/DocumentOverrides[DocumentOverrides]

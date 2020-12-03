@@ -3,18 +3,23 @@ parameters:
     path: /_internal/hello-world
 
 services:
-  /HelloWorld/HelloWorldService[HelloWorldService]:
+  HelloWorldService:
+    class: /HelloWorld/HelloWorldService
     arguments:
       - '%helloworld.path%'
       - './src/HelloWorld/typedef/hello-world.graphql'
-      - '@/HelloWorld/ResolverProvider[ResolverProvider]'
-      - '@/HelloWorld/DataSource/MockHelloWorldDataSource[MockHelloWorldDataSource]'
+      - '@HelloWorldResolverProvider'
+      - '@HelloWorldDataSource'
       - '@GatewayServiceRunner'
       - '@HelloWorldApolloServerBuilder'
 
-  /HelloWorld/ResolverProvider[ResolverProvider]: ~
+  HelloWorldResolverProvider:
+    class: /HelloWorld/ResolverProvider
+    arguments: []
 
-  /HelloWorld/DataSource/MockHelloWorldDataSource[MockHelloWorldDataSource]: ~
+  HelloWorldDataSource:
+    class: /HelloWorld/DataSource/MockHelloWorldDataSource
+    arguments: []
 
   HelloWorldApolloServerBuilder:
     class: //@inviqa/viper-apollo[ApolloServerBuilder]

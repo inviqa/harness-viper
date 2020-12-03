@@ -1,0 +1,9 @@
+services:
+  DocsService:
+    class: //@inviqa/viper-gateway-service-static[StaticService]
+    factory: ['@StaticServiceFactory', 'create']
+    arguments:
+      - documentation
+      - '%gateway.docs.path%'
+      - '%gateway.docs.folder%'
+      - '@GatewayServiceRunner'

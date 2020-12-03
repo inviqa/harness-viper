@@ -3,10 +3,11 @@ import { existsSync } from 'fs';
 import { Gateway } from './Gateway';
 
 (async () => {
-  const isTesting = !!process.env.NODE_TESTING;
+  const config = process.env.GATEWAY_CONFIG || '';
+
   const file = existsSync('config/services.local.yml')
     ? 'config/services.local.yml'
-    : `config/services.${isTesting ? 'testing' : 'development'}.yml`;
+    : `config/services${config ? `.${config}` : ''}.yml`;
   const container = await new Container()
     .load(file)
     .from('[default]', module => import(module))

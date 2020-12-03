@@ -1,19 +1,18 @@
 /** @jsx jsx */
 import { FunctionComponent, useCallback, useMemo, useState } from 'react';
 import { Flex, Box, jsx, Alert, Close } from 'theme-ui';
+import { useTranslation } from 'react-i18next';
 import {
-  StyledProductGallery,
-  StyledProductOptions,
-  StyledProductPrice as ProductPrice,
-  StyledProductAddToCartForm as ProductAddToCartForm,
-  styledProductAddToCartFormOverrides,
-  ProductOption as ProductOptionOption,
+  ProductGallery,
+  ProductOptions,
+  ProductPrice,
+  ProductAddToCartForm,
+  defaultProductAddToCartFormOverrides,
+  ProductOption,
   ProductOptionSelection
 } from '@inviqa/viper-ui-commerce';
 import Heading from '../../atoms/Heading/Heading';
 import Paragraph from '../../atoms/Paragraph/Paragraph';
-import { priceComponentOverrides } from '~lib/commonComponentOverrides';
-import { useTranslation } from '~lib/createI18n';
 import { ProductType, ProductVariant } from '~hooks/apollo';
 import { parseHtml } from '~lib/parseHtml';
 import { useAddToCart } from '~hooks/cart';
@@ -33,9 +32,9 @@ export const ProductContent: FunctionComponent<ProductContentProps> = ({
   variants,
   as
 }) => {
-  const { i18n, t } = useTranslation('commerce');
-  const [handleAddToCart, { loading }] = useAddToCart({ id, name, sku });
-  const { Button } = styledProductAddToCartFormOverrides;
+  const { t } = useTranslation('commerce');
+  const [handleAddToCart, { loading }] = useAddToCart({ id, name, sku }, 'minicart');
+  const { Button } = defaultProductAddToCartFormOverrides;
 
   const initialPrice = price;
 
@@ -65,14 +64,17 @@ export const ProductContent: FunctionComponent<ProductContentProps> = ({
 
   const validSelections = useMemo(() => (variants || []).map(variant => [...variant.options]), [variants]);
 
+  const galleryImage = useMemo(() => (image?.url ? { alt: image?.alt, src: image?.url } : undefined), [image]);
+  const galleryImages = useMemo(() => gallery?.map(({ url, alt }) => ({ alt, src: url })), [gallery]);
+
   return (
     <Flex sx={{ flexDirection: ['column', 'column', 'row'] }} as={as}>
-      {gallery && image && <StyledProductGallery image={image} gallery={gallery} sx={{ width: '100%' }} />}
+      {gallery && image && <ProductGallery image={galleryImage} gallery={galleryImages} sx={{ width: '100%' }} />}
       <Box className="product-info" p={2} sx={{ width: '100%' }}>
         <Heading level={1} sx={{ marginTop: 0 }}>
           {name}
         </Heading>
-        <ProductPrice price={displayPrice} locale={i18n.language} overrides={priceComponentOverrides} />
+        <ProductPrice price={displayPrice} />
         <Paragraph>SKU: {sku}</Paragraph>
         {parseHtml(description)}
         {!!addCartToError && (
@@ -82,14 +84,13 @@ export const ProductContent: FunctionComponent<ProductContentProps> = ({
           </Alert>
         )}
         {options?.length && (
-          <StyledProductOptions
-            options={options as ProductOptionOption[]}
+          <ProductOptions
+            options={options as ProductOption[]}
             validSelections={validSelections}
             onSelection={onOptionSelection}
           />
         )}
         <ProductAddToCartForm
-          quantityLabel={t('Cart.Item.Quantity')}
           onSubmit={onAddToCart}
           sx={{ marginTop: 4 }}
           overrides={{

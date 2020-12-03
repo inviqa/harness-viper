@@ -1,12 +1,10 @@
 import { useRouter } from 'next/router';
-import { getWebsiteIdFromPath } from '~lib/website';
 import { websiteConfig } from '../../websiteConfig';
 
 function useWebsiteConfig() {
-  const { asPath } = useRouter();
-  const currentWebsite = getWebsiteIdFromPath(asPath);
+  const { locale } = useRouter();
 
-  return websiteConfig.find(({ id }) => id === currentWebsite);
+  return websiteConfig.find(({ id }) => id === locale);
 }
 
 export default useWebsiteConfig;

@@ -1,0 +1,11 @@
+services:
+  CustomContentDataSourceProvider:
+    class: /CustomContent/DataSource/Drupal/DrupalCustomContentDataSourceProvider
+    arguments:
+      - '@DrupalGraphqlClientProvider'
+      - '@DrupalHomeDataTransformer'
+
+  DrupalHomeDataTransformer:
+    class: /CustomContent/DataSource/Drupal/DrupalHomeDataTransformer
+    arguments:
+      - '@ContentImageDataTransformer'

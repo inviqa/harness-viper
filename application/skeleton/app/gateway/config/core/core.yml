@@ -1,0 +1,103 @@
+parameters:
+  logger:
+    prefix: gateway
+    level: info
+    timestamp: true
+
+services:
+  # @inviqa/viper-gateway-service-graphql-voyager
+
+  GraphqlVoyagerServiceFactory:
+    class: //@inviqa/viper-gateway-service-graphql-voyager[GraphqlVoyagerServiceFactory]
+
+  # @inviqa/viper-gateway-service-static
+
+  StaticServiceFactory:
+    class: //@inviqa/viper-gateway-service-static[StaticServiceFactory]
+
+  # @inviqa/viper-gateway-service
+
+  GatewayServiceRunner:
+    class: //@inviqa/viper-gateway-service[GatewayServiceRunner]
+    arguments:
+      - '@EventDispatcher'
+
+  ServiceLifecycleLogger:
+    class: //@inviqa/viper-gateway-service[LifecycleLogger]
+    arguments: ['@Logger']
+
+  # @inviqa/viper-event-dispatcher
+
+  EventDispatcher:
+    class: //@inviqa/viper-event-dispatcher[EventDispatcher]
+    arguments:
+      - '@ServiceLifecycleLogger'
+      - '@GatewayApolloGatewayAutoloader'
+
+  # @inviqa/viper-apollo
+
+  LoggerLinkProviderFactory:
+    class: //@inviqa/viper-apollo[LoggerLinkProviderFactory]
+
+  HttpLinkProviderFactory:
+    class: //@inviqa/viper-apollo[HttpLinkProviderFactory]
+
+  ApolloLinkProviderListFactory:
+    class: //@inviqa/viper-apollo[ApolloLinkProviderListFactory]
+
+  ApolloClientBuilderFactory:
+    class: //@inviqa/viper-apollo[ApolloClientBuilderFactory]
+
+  ApolloGatewayBuilderFactory:
+    class: //@inviqa/viper-apollo[ApolloGatewayBuilderFactory]
+
+  ApolloServerBuilderFactory:
+    class: //@inviqa/viper-apollo[ApolloServerBuilderFactory]
+
+  ApolloServerPluginProviderList:
+    class: //@inviqa/viper-apollo[ApolloServerPluginProviderList]
+    factory: ['@ApolloServerPluginProviderListFactory', 'create']
+    arguments: ['@ApolloServerLoggerPlugin']
+
+  ApolloServerPluginProviderListFactory:
+    class: //@inviqa/viper-apollo[ApolloServerPluginProviderListFactory]
+
+  ApolloServerLoggerPlugin:
+    class: //@inviqa/viper-apollo[ApolloServerLoggerPlugin]
+
+  # @inviqa/viper-axios
+
+  AxiosClientBuilderFactory:
+    class: //@inviqa/viper-axios[AxiosClientBuilderFactory]
+
+  AxiosClientBuilderPluginListFactory:
+    class: //@inviqa/viper-axios[AxiosClientBuilderPluginListFactory]
+
+  AxiosClientLoggerPluginFactory:
+    class: //@inviqa/viper-axios[AxiosClientLoggerPluginFactory]
+
+  # @inviqa/viper-gateway
+
+  GatewayAppFactory:
+    class: //@inviqa/viper-gateway[GatewayAppFactory]
+
+  GatewayServiceListFactory:
+    class: //@inviqa/viper-gateway[GatewayServiceListFactory]
+
+  # @inviqa/viper-koa
+
+  KoaCorsMiddleware:
+    class: //@inviqa/viper-koa[CorsMiddleware]
+    arguments: ['%gateway.cors%']
+
+  KoaFactory:
+    class: //@inviqa/viper-koa[KoaFactory]
+
+  # @inviqa/viper-logger
+
+  Logger:
+    class: //@inviqa/viper-logger[LogLevelNextLogger]
+    arguments:
+      - '%logger.prefix%'
+      - '%logger.level%'
+      - '%logger.timestamp%'

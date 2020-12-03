@@ -1,0 +1,22 @@
+services:
+  ContentDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-content[DrupalContentDataSourceProvider]
+    arguments:
+      - '@DrupalGraphqlClientProvider'
+      - '@ContentArticleDataTransformer'
+      - '@ContentBasicContentDataTransformer'
+
+  ContentBasicContentDataTransformer:
+    class: //@inviqa/viper-gateway-service-content[DrupalPageDataTransformer]
+
+  ContentArticleDataTransformer:
+    class: //@inviqa/viper-gateway-service-content[DrupalArticleDataTransformer]
+    arguments:
+      - '@ContentImageDataTransformer'
+      - '@ContentLayoutDataTransformer'
+
+  ContentLayoutDataTransformer:
+    class: //@inviqa/viper-gateway-service-content[DrupalLayoutDataTransformer]
+
+  ContentImageDataTransformer:
+    class: //@inviqa/viper-gateway-service-content[DrupalImageDataTransformer]

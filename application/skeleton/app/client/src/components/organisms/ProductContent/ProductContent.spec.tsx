@@ -106,7 +106,7 @@ describe(ProductContent, () => {
 
     it('And: it renders an add to cart form', () => {
       const { getByLabelText, getByText } = setup();
-      expect(getByLabelText('Cart.Item.Quantity')).toBeInTheDocument();
+      expect(getByLabelText('commerce:Cart.Item.Quantity')).toBeInTheDocument();
       expect(getByText('Cart.AddToCart')).toBeInTheDocument();
     });
   });
@@ -154,6 +154,7 @@ describe(ProductContent, () => {
             {
               content: `Messages.UnexpectedError ${product.id},${product.name},${product.sku}`,
               id: `error-${product.id}-${product.name}-${product.sku}`,
+              location: 'minicart',
               type: 'error'
             }
           ]);
@@ -173,6 +174,7 @@ describe(ProductContent, () => {
             {
               content: `Messages.AddedToCart ${product.id},${product.name},${product.sku}`,
               id: `${product.id}-added-to-cart`,
+              location: 'minicart',
               type: 'success'
             }
           ]);
@@ -196,6 +198,7 @@ describe(ProductContent, () => {
             {
               content: `Messages.UnexpectedError ${product.id},${product.name},${product.sku}`,
               id: `error-${product.id}-${product.name}-${product.sku}`,
+              location: 'minicart',
               type: 'error'
             }
           ]);

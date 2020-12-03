@@ -3,12 +3,12 @@ import { act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders, setupMatchMediaMock } from '~test-helpers';
 import Header from './Header';
-import { Router } from '~lib/createI18n';
 import { cartIdVar } from '~hooks/cart';
 import { getCartMock } from '~hooks/apollo/mocks/GetCart';
 import { getMenuMock } from '~hooks/apollo/mocks/GetMenu';
 import { isMiniCartVisibleVar } from '~lib/cache';
 import { messagesVar } from '~hooks/useMessages';
+import { mockPush } from '../../../setupTests';
 
 jest.mock('../Cart/Cart', () => () => null);
 
@@ -105,7 +105,7 @@ describe(Header, () => {
         userEvent.click(getByLabelText('Search.Toggle'));
         await userEvent.type(getByLabelText('Search.Label'), 'yellow shoes');
         userEvent.click(getByText('Search.Submit'));
-        expect(Router.push).toHaveBeenCalledWith('/search?q=yellow%20shoes');
+        expect(mockPush).toHaveBeenCalledWith('/search?q=yellow%20shoes');
       });
     });
 

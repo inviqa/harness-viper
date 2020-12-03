@@ -1,8 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { NextComponentType, NextPageContext } from 'next';
 import ProductList from '../components/organisms/ProductList/ProductList';
 import DocumentTitle from '../components/DocumentTitle';
-import { useTranslation } from '~lib/createI18n';
 
 type Props = {
   searchTerm?: string;

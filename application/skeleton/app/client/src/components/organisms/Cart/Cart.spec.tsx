@@ -131,7 +131,7 @@ describe(Cart, () => {
           mocks: [getCheckoutMock()]
         });
         await waitFor(() => getByText('Bolo Sport Watch'));
-        expect(getByText('Remove Coupon')).toBeInTheDocument();
+        expect(getByText('commerce:Cart.Coupon.Form.Remove')).toBeInTheDocument();
       });
 
       it('And: it renders a link to the checkout', async () => {
@@ -141,7 +141,7 @@ describe(Cart, () => {
         });
         await waitFor(() => getByText('Cart.ProceedToCheckout'));
         expect(getByText('Cart.ProceedToCheckout').tagName).toBe('A');
-        expect(getByText('Cart.ProceedToCheckout')).toHaveAttribute('href', '/ci/checkout');
+        expect(getByText('Cart.ProceedToCheckout')).toHaveAttribute('href', '/checkout');
       });
     });
 
@@ -180,7 +180,7 @@ describe(Cart, () => {
         });
         await waitFor(() => getByText('Cart.ProceedToCheckout'));
         expect(getByText('Cart.ProceedToCheckout').tagName).toBe('A');
-        expect(getByText('Cart.ProceedToCheckout')).toHaveAttribute('href', '/ci/checkout');
+        expect(getByText('Cart.ProceedToCheckout')).toHaveAttribute('href', '/checkout');
       });
     });
   });

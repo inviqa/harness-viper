@@ -33,14 +33,14 @@ export class DrupalHomeDataTransformer {
           html: fieldBannerText.processed
         },
         product: {
-          sku: fieldProductSku,
+          id: fieldProductSku,
           __typename: 'Product'
         },
-        image: fieldBannerImage ? this.imageTransformer.transformImage(fieldBannerImage as any) : null
+        image: fieldBannerImage ? this.imageTransformer.transformImage(fieldBannerImage as unknown) : null
       },
       productGrid: {
         title: fieldProductGridTitle,
-        products: fieldProductGridSkus.length ? fieldProductGridSkus.map(sku => ({ __typename: 'Product', sku })) : null
+        products: fieldProductGridSkus.length ? fieldProductGridSkus.map(id => ({ __typename: 'Product', id })) : null
       }
     };
   }

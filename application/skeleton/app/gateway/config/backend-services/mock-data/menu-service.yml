@@ -1,0 +1,4 @@
+services:
+  MenuDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-menu[InMemoryMenuDataSourceProvider]
+    arguments: []

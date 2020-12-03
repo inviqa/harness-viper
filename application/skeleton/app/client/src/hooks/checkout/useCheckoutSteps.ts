@@ -1,5 +1,9 @@
 import { makeVar, useReactiveVar } from '@apollo/client';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
+import { cache } from '~lib/cache';
+
+const CHECKOUT_EMAIL_KEY = 'viper-checkout-email';
+const CHECKOUT_CURRENT_STEP_KEY = 'viper-checkout-current-step';
 
 export enum CheckoutStep {
   Customer = 'customer',
@@ -9,7 +13,7 @@ export enum CheckoutStep {
   PaymentMethod = 'payment-method'
 }
 
-export const currentCheckoutStepVar = makeVar(CheckoutStep.Customer);
+export const currentCheckoutStepVar = makeVar<CheckoutStep | undefined>(undefined);
 export const currentLocalCustomerEmailVar = makeVar<string | undefined>(undefined);
 export const billingSameAsShippingVar = makeVar(true);
 
@@ -22,7 +26,7 @@ const stepOrder = [
   CheckoutStep.PaymentMethod
 ];
 
-const setCurrentCheckoutStep = (step: CheckoutStep) => {
+const setCurrentCheckoutStep = (step?: CheckoutStep) => {
   currentCheckoutStepVar(step);
 };
 
@@ -40,11 +44,48 @@ export function useCheckoutSteps() {
     }
   }, [currentCheckoutStep]);
 
+  useEffect(() => {
+    const storedCurrentStep = localStorage.getItem(CHECKOUT_CURRENT_STEP_KEY) || CheckoutStep.Customer;
+
+    currentCheckoutStepVar(storedCurrentStep as CheckoutStep);
+  }, []);
+
+  useEffect(() => {
+    if (currentCheckoutStep) {
+      localStorage.setItem(CHECKOUT_CURRENT_STEP_KEY, currentCheckoutStep);
+    }
+  }, [currentCheckoutStep]);
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem(CHECKOUT_EMAIL_KEY);
+
+    if (storedEmail) {
+      currentLocalCustomerEmailVar(storedEmail);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentLocalCustomerEmail) {
+      localStorage.setItem(CHECKOUT_EMAIL_KEY, currentLocalCustomerEmail);
+    }
+  }, [currentLocalCustomerEmail]);
+
+  // TODO: combine this with resetCartId from useCartId file - maybe that file needs renaming?
+  const clearCheckout = useCallback(() => {
+    currentLocalCustomerEmailVar(undefined);
+    localStorage.removeItem(CHECKOUT_EMAIL_KEY);
+    currentCheckoutStepVar(undefined);
+    localStorage.removeItem(CHECKOUT_CURRENT_STEP_KEY);
+
+    cache.gc();
+  }, []);
+
   return {
     currentCheckoutStep,
     currentLocalCustomerEmail,
     billingSameAsShipping,
     setCurrentCheckoutStep,
-    goToNextCheckoutStep
+    goToNextCheckoutStep,
+    clearCheckout
   };
 }

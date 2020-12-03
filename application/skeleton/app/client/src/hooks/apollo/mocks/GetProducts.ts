@@ -1318,7 +1318,8 @@ export const getProductsMock = ({
       __typename: 'ProductList',
       items: defaultProducts,
       total: defaultProducts.length * 3,
-      facets: defaultFacets
+      facets: defaultFacets,
+      sortCriterias: ['NAME', 'POSITION', 'PRICE', 'RELEVANCE']
     }
   },
   loading = false,

@@ -1,0 +1,18 @@
+parameters:
+  routing:
+    path: /_internal/routing
+
+services:
+  RoutingService:
+    class: //@inviqa/viper-gateway-service-routing[RoutingService]
+    arguments:
+      - '%routing.path%'
+      - [
+          './node_modules/@inviqa/viper-gateway-service-routing/src/typedef/schema.graphql',
+          './src/Routing/typedef/custom-pages.graphql',
+        ]
+      - '@RoutingResolverProvider'
+      - '@CatalogRoutingDataSourceProvider'
+      - '@ContentRoutingDataSourceProvider'
+      - '@GatewayServiceRunner'
+      - '@RoutingApolloServerBuilder'

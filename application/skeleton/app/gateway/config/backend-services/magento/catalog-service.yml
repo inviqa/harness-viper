@@ -1,0 +1,13 @@
+services:
+  CatalogDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-catalog[MagentoCatalogDataSourceProvider]
+    arguments:
+      - '@MagentoGraphqlClientProvider'
+      - '@CatalogProductDataTransformer'
+      - '@CatalogCategoryDataTransformer'
+
+  CatalogProductDataTransformer:
+    class: //@inviqa/viper-gateway-service-catalog[MagentoProductDataTransformer]
+
+  CatalogCategoryDataTransformer:
+    class: //@inviqa/viper-gateway-service-catalog[MagentoCategoryDataTransformer]

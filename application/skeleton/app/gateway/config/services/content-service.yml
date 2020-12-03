@@ -9,30 +9,12 @@ services:
       - '%content.path%'
       - './node_modules/@inviqa/viper-gateway-service-content/src/typedef/schema.graphql'
       - '@ContentResolverProvider'
-      - '@ContentDataSource'
+      - '@ContentDataSourceProvider'
       - '@GatewayServiceRunner'
       - '@ContentApolloServerBuilder'
 
   ContentResolverProvider:
     class: //@inviqa/viper-gateway-service-content[ContentResolverProvider]
-
-  ContentDataSource:
-    class: //@inviqa/viper-gateway-service-content[DrupalContentDataSource]
-    arguments:
-      - '@DrupalGraphqlClientProvider'
-      - '@ContentArticleDataTransformer'
-
-  ContentArticleDataTransformer:
-    class: //@inviqa/viper-gateway-service-content[DrupalArticleDataTransformer]
-    arguments:
-      - '@ContentImageDataTransformer'
-      - '@ContentLayoutDataTransformer'
-
-  ContentLayoutDataTransformer:
-    class: //@inviqa/viper-gateway-service-content[DrupalLayoutDataTransformer]
-
-  ContentImageDataTransformer:
-    class: //@inviqa/viper-gateway-service-content[DrupalImageDataTransformer]
 
   ContentApolloServerBuilder:
     class: //@inviqa/viper-apollo[ApolloServerBuilder]

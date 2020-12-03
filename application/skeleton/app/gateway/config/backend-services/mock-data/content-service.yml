@@ -1,0 +1,4 @@
+services:
+  ContentDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-content[InMemoryContentDataSourceProvider]
+    arguments: []

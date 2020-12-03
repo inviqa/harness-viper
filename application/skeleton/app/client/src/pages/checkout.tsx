@@ -1,6 +1,9 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { FunctionComponent, useEffect, useMemo } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { NextComponentType } from 'next';
-import { Spinner } from 'theme-ui';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Spinner, Link as ThemeLink, LinkProps, Alert } from 'theme-ui';
 import { useReactiveVar } from '@apollo/client';
 import { SelectElementOptionProps } from '@inviqa/viper-ui-commerce';
 import OrderSummary from '../components/organisms/OrderSummary/OrderSummary';
@@ -17,7 +20,7 @@ import {
 } from '../components/organisms/CheckoutStep';
 import SimplePageLayout from '../components/templates/SimplePageLayout/SimplePageLayout';
 import TwoColumnsPageLayout from '../components/templates/TwoColumnContentLayout/TwoColumnContentLayout';
-import { useTranslation, Router } from '~lib/createI18n';
+
 import { checkoutIdVar, resetCartId } from '~hooks/cart';
 import {
   useGetCheckoutLazyQuery,
@@ -28,14 +31,25 @@ import {
 } from '~hooks/apollo';
 import { useResponseHandler } from '~hooks/useResponseHandler';
 
+const CatalogLink: FunctionComponent<LinkProps> = props => (
+  <Link href="/search" passHref>
+    <ThemeLink variant="inverted" {...props} />
+  </Link>
+);
+
 export const Checkout: NextComponentType & { getLayout: (page: JSX.Element) => JSX.Element } = () => {
   const { t } = useTranslation('commerce');
+  const router = useRouter();
   const checkoutId = useReactiveVar(checkoutIdVar);
-  const responseHandlers = useResponseHandler<PlaceOrderMutation, PlaceOrderMutationVariables>({}, 'commerce');
+  const responseHandlers = useResponseHandler<PlaceOrderMutation, PlaceOrderMutationVariables>({
+    i18nNs: 'commerce'
+  });
   const [getCheckout, { data, loading }] = useGetCheckoutLazyQuery();
   const [getCountries, { data: countryData }] = useCountriesLazyQuery();
   const placeOrder = usePlaceOrderMutation(responseHandlers);
   const [, { data: order }] = placeOrder;
+
+  const isEmpty = data?.checkout?.cart?.numberOfItems === 0;
 
   const transformedCountries: SelectElementOptionProps[] = useMemo(
     () =>
@@ -57,10 +71,11 @@ export const Checkout: NextComponentType & { getLayout: (page: JSX.Element) => J
   useEffect(() => {
     const orderNumber = order?.placeOrder?.order?.orderNumber;
     if (orderNumber) {
+      // TODO: this is duplicated in the checkout steps hook, figure out why this one isn't working as expected - was it just missing cache.gc?
       resetCartId();
-      Router.push(`/checkout/success/${orderNumber}`);
+      router.push(`/checkout/success/${orderNumber}`);
     }
-  }, [order?.placeOrder?.order?.orderNumber]);
+  }, [order?.placeOrder?.order?.orderNumber, router]);
 
   return (
     <>
@@ -70,36 +85,44 @@ export const Checkout: NextComponentType & { getLayout: (page: JSX.Element) => J
 
         {loading && <Spinner sx={{ display: 'block', mx: 'auto' }} />}
 
-        {!loading && checkoutId ? (
+        {!loading && isEmpty && (
+          <Alert className="cart__message" sx={{ display: 'block' }}>
+            <Trans i18nKey="Cart.IsEmpty" ns="commerce">
+              <CatalogLink />
+            </Trans>
+          </Alert>
+        )}
+
+        {!loading && !isEmpty ? (
           <TwoColumnsPageLayout sidebarPos="right" sidebar={<OrderSummary />}>
             <CustomerStep
-              checkoutId={checkoutId}
+              checkoutId={checkoutId as string}
               customer={data?.checkout?.customer ?? undefined}
               shippingAddress={data?.checkout?.shippingAddress ?? undefined}
             />
 
             <ShippingAddressStep
-              checkoutId={checkoutId}
+              checkoutId={checkoutId as string}
               customer={data?.checkout?.customer ?? undefined}
               shippingAddress={data?.checkout?.shippingAddress ?? undefined}
               countries={transformedCountries}
             />
 
             <BillingAddressStep
-              checkoutId={checkoutId}
+              checkoutId={checkoutId as string}
               shippingAddress={data?.checkout?.shippingAddress ?? undefined}
               billingAddress={data?.checkout?.billingAddress ?? undefined}
               countries={transformedCountries}
             />
 
             <ShippingMethodStep
-              checkoutId={checkoutId}
+              checkoutId={checkoutId as string}
               availableShippingMethods={data?.checkout?.availableShippingMethods ?? undefined}
               shippingMethod={data?.checkout?.shippingMethod ?? undefined}
             />
 
             <PaymentMethodStep
-              checkoutId={checkoutId}
+              checkoutId={checkoutId as string}
               availablePaymentMethods={data?.checkout?.availablePaymentMethods ?? undefined}
               paymentMethod={data?.checkout?.paymentMethod ?? undefined}
               placeOrderMutation={placeOrder}

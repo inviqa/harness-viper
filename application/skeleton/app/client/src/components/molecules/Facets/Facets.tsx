@@ -1,9 +1,9 @@
 import React, { FunctionComponent, HTMLAttributes, useMemo } from 'react';
-import { formatPrice, StyledFacets } from '@inviqa/viper-ui-commerce';
+import { useTranslation } from 'react-i18next';
+import { formatPrice, Facets as UIFacets } from '@inviqa/viper-ui-commerce';
 import { FacetOption, GetProductsQuery } from '~hooks/apollo';
 import { parseHtml } from '~lib/parseHtml';
 import useWebsiteConfig from '~hooks/useWebsiteConfig';
-import { useTranslation } from '~lib/createI18n';
 
 export type Props = HTMLAttributes<HTMLElement> & {
   facets: GetProductsQuery['products']['facets'];
@@ -53,7 +53,7 @@ const Facets: FunctionComponent<Props> = ({ facets, ...props }) => {
     }));
   }, [facets, websiteConfig, t]);
 
-  return <StyledFacets facets={transformedFacets} {...props} />;
+  return <UIFacets facets={transformedFacets} {...props} />;
 };
 
 export default Facets;

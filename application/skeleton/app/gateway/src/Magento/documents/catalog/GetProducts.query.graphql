@@ -1,0 +1,228 @@
+query GetProducts(
+  $filter: ProductAttributeFilterInput
+  $sort: ProductAttributeSortInput
+  $pageSize: Int = 24
+  $currentPage: Int = 1
+  $search: String
+) {
+  products(filter: $filter, pageSize: $pageSize, currentPage: $currentPage, search: $search, sort: $sort) {
+    total_count
+    aggregations {
+      attribute_code
+      label
+      options {
+        count
+        label
+        value
+      }
+    }
+    items {
+      id
+      sku
+      name
+      meta_title
+      meta_keyword
+      meta_description
+      canonical_url
+      stock_status
+      url_rewrites {
+        url
+        parameters {
+          name
+          value
+        }
+      }
+      categories {
+        id
+        path
+        name
+      }
+      description {
+        html
+      }
+      price_range {
+        minimum_price {
+          regular_price {
+            value
+            currency
+          }
+          discount {
+            amount_off
+            percent_off
+          }
+          final_price {
+            currency
+            value
+          }
+          fixed_product_taxes {
+            amount {
+              currency
+              value
+            }
+            label
+          }
+        }
+        maximum_price {
+          regular_price {
+            value
+            currency
+          }
+          discount {
+            amount_off
+            percent_off
+          }
+          final_price {
+            currency
+            value
+          }
+          fixed_product_taxes {
+            amount {
+              currency
+              value
+            }
+            label
+          }
+        }
+      }
+      thumbnail {
+        label
+        url
+      }
+      image {
+        label
+        url
+      }
+      small_image {
+        label
+        url
+      }
+      media_gallery {
+        disabled
+        label
+        position
+        url
+      }
+      color
+      size
+      __typename
+      ... on ConfigurableProduct {
+        variants {
+          attributes {
+            code
+            label
+            value_index
+          }
+          product {
+            id
+            sku
+            name
+            meta_title
+            meta_keyword
+            meta_description
+            canonical_url
+            stock_status
+            url_rewrites {
+              url
+              parameters {
+                name
+                value
+              }
+            }
+            categories {
+              id
+              path
+              name
+            }
+            description {
+              html
+            }
+            price_range {
+              minimum_price {
+                regular_price {
+                  value
+                  currency
+                }
+                discount {
+                  amount_off
+                  percent_off
+                }
+                final_price {
+                  currency
+                  value
+                }
+                fixed_product_taxes {
+                  amount {
+                    currency
+                    value
+                  }
+                  label
+                }
+              }
+              maximum_price {
+                regular_price {
+                  value
+                  currency
+                }
+                discount {
+                  amount_off
+                  percent_off
+                }
+                final_price {
+                  currency
+                  value
+                }
+                fixed_product_taxes {
+                  amount {
+                    currency
+                    value
+                  }
+                  label
+                }
+              }
+            }
+            thumbnail {
+              label
+              url
+            }
+            image {
+              label
+              url
+            }
+            small_image {
+              label
+              url
+            }
+            media_gallery {
+              disabled
+              label
+              position
+              url
+            }
+            color
+            size
+            __typename
+          }
+        }
+        configurable_options {
+          attribute_code
+          attribute_id_v2
+          id
+          label
+          position
+          product_id
+          use_default
+          values {
+            default_label
+            label
+            store_label
+            swatch_data {
+              value
+            }
+            use_default_value
+            value_index
+          }
+        }
+      }
+    }
+  }
+}

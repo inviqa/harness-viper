@@ -1,0 +1,23 @@
+type Product @key(fields: "id") @key(fields: "sku") {
+  id: ID!
+  sku: String!
+  name: String!
+  title: String!
+  price: Money!
+  description: String!
+  image: ProductImage
+  thumbnailImage: ProductImage
+  type: ProductType!
+  url: String!
+  gallery: [ProductImage!]
+  color: String
+  size: String
+  """
+  All available product options for configurable types
+  """
+  options: [ProductOption!]
+  """
+  Product variants for each full product selection for configurable types
+  """
+  variants: [ProductVariant!]
+}

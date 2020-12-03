@@ -1,0 +1,4 @@
+services:
+  AuthDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-auth[InMemoryAuthDataSourceProvider]
+    arguments: ['%env(AUTH_TOKEN_SECRET)%']

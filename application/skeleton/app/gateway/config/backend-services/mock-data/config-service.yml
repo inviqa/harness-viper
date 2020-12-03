@@ -1,0 +1,8 @@
+services:
+  ConfigDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-config[InMemoryConfigDataSourceProvider]
+    arguments: ['@InMemoryConfigRepository']
+
+  InMemoryConfigRepository:
+    class: //@inviqa/viper-gateway-service-config[InMemoryConfigRepository]
+    arguments: []

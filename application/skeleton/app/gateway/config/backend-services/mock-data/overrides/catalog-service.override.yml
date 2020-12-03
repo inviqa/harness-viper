@@ -1,0 +1,3 @@
+services:
+  InMemoryCatalogClient:
+    class: /Catalog/DataSource/InMemory/InMemoryCatalogClient[InMemoryCatalogClient]

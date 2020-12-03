@@ -1,20 +1,14 @@
-import { setConfig } from 'next/config';
 import { withI18n, createI18nToolbar } from '@inviqa/viper-storybook-addons';
 import { storybook } from '@inviqa/viper-ui';
+import { createI18n } from '@inviqa/viper-nextjs';
 import withNextRouter from './decorators/withNextRouter';
 import withCartId from './decorators/withCartId';
-import locales from '../src/locales';
+import { websiteConfig } from '../websiteConfig';
 
-setConfig({
-  publicRuntimeConfig: {
-    localeSubpaths: locales.availableLocales,
-    defaultLocale: locales.defaultLocale
-  }
+const { i18n } = createI18n({
+  locales: websiteConfig.map(({ id }) => id),
+  additionalNamespaces: ['catalog', 'commerce']
 });
-
-const {
-  default: { i18n }
-} = require('../src/lib/createI18n'); // eslint-disable-line @typescript-eslint/no-var-requires
 
 export const decorators = [withI18n, withNextRouter, storybook.withTheme, withCartId];
 export const parameters = {
@@ -24,5 +18,11 @@ export const parameters = {
 };
 
 export const globalTypes = {
-  ...createI18nToolbar(locales)
+  ...createI18nToolbar({
+    defaultLocale: websiteConfig[0].id,
+    availableLocales: websiteConfig.reduce(
+      (availableLocales, website) => ({ ...availableLocales, [website.id]: website.id }),
+      {}
+    )
+  })
 };

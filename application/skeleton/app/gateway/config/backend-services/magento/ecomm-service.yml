@@ -1,0 +1,29 @@
+services:
+  OrderDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-ecomm[MagentoOrderDataSourceProvider]
+    arguments:
+      - '@MagentoGraphqlClientProvider'
+      - '@OrderDataTransformer'
+
+  CheckoutDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-ecomm[MagentoCheckoutDataSourceProvider]
+    arguments:
+      - '@MagentoGraphqlClientProvider'
+      - '@CheckoutDataTransformer'
+
+  CartDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-ecomm[MagentoCartDataSourceProvider]
+    arguments:
+      - '@MagentoGraphqlClientProvider'
+      - '@CartDataTransformer'
+
+  OrderDataTransformer:
+    class: //@inviqa/viper-gateway-service-ecomm[MagentoOrderDataTransformer]
+    arguments: []
+
+  CheckoutDataTransformer:
+    class: //@inviqa/viper-gateway-service-ecomm[MagentoCheckoutDataTransformer]
+    arguments: ['@CartDataTransformer']
+
+  CartDataTransformer:
+    class: //@inviqa/viper-gateway-service-ecomm[MagentoCartDataTransformer]

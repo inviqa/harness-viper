@@ -14,6 +14,10 @@ type Options = Omit<RenderOptions, 'queries'> & {
   mocks: MockedResponse[];
 };
 
+const defaultOptions: Options = {
+  mocks: []
+};
+
 const createProviders = (options: Options) => (props: unknown) => {
   const cache = createCache();
   return (
@@ -23,9 +27,10 @@ const createProviders = (options: Options) => (props: unknown) => {
   );
 };
 
-export const renderWithProviders = (ui: ReactElement<unknown>, options: Options) => {
-  const wrapper = createProviders(options);
-  return render(ui, { wrapper, ...options });
+export const renderWithProviders = (ui: ReactElement<unknown>, options: Partial<Options> = {}) => {
+  const mergedOptions = { ...defaultOptions, ...options };
+  const wrapper = createProviders(mergedOptions);
+  return render(ui, { wrapper, ...mergedOptions });
 };
 
 export const setupMatchMediaMock = (matches = false): { reset: () => void } => {

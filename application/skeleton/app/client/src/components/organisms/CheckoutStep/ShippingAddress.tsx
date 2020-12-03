@@ -1,5 +1,6 @@
-import { SelectElementOptionProps, StyledAddress, StyledShippingAddressForm } from '@inviqa/viper-ui-commerce';
-import React, { FunctionComponent } from 'react';
+import { SelectElementOptionProps, Address as UIAddress, ShippingAddressForm } from '@inviqa/viper-ui-commerce';
+import React, { FunctionComponent, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Checkbox, Label } from 'theme-ui';
 import {
   Address,
@@ -11,7 +12,6 @@ import {
 import { billingSameAsShippingVar, CheckoutStep, useCheckoutSteps } from '~hooks/checkout';
 import { useResponseHandler } from '~hooks/useResponseHandler';
 import { transformAddressForDisplay } from '~lib/address';
-import { useTranslation } from '~lib/createI18n';
 import Heading from '../../atoms/Heading/Heading';
 import CheckoutStepWrapper from '../../templates/CheckoutStepWrapper/CheckoutStepWrapper';
 
@@ -39,23 +39,42 @@ export const ShippingAddressStep: FunctionComponent<Props> = ({
   const responseHandlers = useResponseHandler<
     SetCheckoutShippingAddressMutation,
     SetCheckoutShippingAddressMutationVariables
-  >({}, 'commerce', undefined, () => {
-    goToNextCheckoutStep();
+  >({
+    i18nNs: 'commerce',
+    successCallback: () => {
+      goToNextCheckoutStep();
+    }
   });
   const [setShippingAddress, { loading }] = useSetCheckoutShippingAddressMutation(responseHandlers);
+
+  const onSubmit = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (values: any) => {
+      if (values && values.address) {
+        const { shipping } = values.address;
+        const email = customer?.email ?? currentLocalCustomerEmail;
+        setShippingAddress({
+          variables: { checkoutId, address: { ...shipping, email } }
+        });
+      }
+    },
+    [setShippingAddress, checkoutId, currentLocalCustomerEmail, customer?.email]
+  );
+
+  const onEdit = useCallback(() => {
+    setCurrentCheckoutStep(CheckoutStep.ShippingAddress);
+  }, [setCurrentCheckoutStep]);
 
   return (
     <CheckoutStepWrapper
       name={CheckoutStep.ShippingAddress}
       heading={<Heading level={2}>{t('Checkout.ShippingAddressForm')}</Heading>}
       visible={currentCheckoutStep === CheckoutStep.ShippingAddress}
-      preview={
-        shippingAddress ? <StyledAddress address={transformAddressForDisplay(shippingAddress, countries)} /> : null
-      }
-      onEditCallback={() => setCurrentCheckoutStep(CheckoutStep.ShippingAddress)}
+      preview={shippingAddress ? <UIAddress address={transformAddressForDisplay(shippingAddress, countries)} /> : null}
+      onEditCallback={onEdit}
     >
       <Box className="checkout-shipping-section">
-        <StyledShippingAddressForm
+        <ShippingAddressForm
           fieldsConfigOverrides={[
             {
               name: 'country',
@@ -64,15 +83,7 @@ export const ShippingAddressStep: FunctionComponent<Props> = ({
           ]}
           defaultValues={shippingAddress}
           isLoading={loading}
-          onSubmit={values => {
-            if (values && values.address) {
-              const { shipping } = values.address;
-              const email = customer?.email ?? currentLocalCustomerEmail;
-              setShippingAddress({
-                variables: { checkoutId, address: { ...shipping, email } }
-              });
-            }
-          }}
+          onSubmit={onSubmit}
         />
       </Box>
       <Box className="checkout-use-shipping-for-billing" my={4}>

@@ -1,0 +1,8 @@
+services:
+  CatalogDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-catalog[InMemoryCatalogDataSourceProvider]
+    arguments: ['@InMemoryCatalogClient']
+
+  InMemoryCatalogClient:
+    class: //@inviqa/viper-gateway-service-catalog[InMemoryCatalogClient]
+    arguments: []

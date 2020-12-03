@@ -2,6 +2,8 @@ query GetPageByPath($path: String!) {
   routeByPath(path: $path) {
     path
     page {
+      ...CmsHomepagePageFragment
+      ...CmsPagePageFragment
       ...CmsArticlePageFragment
       ...ProductPageFragment
       ...CategoryPageFragment

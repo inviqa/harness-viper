@@ -1,0 +1,23 @@
+fragment ConfigurableProductFragment on ConfigurableProduct {
+  ...ProductInterfaceFragment
+  variants {
+    attributes {
+      code
+      label
+      value_index
+    }
+    product {
+      ...SimpleProductFragment
+    }
+  }
+  configurable_options {
+    attribute_code
+    id
+    label
+    position
+    values {
+      store_label
+      value_index
+    }
+  }
+}

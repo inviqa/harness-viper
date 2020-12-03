@@ -2,19 +2,16 @@
 import { FunctionComponent, useEffect, useMemo } from 'react';
 import { jsx, LinkProps, Link as ThemeLink, Alert, Box, BoxProps, Button, Flex } from 'theme-ui';
 import { CgTrash as TrashIcon } from 'react-icons/cg';
+import { Trans, useTranslation } from 'react-i18next';
 import cx from 'classnames';
 import { useReactiveVar } from '@apollo/client';
-import {
-  CartItem,
-  CartTableOverrides,
-  CartTableTotal,
-  StyledCartTable,
-  StyledCouponCodeForm
-} from '@inviqa/viper-ui-commerce';
-import { Link, Trans, useTranslation } from '~lib/createI18n';
+import Link from 'next/link';
+import { CartItem, CartTableTotal, CartTable, CouponCodeForm } from '@inviqa/viper-ui-commerce';
 import { cartIdVar, useCouponCode, checkoutIdVar } from '~hooks/cart';
 import { MessageActionType, useMessages } from '~hooks/useMessages';
 import {
+  GetCheckoutQuery,
+  GetCheckoutQueryVariables,
   UpdateCartMutation,
   UpdateCartMutationVariables,
   useGetCheckoutLazyQuery,
@@ -25,7 +22,7 @@ import CartItemCard from './CartItemCard';
 import Result from '../../utility/Result/Result';
 import CartTableRow from './CartTableRow';
 import { MessageType } from '~types/message';
-import { useResponseHandler } from '~hooks/useResponseHandler';
+import { useCartResponseHandler } from '~hooks/cart/useCartResponseHandler';
 
 const CatalogLink: FunctionComponent<LinkProps> = props => (
   <Link href="/search" passHref>
@@ -34,15 +31,21 @@ const CatalogLink: FunctionComponent<LinkProps> = props => (
 );
 
 const Cart: FunctionComponent<BoxProps> = ({ className, ...props }) => {
-  const { i18n, t } = useTranslation('commerce');
+  const getCheckoutResponseHandler = useCartResponseHandler<GetCheckoutQuery, GetCheckoutQueryVariables>();
+  const updateCartResponseHandler = useCartResponseHandler<UpdateCartMutation, UpdateCartMutationVariables>();
+
+  const { t } = useTranslation('commerce');
+
   const cartId = useReactiveVar(cartIdVar);
   const checkoutId = useReactiveVar(checkoutIdVar);
+
   const { dispatch } = useMessages();
-  const [getCheckout, { data, loading, error, called }] = useGetCheckoutLazyQuery();
+
+  const [getCheckout, { data, loading, error, called }] = useGetCheckoutLazyQuery(getCheckoutResponseHandler);
   const [handleCouponCodeInCart] = useCouponCode();
-  const responseHandlers = useResponseHandler<UpdateCartMutation, UpdateCartMutationVariables>({}, 'commerce');
-  const [emptyCart, emptyCartResult] = useUpdateCartMutation(responseHandlers);
+  const [emptyCart, emptyCartResult] = useUpdateCartMutation(updateCartResponseHandler);
   const [ref, isLargeContainer] = useContainerQuery<HTMLDivElement>(500);
+
   const cart = data?.checkout?.cart;
   const isEmpty = cart && cart?.numberOfItems === 0;
 
@@ -92,19 +95,6 @@ const Cart: FunctionComponent<BoxProps> = ({ className, ...props }) => {
     ];
   }, [cart?.totals, data?.checkout?.shippingMethod, t]);
 
-  const cartTableOverrides: CartTableOverrides = useMemo(
-    () => ({
-      headingLabels: [
-        t('Cart.Table.Product'),
-        t('Cart.Table.Description'),
-        t('Cart.Table.Quantity'),
-        t('Cart.Table.Total'),
-        ''
-      ]
-    }),
-    [t]
-  );
-
   const handleEmptyCart = () => {
     if (cartId) {
       emptyCart({
@@ -139,17 +129,11 @@ const Cart: FunctionComponent<BoxProps> = ({ className, ...props }) => {
         {!isEmpty && (
           <>
             {isLargeContainer ? (
-              <StyledCartTable
-                totals={totals}
-                className="cart__table"
-                overrides={cartTableOverrides}
-                locale={i18n.language}
-                data-cart-mode="table"
-              >
+              <CartTable totals={totals} className="cart__table" data-cart-mode="table">
                 {items.map(item => (
                   <CartTableRow key={item.id} {...item} />
                 ))}
-              </StyledCartTable>
+              </CartTable>
             ) : (
               // voiceover will remove these semantics if list does not have list styling so role is necessary
               // eslint-disable-next-line jsx-a11y/no-redundant-roles
@@ -185,7 +169,7 @@ const Cart: FunctionComponent<BoxProps> = ({ className, ...props }) => {
                 <span>{t('Cart.Empty')}</span>
               </Button>
 
-              <Link as="/checkout" href="/checkout" passHref>
+              <Link href="/checkout" passHref>
                 <Button as="a" variant="primary" sx={{ width: isLargeContainer ? 'auto' : '100%' }}>
                   {t('Cart.ProceedToCheckout')}
                 </Button>
@@ -193,10 +177,10 @@ const Cart: FunctionComponent<BoxProps> = ({ className, ...props }) => {
             </Flex>
 
             {isLargeContainer && (
-              <StyledCouponCodeForm
+              <CouponCodeForm
                 couponCode={cart?.couponCodes?.[0]?.code ?? ''}
                 onSubmit={handleCouponCodeInCart}
-                sx={{ marginTop: 3 }}
+                sx={{ marginTop: 3, maxWidth: '30rem' }}
               />
             )}
           </>

@@ -1,0 +1,151 @@
+{
+  "routeByPath": {
+    "path": "/en/custom-home",
+    "page": {
+      "id": "53",
+      "type": "CmsHomepagePage",
+      "locale": "en_GB",
+      "homePage": {
+        "productBanner": {
+          "text": {
+            "raw": "Strike now!",
+            "html": "Strike now!"
+          },
+          "image": {
+            "alt": "Viper",
+            "sizes": [
+              {
+                "size": "full",
+                "url": "https://drupal-int.viper.webpipeline.net/sites/default/files/2020-11/viper.jpg",
+                "width": 1920,
+                "height": 1080
+              },
+              {
+                "size": "thumbnail",
+                "url": "https://drupal-int.viper.webpipeline.net/sites/default/files/styles/thumbnail/public/2020-11/viper.jpg?h=d1cb525d&itok=uJ4yj5fm",
+                "width": 100,
+                "height": 100
+              },
+              {
+                "size": "medium",
+                "url": "https://drupal-int.viper.webpipeline.net/sites/default/files/styles/medium/public/2020-11/viper.jpg?h=d1cb525d&itok=LgBvFit8",
+                "width": 220,
+                "height": 220
+              },
+              {
+                "size": "large",
+                "url": "https://drupal-int.viper.webpipeline.net/sites/default/files/styles/large/public/2020-11/viper.jpg?h=d1cb525d&itok=oUsQLh2-",
+                "width": 480,
+                "height": 480
+              },
+              {
+                "size": "mobile",
+                "url": "https://drupal-int.viper.webpipeline.net/sites/default/files/styles/mobile/public/2020-11/viper.jpg?h=d1cb525d&itok=Aa11ZHFE",
+                "width": 640,
+                "height": 853
+              },
+              {
+                "size": "mobileRetina",
+                "url": "https://drupal-int.viper.webpipeline.net/sites/default/files/styles/mobile_retina/public/2020-11/viper.jpg?h=d1cb525d&itok=vKoP2Lza",
+                "width": 1280,
+                "height": 1706
+              },
+              {
+                "size": "desktop",
+                "url": "https://drupal-int.viper.webpipeline.net/sites/default/files/styles/desktop/public/2020-11/viper.jpg?h=d1cb525d&itok=N6-HUdBA",
+                "width": 1024,
+                "height": 768
+              },
+              {
+                "size": "desktopRetina",
+                "url": "https://drupal-int.viper.webpipeline.net/sites/default/files/styles/desktop_retina/public/2020-11/viper.jpg?h=d1cb525d&itok=vsAnsYl2",
+                "width": 2048,
+                "height": 1536
+              }
+            ]
+          },
+          "product": {
+            "id": "1226",
+            "type": "CONFIGURABLE",
+            "sku": "WJ01",
+            "name": "Stellar Solar Jacket",
+            "url": "/stellar-solar-jacket.html",
+            "price": {
+              "value": 5925,
+              "currency": "GBP"
+            },
+            "thumbnailImage": {
+              "alt": "Stellar Solar Jacket",
+              "url": "https://magento-int.viper.webpipeline.net/media/catalog/product/cache/e73f31ae33f68f0f603b4fb488de3756/w/j/wj01-red_main_1.jpg"
+            }
+          }
+        },
+        "productGrid": {
+          "title": "Our recommendations",
+          "products": [
+            {
+              "id": "1226",
+              "type": "CONFIGURABLE",
+              "sku": "WJ01",
+              "name": "Stellar Solar Jacket",
+              "url": "/stellar-solar-jacket.html",
+              "price": {
+                "value": 5925,
+                "currency": "GBP"
+              },
+              "thumbnailImage": {
+                "alt": "Stellar Solar Jacket",
+                "url": "https://magento-int.viper.webpipeline.net/media/catalog/product/cache/e73f31ae33f68f0f603b4fb488de3756/w/j/wj01-red_main_1.jpg"
+              }
+            },
+            {
+              "id": "1242",
+              "type": "CONFIGURABLE",
+              "sku": "WJ02",
+              "name": "Josie Yoga Jacket",
+              "url": "/josie-yoga-jacket.html",
+              "price": {
+                "value": 4444,
+                "currency": "GBP"
+              },
+              "thumbnailImage": {
+                "alt": "Josie Yoga Jacket",
+                "url": "https://magento-int.viper.webpipeline.net/media/catalog/product/cache/e73f31ae33f68f0f603b4fb488de3756/w/j/wj02-gray_main_1.jpg"
+              }
+            },
+            {
+              "id": "1258",
+              "type": "CONFIGURABLE",
+              "sku": "WJ03",
+              "name": "Augusta Pullover Jacket",
+              "url": "/augusta-pullover-jacket.html",
+              "price": {
+                "value": 4503,
+                "currency": "GBP"
+              },
+              "thumbnailImage": {
+                "alt": "Augusta Pullover Jacket",
+                "url": "https://magento-int.viper.webpipeline.net/media/catalog/product/cache/e73f31ae33f68f0f603b4fb488de3756/w/j/wj03-red_main_2.jpg"
+              }
+            },
+            {
+              "id": "1274",
+              "type": "CONFIGURABLE",
+              "sku": "WJ04",
+              "name": "Ingrid Running Jacket",
+              "url": "/ingrid-running-jacket.html",
+              "price": {
+                "value": 6636,
+                "currency": "GBP"
+              },
+              "thumbnailImage": {
+                "alt": "Ingrid Running Jacket",
+                "url": "https://magento-int.viper.webpipeline.net/media/catalog/product/cache/e73f31ae33f68f0f603b4fb488de3756/w/j/wj04-white_main_1.jpg"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

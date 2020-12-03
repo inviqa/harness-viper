@@ -1,7 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { useCallback } from 'react';
-import type { Namespace } from 'react-i18next';
-import { useTranslation } from '~lib/createI18n';
+import { useTranslation, Namespace } from 'react-i18next';
 import { MessageType } from '~types/message';
 import { MessageAction, MessageActionType, useMessages } from './useMessages';
 
@@ -13,7 +12,10 @@ export const createError = (name: string, message: string) => ({
   extraInfo: null
 });
 
-export function useErrorHandler(i18nNs: Namespace = 'common') {
+export function useErrorHandler(
+  i18nNs: Namespace = 'common',
+  createErrorAction?: (defaultErrorMessageAction: MessageAction, error: ApolloError) => MessageAction | null
+) {
   const { t } = useTranslation(i18nNs);
   const { dispatch } = useMessages();
 
@@ -35,7 +37,8 @@ export function useErrorHandler(i18nNs: Namespace = 'common') {
 
       if (networkError || graphQLErrors.length === 0) {
         message.payload.content = t('Messages.UnexpectedError', context);
-        dispatch(message);
+        const messageToDispatch = createErrorAction ? createErrorAction(message, apolloError) : message;
+        if (messageToDispatch) dispatch(messageToDispatch);
       }
 
       graphQLErrors.forEach((error, idx) => {
@@ -50,9 +53,10 @@ export function useErrorHandler(i18nNs: Namespace = 'common') {
           message.payload.content = t('Messages.UnexpectedError', context);
         }
 
-        dispatch(message);
+        const messageToDispatch = createErrorAction ? createErrorAction(message, apolloError) : message;
+        if (messageToDispatch) dispatch(messageToDispatch);
       });
     },
-    [t, dispatch]
+    [t, dispatch, createErrorAction]
   );
 }
