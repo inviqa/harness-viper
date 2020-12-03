@@ -1,0 +1,53 @@
+attributes.default:
+
+  domain: my127.site
+  
+  hostname: = @('namespace') ~ '.' ~ @('domain')
+
+  node:
+    version: 14
+
+  docker-compose:
+    file_version: '3'
+    sync:
+      strategy: = @('host.os') == 'darwin' ? 'mutagen':'native'
+      native:
+        options: cached
+      mutagen: ~
+
+  pipeline:
+    secrets:
+      MY127WS_KEY: = @('workspace.name') ~ '-my127ws-key'
+    stage:
+      publish:
+        enabled: no
+        services: = publishable_services(@('services'))
+        chart:
+          enabled: no
+          git:
+            ssh_private_key: ~
+            repository: ~
+            path: = 'build-artifacts/' ~ @('workspace.name')
+            email: name@example.com
+
+  docker:
+    registry:
+      url: ~
+      username: ~
+      password: ~
+    repository: ~
+
+  git:
+    main_branch: develop
+
+  helm:
+    image_pull_config: = docker_config(@('docker.registry'))
+    additional_schema_locations: https://inviqa.github.io/kubernetes-json-schema/schema
+
+    feature:
+      sealed_secrets: true
+
+    sealed_secrets:
+      controller:
+        name: sealed-secrets
+        namespace: sealed-secrets
