@@ -6,7 +6,7 @@ confd('harness:/'):
   - { src: docker/image/node/root/lib/task/build/gateway.sh }
   - { src: docker/image/node/root/lib/task/build/client.sh }
   - { src: application/overlay/Jenkinsfile }
-  - { src: application/overlay/.npmrc, dst: workspace:/.npmrc }
+  - { src: application/overlay/.yarnrc.yml, dst: workspace:/.yarnrc.yml }
   - { src: application/overlay/.dockerignore, dst: workspace:/.dockerignore }
   - { src: application/overlay/app/client/config/default.js, dst: workspace:/app/client/config/default.js }
   - { src: application/skeleton/README.md }

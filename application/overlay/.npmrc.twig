@@ -1,4 +1,0 @@
-{% for scope, repository in @('npm.repositories') %}
-@{{ scope }}:registry=https://{{ repository.host }}
-//{{ repository.host }}/:_authToken={{ repository.token }}
-{% endfor %}
