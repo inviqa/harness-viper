@@ -1,8 +1,9 @@
 import React, { FunctionComponent } from 'react';
+import Head from 'next/head';
+import { ProductSchema } from '@inviqa/viper-ui';
 import { ProductPageFragmentFragment } from '~hooks/apollo';
 import ProductContent from '../../organisms/ProductContent/ProductContent';
 import DocumentTitle from '../../DocumentTitle';
-import ProductSchema from '../../atoms/ProductSchema/ProductSchema';
 import { PageProps } from '../types';
 
 export const ProductPage: FunctionComponent<PageProps> = ({ queryResult }) => {
@@ -12,8 +13,8 @@ export const ProductPage: FunctionComponent<PageProps> = ({ queryResult }) => {
   return (
     <>
       <DocumentTitle title={product.title} />
-      <ProductSchema {...product} />
-      <ProductContent as="main" {...product} />
+      <Head>{ProductSchema(product)}</Head>
+      <ProductContent {...product} />
     </>
   );
 };

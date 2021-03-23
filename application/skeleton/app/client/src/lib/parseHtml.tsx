@@ -1,12 +1,10 @@
 import parse, { domToReact, HTMLReactParserOptions } from 'html-react-parser';
 import createDOMPurify, { DOMPurifyI } from 'dompurify';
-import React from 'react';
-import Heading, { Props as HeadingProps, HeadingLevel } from '../components/atoms/Heading/Heading';
-import Paragraph, { Props as ParagraphProps } from '../components/atoms/Paragraph/Paragraph';
+import React, { HTMLAttributes } from 'react';
 
 type AdditionalProps = {
-  Heading?: HeadingProps;
-  Paragraph?: ParagraphProps;
+  Heading?: HTMLAttributes<HTMLHeadingElement>;
+  Paragraph?: HTMLAttributes<HTMLParagraphElement>;
 };
 
 const createOptions = (additionalProps: AdditionalProps) => {
@@ -18,17 +16,14 @@ const createOptions = (additionalProps: AdditionalProps) => {
 
       if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(name)) {
         const props = additionalProps?.Heading ?? {};
-        const level = Number(name.replace('h', '')) as HeadingLevel;
-        return (
-          <Heading level={level} {...props}>
-            {domToReact(children, options)}
-          </Heading>
-        );
+        const TagName = name;
+
+        return <TagName {...props}>{domToReact(children, options)}</TagName>;
       }
 
       if (name === 'p') {
         const props = additionalProps?.Paragraph ?? {};
-        return <Paragraph {...props}>{domToReact(children, options)}</Paragraph>;
+        return <p {...props}>{domToReact(children, options)}</p>;
       }
 
       if (name === 'div') {

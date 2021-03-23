@@ -1,6 +1,7 @@
 import { GetMenuDocument, GetMenuQuery, GetMenuQueryVariables } from '../generated';
 
-export const defaultMenu = {
+export const defaultMenu: GetMenuQuery['menu'] = {
+  __typename: 'Menu',
   name: 'Main Menu',
   items: [
     {

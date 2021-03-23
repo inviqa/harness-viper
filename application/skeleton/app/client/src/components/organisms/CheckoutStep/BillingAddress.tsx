@@ -1,29 +1,35 @@
-import { SelectElementOptionProps, Address as UIAddress, BillingAddressForm } from '@inviqa/viper-ui-commerce';
+import {
+  Address as UIAddress,
+  BillingAddressForm,
+  BillingAddressFormProps,
+  BillingAddressFormValues
+} from '@inviqa/viper-ui';
+import { useResponseHandler } from '@inviqa/viper-react-hooks';
+import isEqual from 'react-fast-compare';
 import React, { FunctionComponent, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box } from 'theme-ui';
 import {
   Address,
+  CheckoutInput,
   SetCheckoutBillingAddressMutation,
   SetCheckoutBillingAddressMutationVariables,
   useSetCheckoutBillingAddressMutation
 } from '~hooks/apollo';
 import { billingSameAsShippingVar, CheckoutStep, currentCheckoutStepVar, useCheckoutSteps } from '~hooks/checkout';
-import { useResponseHandler } from '~hooks/useResponseHandler';
 import { transformAddressForDisplay } from '~lib/address';
-import Heading from '../../atoms/Heading/Heading';
-import CheckoutStepWrapper from '../../templates/CheckoutStepWrapper/CheckoutStepWrapper';
+import CheckoutStepWrapper from './CheckoutStepWrapper';
+import { setOrderId } from '~hooks/cart';
 
 type Props = {
-  checkoutId: string;
+  checkoutInput: CheckoutInput;
   billingAddress?: Address;
   shippingAddress?: Address;
-  countries?: SelectElementOptionProps[];
+  countries?: BillingAddressFormProps['countries'];
 };
 
 export const BillingAddressStep: FunctionComponent<Props> = ({
-  checkoutId,
-  countries,
+  checkoutInput,
+  countries = [],
   billingAddress,
   shippingAddress
 }) => {
@@ -39,18 +45,21 @@ export const BillingAddressStep: FunctionComponent<Props> = ({
     SetCheckoutBillingAddressMutationVariables
   >({
     i18nNs: 'commerce',
-    successCallback: () => {
-      if (!billingSameAsShipping) goToNextCheckoutStep();
+    successCallback: (data: SetCheckoutBillingAddressMutation) => {
+      setOrderId(data.setCheckoutBillingAddress.order?.id || null);
+      if (!billingSameAsShipping) {
+        goToNextCheckoutStep();
+      }
     }
   });
   const [setBillingAddress, { loading }] = useSetCheckoutBillingAddressMutation(responseHandlers);
 
   useEffect(() => {
-    if (shippingAddress && billingSameAsShipping) {
-      const { __typename, ...rest } = shippingAddress;
-      setBillingAddress({ variables: { checkoutId, address: rest } });
+    if (shippingAddress && billingSameAsShipping && !isEqual(billingAddress, shippingAddress)) {
+      const { __typename, ...address } = shippingAddress;
+      setBillingAddress({ variables: { checkoutInput, address } });
     }
-  }, [checkoutId, shippingAddress, billingSameAsShipping, setBillingAddress]);
+  }, [checkoutInput, shippingAddress, billingSameAsShipping, setBillingAddress, billingAddress]);
 
   useEffect(() => {
     if (billingSameAsShipping && currentCheckoutStep === CheckoutStep.BillingAddress) {
@@ -59,16 +68,12 @@ export const BillingAddressStep: FunctionComponent<Props> = ({
   }, [billingSameAsShipping, currentCheckoutStep, goToNextCheckoutStep]);
 
   const onSubmit = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (values: any) => {
-      if (values && values.address) {
-        const { billing } = values.address;
-        setBillingAddress({
-          variables: { checkoutId, address: billing }
-        });
-      }
+    (address: BillingAddressFormValues) => {
+      setBillingAddress({
+        variables: { checkoutInput, address }
+      });
     },
-    [setBillingAddress, checkoutId]
+    [setBillingAddress, checkoutInput]
   );
 
   const onEdit = useCallback(() => {
@@ -79,24 +84,19 @@ export const BillingAddressStep: FunctionComponent<Props> = ({
   return (
     <CheckoutStepWrapper
       name={CheckoutStep.BillingAddress}
-      heading={<Heading level={2}>{t('Checkout.BillingAddressForm')}</Heading>}
+      heading={<h2>{t('Checkout.BillingAddressForm')}</h2>}
       visible={currentCheckoutStep === CheckoutStep.BillingAddress}
       preview={billingAddress ? <UIAddress address={transformAddressForDisplay(billingAddress, countries)} /> : null}
       onEditCallback={onEdit}
     >
-      <Box className="checkout-billing-section">
+      <div className="checkout-billing-section">
         <BillingAddressForm
-          fieldsConfigOverrides={[
-            {
-              name: 'country',
-              options: countries
-            }
-          ]}
+          countries={countries}
           defaultValues={billingAddress}
           isLoading={loading}
           onSubmit={onSubmit}
         />
-      </Box>
+      </div>
     </CheckoutStepWrapper>
   );
 };

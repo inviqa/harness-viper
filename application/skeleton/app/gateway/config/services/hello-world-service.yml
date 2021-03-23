@@ -1,0 +1,26 @@
+services:
+  HelloWorldService:
+    class: /HelloWorld/HelloWorldService
+    arguments:
+      - '%services.hello-world.path%'
+      - '%services.hello-world.schema%'
+      - '@HelloWorldResolverProvider'
+      - '@HelloWorldDataSource'
+      - '@GatewayServiceRunner'
+      - '@HelloWorldApolloServerBuilder'
+
+  HelloWorldResolverProvider:
+    class: /HelloWorld/ResolverProvider
+    arguments: []
+
+  HelloWorldDataSource:
+    class: /HelloWorld/DataSource/MockHelloWorldDataSource
+    arguments: []
+
+  HelloWorldApolloServerBuilder:
+    class: //@inviqa/viper-apollo[ApolloServerBuilder]
+    factory: ['@ApolloServerBuilderFactory', 'create']
+    arguments:
+      - '@Logger'
+      - '%gateway.server%'
+      - '@ApolloServerPluginProviderList'

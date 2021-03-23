@@ -1,6 +1,5 @@
 import React, { FunctionComponent } from 'react';
 import CmsHomepage from '../../organisms/CmsHomepage/CmsHomepage';
-// import DocumentTitle from '../../DocumentTitle';
 import { PageProps } from '../types';
 import { CmsHomepagePageFragmentFragment } from '~hooks/apollo';
 

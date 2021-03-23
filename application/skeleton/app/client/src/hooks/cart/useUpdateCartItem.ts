@@ -1,6 +1,7 @@
 import { useReactiveVar } from '@apollo/client';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useCartResponseHandler, MessageAction, MessageActionType, MessageType } from '@inviqa/viper-react-hooks';
 import {
   CartItemUpdateInput,
   Product,
@@ -8,11 +9,8 @@ import {
   UpdateCartMutationVariables,
   useUpdateCartMutation
 } from '~hooks/apollo';
-import { MessageAction, MessageActionType } from '~hooks/useMessages';
-import { MessageType } from '~types/message';
 import { missingCartIdError } from './errors';
-import { cartIdVar } from './useCartId';
-import { useCartResponseHandler } from './useCartResponseHandler';
+import { cartIdVar, resetCartId } from './useCartId';
 
 export function useUpdateCartItem(product: Pick<Product, 'id' | 'name'>, messageLocation?: string) {
   const cartId = useReactiveVar(cartIdVar);
@@ -43,7 +41,8 @@ export function useUpdateCartItem(product: Pick<Product, 'id' | 'name'>, message
               location: messageLocation
             }
           }
-        : action
+        : action,
+    cartNotFoundCallback: resetCartId
   });
   const [updateCart, data] = useUpdateCartMutation(responseHandlers);
 

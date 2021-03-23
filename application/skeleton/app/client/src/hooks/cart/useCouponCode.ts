@@ -1,6 +1,7 @@
 import { useReactiveVar } from '@apollo/client';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useCartResponseHandler, MessageType, MessageActionType } from '@inviqa/viper-react-hooks';
 import {
   AddCouponCodeToCartMutation,
   AddCouponCodeToCartMutationVariables,
@@ -9,11 +10,8 @@ import {
   useAddCouponCodeToCartMutation,
   useRemoveCouponCodeFromCartMutation
 } from '~hooks/apollo';
-import { MessageType } from '~types/message';
-import { cartIdVar } from './useCartId';
-import { MessageActionType } from '../useMessages';
+import { cartIdVar, resetCartId } from './useCartId';
 import { missingCartIdError } from './errors';
-import { useCartResponseHandler } from './useCartResponseHandler';
 
 export function useCouponCode() {
   const { t } = useTranslation('commerce');
@@ -33,7 +31,8 @@ export function useCouponCode() {
           content: t('Messages.CouponCodeAddedToCart', { couponCode: code })
         }
       };
-    }
+    },
+    cartNotFoundCallback: resetCartId
   });
   const [addToCouponCode, data] = useAddCouponCodeToCartMutation(addCouponResponseHandlers);
 
@@ -48,7 +47,8 @@ export function useCouponCode() {
         type: MessageType.Success,
         content: t('Messages.CouponCodeRemovedFromCart')
       }
-    })
+    }),
+    cartNotFoundCallback: resetCartId
   });
   const [removeCouponCode] = useRemoveCouponCodeFromCartMutation(removeCouponResponseHandlers);
 

@@ -3,6 +3,6 @@ import:
   - backend-services/mock-data/*.yml
   - backend-services/mock-data/overrides/*.override.yml
   - services/*.yml
-  - services/overrides/*.override.yml
   - apps/*.yml
+  - generated.yml
   - main.yml

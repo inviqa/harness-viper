@@ -7,15 +7,15 @@
       "Save": "Lieferadresse speichern"
     },
     "Field": {
-      "firstName": "Vorname",
-      "lastName": "Familienname",
-      "address1": "Anschrift Zeile 1",
-      "address2": "Anschrift Zeile 2",
-      "city": "Stadt",
-      "country": "Land",
-      "phoneNumber": "Telefonnummer",
-      "postcode": "Postleitzahl",
-      "company": "Unternehmen"
+      "FirstName": "Vorname",
+      "LastName": "Familienname",
+      "Address1": "Anschrift Zeile 1",
+      "Address2": "Anschrift Zeile 2",
+      "City": "Stadt",
+      "Country": "Land",
+      "PhoneNumber": "Telefonnummer",
+      "Postcode": "Postleitzahl",
+      "Company": "Unternehmen"
     },
     "Submit": "Adresse speichern"
   },
@@ -45,7 +45,8 @@
       "Shipping": "Versand ({{ method }})"
     },
     "Item": {
-      "Quantity": "Menge",
+      "Quantity": "Menge: {{ quantity }}",
+      "Quantity_input": "Menge",
       "Remove": {
         "Full": "Entfernen Sie {{ name }} aus Ihrem Warenkorb",
         "Short": "Entfernen"

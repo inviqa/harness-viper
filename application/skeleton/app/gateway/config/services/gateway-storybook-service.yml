@@ -1,0 +1,9 @@
+services:
+  StorybookService:
+    class: //@inviqa/viper-gateway-service-static[StaticService]
+    factory: ['@StaticServiceFactory', 'create']
+    arguments:
+      - storybook
+      - '%gateway.storybook.client.path%'
+      - '%gateway.storybook.client.folder%'
+      - '@GatewayServiceRunner'

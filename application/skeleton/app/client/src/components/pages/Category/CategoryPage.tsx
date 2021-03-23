@@ -1,7 +1,6 @@
-/** @jsx jsx */
-import { FunctionComponent, useMemo } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
+
 import { useTranslation } from 'react-i18next';
-import { jsx, Heading } from 'theme-ui';
 import ProductList from '../../organisms/ProductList/ProductList';
 import DocumentTitle from '../../DocumentTitle';
 import { PageProps } from '../types';
@@ -33,9 +32,7 @@ export const CategoryPage: FunctionComponent<PageProps> = ({ queryResult }) => {
   return (
     <>
       <DocumentTitle title={page.category.title} />
-      <Heading as="h1" my={3}>
-        {page.category.name}
-      </Heading>
+      <h1 className="mb-3">{page.category.name}</h1>
 
       {page.category.description ? parseHtml(page.category.description) : null}
 

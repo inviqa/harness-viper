@@ -1,0 +1,29 @@
+services:
+  CartDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-ecomm[BigcommerceCartDataSourceProvider]
+    arguments:
+      - '@BigcommerceRestV2ClientProvider'
+      - '@BigcommerceRestV3ClientProvider'
+      - '@CartDataTransformer'
+
+  CheckoutDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-ecomm[BigcommerceCheckoutDataSourceProvider]
+    arguments:
+      - '@BigcommerceRestV2ClientProvider'
+      - '@BigcommerceRestV3ClientProvider'
+      - '@CheckoutDataTransformer'
+
+  OrderDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-ecomm[BigcommerceOrderDataSourceProvider]
+    arguments:
+      - '@BigcommerceRestV2ClientProvider'
+      - '@BigcommerceRestV3ClientProvider'
+
+  CheckoutDataTransformer:
+    class: //@inviqa/viper-gateway-service-ecomm[BigcommerceCheckoutDataTransformer]
+    arguments:
+      - '@CartDataTransformer'
+      - '%bigcommerce.staticPaymentMethods%'
+
+  CartDataTransformer:
+    class: //@inviqa/viper-gateway-service-ecomm[BigcommerceCartDataTransformer]

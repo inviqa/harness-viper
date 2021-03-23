@@ -5,8 +5,8 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 const withTranspileModules = require('next-transpile-modules')([
   '@inviqa/viper-ui',
-  '@inviqa/viper-ui-commerce',
-  '@inviqa/viper-nextjs'
+  '@inviqa/viper-nextjs',
+  '@inviqa/viper-react-hooks'
 ]);
 const runtimeCaching = require('./src/cache');
 const { websiteConfig } = require('./websiteConfig');

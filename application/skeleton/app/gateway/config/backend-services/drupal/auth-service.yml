@@ -2,5 +2,5 @@ services:
   AuthDataSourceProvider:
     class: //@inviqa/viper-gateway-service-auth[DrupalAuthDataSourceProvider]
     arguments:
+      - '@DrupalRestClientProvider'
       - '%env(AUTH_TOKEN_SECRET)%'
-      - '%drupal.rest.baseUrl%'

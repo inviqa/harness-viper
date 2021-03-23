@@ -1,13 +1,9 @@
-parameters:
-  content:
-    path: /_internal/content
-
 services:
   ContentService:
     class: //@inviqa/viper-gateway-service-content[ContentService]
     arguments:
-      - '%content.path%'
-      - './node_modules/@inviqa/viper-gateway-service-content/src/typedef/schema.graphql'
+      - '%services.content.path%'
+      - '%services.content.schema%'
       - '@ContentResolverProvider'
       - '@ContentDataSourceProvider'
       - '@GatewayServiceRunner'

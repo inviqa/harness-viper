@@ -1,6 +1,4 @@
-/** @jsx jsx */
-import { FunctionComponent, useCallback, useMemo, useState } from 'react';
-import { Flex, Box, jsx, Alert, Close } from 'theme-ui';
+import React, { FunctionComponent, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ProductGallery,
@@ -9,10 +7,10 @@ import {
   ProductAddToCartForm,
   defaultProductAddToCartFormOverrides,
   ProductOption,
-  ProductOptionSelection
-} from '@inviqa/viper-ui-commerce';
-import Heading from '../../atoms/Heading/Heading';
-import Paragraph from '../../atoms/Paragraph/Paragraph';
+  ProductOptionSelection,
+  Alert
+} from '@inviqa/viper-ui';
+import { MessageType } from '@inviqa/viper-react-hooks';
 import { ProductType, ProductVariant } from '~hooks/apollo';
 import { parseHtml } from '~lib/parseHtml';
 import { useAddToCart } from '~hooks/cart';
@@ -29,8 +27,7 @@ export const ProductContent: FunctionComponent<ProductContentProps> = ({
   gallery,
   image,
   options,
-  variants,
-  as
+  variants
 }) => {
   const { t } = useTranslation('commerce');
   const [handleAddToCart, { loading }] = useAddToCart({ id, name, sku }, 'minicart');
@@ -39,7 +36,7 @@ export const ProductContent: FunctionComponent<ProductContentProps> = ({
   const initialPrice = price;
 
   const [selectionState, dispatchSelectionChange] = useProductSelection(variants as ProductVariant[], initialPrice);
-  const { displayPrice, variantSku } = selectionState;
+  const { displayPrice, variantId } = selectionState;
 
   const [addCartToError, setAddToCartError] = useState('');
 
@@ -53,13 +50,13 @@ export const ProductContent: FunctionComponent<ProductContentProps> = ({
 
   const onAddToCart = useCallback(
     (value: { quantity: number }) => {
-      if (type === ProductType.Configurable && !variantSku) {
+      if (type === ProductType.Configurable && !variantId) {
         setAddToCartError(t('Messages.Errors.NO_VARIANT_SELECTED_ERROR'));
       } else {
-        handleAddToCart({ ...value, variantSku });
+        handleAddToCart({ ...value, variantId });
       }
     },
-    [handleAddToCart, type, variantSku, t]
+    [handleAddToCart, type, variantId, t]
   );
 
   const validSelections = useMemo(() => (variants || []).map(variant => [...variant.options]), [variants]);
@@ -68,22 +65,19 @@ export const ProductContent: FunctionComponent<ProductContentProps> = ({
   const galleryImages = useMemo(() => gallery?.map(({ url, alt }) => ({ alt, src: url })), [gallery]);
 
   return (
-    <Flex sx={{ flexDirection: ['column', 'column', 'row'] }} as={as}>
-      {gallery && image && <ProductGallery image={galleryImage} gallery={galleryImages} sx={{ width: '100%' }} />}
-      <Box className="product-info" p={2} sx={{ width: '100%' }}>
-        <Heading level={1} sx={{ marginTop: 0 }}>
-          {name}
-        </Heading>
-        <ProductPrice price={displayPrice} />
-        <Paragraph>SKU: {sku}</Paragraph>
+    <main className="flex flex-col lg:flex-row">
+      {gallery && image && <ProductGallery image={galleryImage} gallery={galleryImages} className="w-full" />}
+      <div className="product-info p-2 w-full">
+        <h1 className="mb-8">{name}</h1>
+        <ProductPrice price={displayPrice} className="mb-4" />
+        <p className="mb-4">SKU: {sku}</p>
         {parseHtml(description)}
         {!!addCartToError && (
-          <Alert sx={{ mb: 2 }} variant="error">
+          <Alert type={MessageType.Error} onDismiss={() => setAddToCartError('')}>
             {addCartToError}
-            <Close sx={{ ml: 'auto' }} aria-label={t('Messages.Dismiss')} onClick={() => setAddToCartError('')} />
           </Alert>
         )}
-        {options?.length && (
+        {!!options?.length && (
           <ProductOptions
             options={options as ProductOption[]}
             validSelections={validSelections}
@@ -92,7 +86,7 @@ export const ProductContent: FunctionComponent<ProductContentProps> = ({
         )}
         <ProductAddToCartForm
           onSubmit={onAddToCart}
-          sx={{ marginTop: 4 }}
+          className="mt-4"
           overrides={{
             Button: buttonProps => (
               <Button {...buttonProps} disabled={loading || type === ProductType.Other}>
@@ -101,8 +95,8 @@ export const ProductContent: FunctionComponent<ProductContentProps> = ({
             )
           }}
         />
-      </Box>
-    </Flex>
+      </div>
+    </main>
   );
 };
 

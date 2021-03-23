@@ -3,6 +3,7 @@ import Header from './Header';
 import { withApollo } from '@inviqa/viper-storybook-addons';
 import { getCartMock } from '~hooks/apollo/mocks/GetCart';
 import { getMenuMock } from '~hooks/apollo/mocks/GetMenu';
+import { getCheckoutMock } from '~hooks/apollo/mocks/GetCheckout';
 
 <Meta
   title="Organisms/Header"
@@ -10,7 +11,7 @@ import { getMenuMock } from '~hooks/apollo/mocks/GetMenu';
   decorators={[withApollo]}
   parameters={{
     apollo: {
-      mocks: [getMenuMock({ name: 'main' }), getCartMock()]
+      mocks: [getMenuMock({ name: 'main' }), getCartMock(), getCheckoutMock()]
     }
   }}
 />

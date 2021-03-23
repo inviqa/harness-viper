@@ -1,5 +1,5 @@
-mutation SetCheckoutShippingAddress($checkoutId: String!, $address: AddressInput!) {
-  setCheckoutShippingAddress(checkoutId: $checkoutId, address: $address) {
+mutation SetCheckoutShippingAddress($checkoutInput: CheckoutInput!, $address: AddressInput!) {
+  setCheckoutShippingAddress(checkoutInput: $checkoutInput, address: $address) {
     ...CheckoutFragment
   }
 }

@@ -1,16 +1,16 @@
-/* @jsx jsx */
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { NextComponentType, NextPageContext } from 'next';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextComponentType, NextPageContext } from 'next';
 import { useRouter } from 'next/router';
-import { jsx } from 'theme-ui';
+import { getApolloProps, GetContextWithApollo, getI18nProps, isDataOnlyRequest } from '@inviqa/viper-nextjs';
+import { MessageType } from '@inviqa/viper-react-hooks';
+import { Alert } from '@inviqa/viper-ui';
 import DocumentTitle from '../../../components/DocumentTitle';
-import Heading from '../../../components/atoms/Heading/Heading';
-import Paragraph from '../../../components/atoms/Paragraph/Paragraph';
+import createApolloClientConfig from '~lib/createApolloClientConfig';
+import { GetMenuDocument, GetMenuQuery, GetMenuQueryVariables } from '~hooks/apollo';
 
 type Props = {
   orderNumber?: string;
-  namespacesRequired?: string[];
 };
 
 export const CheckoutSuccess: NextComponentType<NextPageContext, Props, Props> = ({ orderNumber }) => {
@@ -26,22 +26,45 @@ export const CheckoutSuccess: NextComponentType<NextPageContext, Props, Props> =
   return (
     <>
       <DocumentTitle title={t('CheckoutSuccess.Title')} />
-      <main sx={{ textAlign: 'center' }}>
-        <Heading level={1}>{t('CheckoutSuccess.Title')}</Heading>
-        <Paragraph sx={{ fontSize: 3 }}>
+      <main className="text-center">
+        <h1 className="my-8">{t('CheckoutSuccess.Title')}</h1>
+        <p className="text-xl">
           <Trans ns="commerce" i18nKey="CheckoutSuccess.OrderNumber" values={{ orderNumber }}>
             <strong />
           </Trans>
-        </Paragraph>
-        <Paragraph sx={{ fontSize: 3 }}>{t('CheckoutSuccess.Message')}</Paragraph>
+        </p>
+        <Alert type={MessageType.Success}>{t('CheckoutSuccess.Message')}</Alert>
       </main>
     </>
   );
 };
 
-CheckoutSuccess.getInitialProps = async (context: NextPageContext) => ({
-  namespacesRequired: ['common', 'commerce'],
-  orderNumber: context.query.orderNumber?.toString()
-});
+const getPageProps = async ({
+  apolloClient,
+  query,
+  req
+}: GetContextWithApollo<GetServerSidePropsContext>): Promise<GetServerSidePropsResult<Props>> => {
+  if (!isDataOnlyRequest(req)) {
+    // ssr queries for page - ssr for main menu as it's 'above the fold', leave footer menu for csr
+    await Promise.all([
+      apolloClient.query<GetMenuQuery, GetMenuQueryVariables>({
+        query: GetMenuDocument,
+        variables: { name: 'main' }
+      })
+    ]);
+  }
+
+  return {
+    props: {
+      orderNumber: query.orderNumber?.toString()
+    }
+  };
+};
+
+export const getServerSideProps = getI18nProps(
+  ['commerce'],
+  undefined,
+  getApolloProps(createApolloClientConfig, getPageProps)
+);
 
 export default CheckoutSuccess;

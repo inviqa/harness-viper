@@ -1,17 +1,20 @@
 import { waitFor, act } from '@testing-library/react';
+import { useContainerQuery } from '@inviqa/viper-react-hooks';
 import React from 'react';
 import { getCheckoutMock } from '~hooks/apollo/mocks/GetCheckout';
 import { cartIdVar, checkoutIdVar } from '~hooks/cart';
-import { cache } from '~lib/cache';
 import { renderWithProviders } from '~test-helpers';
-import useContainerQuery from '../../../hooks/useContainerQuery';
 import OrderSummary from './OrderSummary';
 
-jest.mock('../../../hooks/useContainerQuery');
+jest.mock('@inviqa/viper-react-hooks', () => ({
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  ...jest.requireActual('@inviqa/viper-react-hooks'),
+  useContainerQuery: jest.fn()
+}));
 
 describe(OrderSummary, () => {
   beforeEach(() => {
-    cache.reset();
     (useContainerQuery as jest.Mock).mockReset();
 
     act(() => {

@@ -1,13 +1,9 @@
-parameters:
-  customcontent:
-    path: /_internal/custom-content
-
 services:
   CustomContentService:
     class: /CustomContent/Service/CustomContentService
     arguments:
-      - '%customcontent.path%'
-      - './src/CustomContent/typedef/schema.graphql'
+      - '%services.custom-content.path%'
+      - '%services.custom-content.schema%'
       - '@CustomContentResolverProvider'
       - '@CustomContentDataSourceProvider'
       - '@GatewayServiceRunner'

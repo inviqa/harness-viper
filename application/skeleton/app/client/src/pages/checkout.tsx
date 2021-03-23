@@ -1,14 +1,15 @@
-import React, { FunctionComponent, useEffect, useMemo } from 'react';
+import React, { forwardRef, ForwardRefExoticComponent, RefAttributes, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { NextComponentType } from 'next';
+import type { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Spinner, Link as ThemeLink, LinkProps, Alert } from 'theme-ui';
 import { useReactiveVar } from '@apollo/client';
-import { SelectElementOptionProps } from '@inviqa/viper-ui-commerce';
+import { SimplePageLayout, TwoColumnContentLayout, BillingAddressFormProps, Alert } from '@inviqa/viper-ui';
+import { PacmanLoader as Spinner } from 'react-spinners';
+import { MessageType, useResponseHandler } from '@inviqa/viper-react-hooks';
+import { getApolloProps, GetContextWithApollo, getI18nProps, isDataOnlyRequest } from '@inviqa/viper-nextjs';
 import OrderSummary from '../components/organisms/OrderSummary/OrderSummary';
 import DocumentTitle from '../components/DocumentTitle';
-import Heading from '../components/atoms/Heading/Heading';
 import Header from '../components/organisms/Header/Header';
 import Footer from '../components/organisms/Footer/Footer';
 import {
@@ -18,29 +19,37 @@ import {
   ShippingMethodStep,
   PaymentMethodStep
 } from '../components/organisms/CheckoutStep';
-import SimplePageLayout from '../components/templates/SimplePageLayout/SimplePageLayout';
-import TwoColumnsPageLayout from '../components/templates/TwoColumnContentLayout/TwoColumnContentLayout';
-
-import { checkoutIdVar, resetCartId } from '~hooks/cart';
+import { checkoutIdVar, orderIdVar, resetCartId } from '~hooks/cart';
 import {
   useGetCheckoutLazyQuery,
   usePlaceOrderMutation,
   useCountriesLazyQuery,
   PlaceOrderMutation,
-  PlaceOrderMutationVariables
+  PlaceOrderMutationVariables,
+  CheckoutInput,
+  GetMenuQuery,
+  GetMenuQueryVariables,
+  GetMenuDocument
 } from '~hooks/apollo';
-import { useResponseHandler } from '~hooks/useResponseHandler';
+import createApolloClientConfig from '~lib/createApolloClientConfig';
 
-const CatalogLink: FunctionComponent<LinkProps> = props => (
-  <Link href="/search" passHref>
-    <ThemeLink variant="inverted" {...props} />
-  </Link>
+const CatalogLink: ForwardRefExoticComponent<RefAttributes<HTMLAnchorElement>> = forwardRef(
+  ({ children, ...props }, ref) => (
+    <Link href="/search" passHref>
+      <a ref={ref} {...props}>
+        {children}
+      </a>
+    </Link>
+  )
 );
 
-export const Checkout: NextComponentType & { getLayout: (page: JSX.Element) => JSX.Element } = () => {
+export const Checkout: NextPage & {
+  getLayout: (page: JSX.Element) => JSX.Element;
+} = () => {
   const { t } = useTranslation('commerce');
   const router = useRouter();
   const checkoutId = useReactiveVar(checkoutIdVar);
+  const orderId = useReactiveVar(orderIdVar);
   const responseHandlers = useResponseHandler<PlaceOrderMutation, PlaceOrderMutationVariables>({
     i18nNs: 'commerce'
   });
@@ -51,7 +60,20 @@ export const Checkout: NextComponentType & { getLayout: (page: JSX.Element) => J
 
   const isEmpty = data?.checkout?.cart?.numberOfItems === 0;
 
-  const transformedCountries: SelectElementOptionProps[] = useMemo(
+  const [checkoutInput, setCheckoutInput] = useState<CheckoutInput>({
+    checkoutId: checkoutId ?? '',
+    orderId: null
+  });
+
+  useEffect(() => {
+    setCheckoutInput({
+      checkoutId: checkoutId ?? '',
+      orderId
+    });
+  }, [checkoutId, orderId]);
+
+  // TODO: make a more generic type for countries
+  const transformedCountries: BillingAddressFormProps['countries'] = useMemo(
     () =>
       (countryData?.websiteConfig?.countries ?? [])
         .map(({ name, id }) => ({ label: name, value: id }))
@@ -81,53 +103,53 @@ export const Checkout: NextComponentType & { getLayout: (page: JSX.Element) => J
     <>
       <DocumentTitle title={t('Checkout.Title')} />
       <main>
-        <Heading level={1}>{t('Checkout.Title')}</Heading>
+        <h1 className="my-8">{t('Checkout.Title')}</h1>
 
-        {loading && <Spinner sx={{ display: 'block', mx: 'auto' }} />}
+        {loading && <Spinner loading={loading} css="display:block; margin: 0 auto;" aria-label={t('Loading')} />}
 
-        {!loading && isEmpty && (
-          <Alert className="cart__message" sx={{ display: 'block' }}>
+        {!loading && isEmpty && checkoutInput && (
+          <Alert type={MessageType.Warning} className="cart__message">
             <Trans i18nKey="Cart.IsEmpty" ns="commerce">
               <CatalogLink />
             </Trans>
           </Alert>
         )}
 
-        {!loading && !isEmpty ? (
-          <TwoColumnsPageLayout sidebarPos="right" sidebar={<OrderSummary />}>
+        {!loading && !isEmpty && checkoutInput ? (
+          <TwoColumnContentLayout sidebarPosition="right" sidebar={<OrderSummary />}>
             <CustomerStep
-              checkoutId={checkoutId as string}
+              checkoutInput={checkoutInput}
               customer={data?.checkout?.customer ?? undefined}
               shippingAddress={data?.checkout?.shippingAddress ?? undefined}
             />
 
             <ShippingAddressStep
-              checkoutId={checkoutId as string}
+              checkoutInput={checkoutInput}
               customer={data?.checkout?.customer ?? undefined}
               shippingAddress={data?.checkout?.shippingAddress ?? undefined}
               countries={transformedCountries}
             />
 
             <BillingAddressStep
-              checkoutId={checkoutId as string}
+              checkoutInput={checkoutInput}
               shippingAddress={data?.checkout?.shippingAddress ?? undefined}
               billingAddress={data?.checkout?.billingAddress ?? undefined}
               countries={transformedCountries}
             />
 
             <ShippingMethodStep
-              checkoutId={checkoutId as string}
+              checkoutInput={checkoutInput}
               availableShippingMethods={data?.checkout?.availableShippingMethods ?? undefined}
               shippingMethod={data?.checkout?.shippingMethod ?? undefined}
             />
 
             <PaymentMethodStep
-              checkoutId={checkoutId as string}
+              checkoutInput={checkoutInput}
               availablePaymentMethods={data?.checkout?.availablePaymentMethods ?? undefined}
               paymentMethod={data?.checkout?.paymentMethod ?? undefined}
               placeOrderMutation={placeOrder}
             />
-          </TwoColumnsPageLayout>
+          </TwoColumnContentLayout>
         ) : null}
       </main>
     </>
@@ -141,8 +163,29 @@ Checkout.getLayout = page => (
   </SimplePageLayout>
 );
 
-Checkout.getInitialProps = async () => ({
-  namespacesRequired: ['common', 'commerce']
-});
+const getPageProps = async ({
+  apolloClient,
+  req
+}: GetContextWithApollo<GetServerSidePropsContext>): Promise<GetServerSidePropsResult<unknown>> => {
+  if (!isDataOnlyRequest(req)) {
+    // ssr queries for page - ssr for main menu as it's 'above the fold', leave footer menu for csr
+    await Promise.all([
+      apolloClient.query<GetMenuQuery, GetMenuQueryVariables>({
+        query: GetMenuDocument,
+        variables: { name: 'main' }
+      })
+    ]);
+  }
+
+  return {
+    props: {}
+  };
+};
+
+export const getServerSideProps = getI18nProps(
+  ['commerce'],
+  undefined,
+  getApolloProps(createApolloClientConfig, getPageProps)
+);
 
 export default Checkout;

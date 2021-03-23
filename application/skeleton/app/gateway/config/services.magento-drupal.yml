@@ -4,6 +4,6 @@ import:
   - backend-services/magento/overrides/*.override.yml
   - backend-services/drupal/*.yml
   - services/*.yml
-  - services/overrides/*.override.yml
   - apps/*.yml
+  - generated.yml
   - main.yml

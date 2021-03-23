@@ -10,7 +10,7 @@ import {
   defaultProductsFiltered,
   getProductsMock
 } from '~hooks/apollo/mocks/GetProducts';
-import { currentFiltersVar, currentSortVar } from '~lib/cache';
+import { currentFiltersVar, currentSortVar } from '~lib/apolloCacheConfig';
 import { ProductSortCriteria, ProductSortOrder, useGetProductsQuery } from '~hooks/apollo';
 
 jest.mock('~hooks/apollo', () => {
@@ -22,9 +22,15 @@ jest.mock('~hooks/apollo', () => {
 });
 
 describe('ProductList', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     currentSortVar({ criteria: ProductSortCriteria.Position, order: ProductSortOrder.Asc });
     currentFiltersVar([]);
+
+    await waitFor(
+      () =>
+        currentSortVar().criteria === ProductSortCriteria.Position && currentSortVar().order === ProductSortOrder.Asc
+    );
+    await waitFor(() => currentFiltersVar().length === 0);
   });
 
   describe('When: the product data is loading', () => {
@@ -42,7 +48,7 @@ describe('ProductList', () => {
 
   describe('When: product data is provided', () => {
     beforeEach(() => {
-      (useGetProductsQuery as jest.Mock).mockImplementation(() => ({
+      (useGetProductsQuery as jest.Mock).mockImplementationOnce(() => ({
         loading: false,
         data: getProductsMock().result.data
       }));

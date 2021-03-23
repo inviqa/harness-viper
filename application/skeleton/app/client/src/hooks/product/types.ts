@@ -1,5 +1,5 @@
-import { ProductOptionSelection } from '@inviqa/viper-ui-commerce';
-import { Money } from '~hooks/apollo';
+import { ProductOptionSelection } from '@inviqa/viper-ui';
+import { GetProductsQueryVariables, Money } from '~hooks/apollo';
 
 export type ProductSelectionChangeAction = {
   type: 'setselection';
@@ -8,5 +8,7 @@ export type ProductSelectionChangeAction = {
 
 export type ProductSelectionState = {
   displayPrice: Money;
-  variantSku: string | null;
+  variantId: string | null;
 };
+
+export type ProductListInitialVariables = Pick<GetProductsQueryVariables, 'filters' | 'searchTerm'>;

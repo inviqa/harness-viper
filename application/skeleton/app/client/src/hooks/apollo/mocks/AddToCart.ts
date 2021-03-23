@@ -5,7 +5,7 @@ import { defaultCartTotals, defaultCouponCodes } from './GetCart';
 export const addToCartMock = (
   {
     cartId = 'mock-cart-id',
-    items = [{ sku: 'mock-sku', variantSku: null, quantity: 1 }]
+    items = [{ id: 'mock-id', variantId: null, quantity: 1 }]
   }: Partial<AddToCartMutationVariables> = {},
   {
     data = {

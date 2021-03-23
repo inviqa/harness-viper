@@ -4,7 +4,7 @@
 /.next/
 
 # storybook
-storybook-static/
+storybook-static
 
 # service worker stuff
 public/workbox-*.js*

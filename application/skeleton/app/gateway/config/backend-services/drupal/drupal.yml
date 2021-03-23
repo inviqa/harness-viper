@@ -1,8 +1,12 @@
 parameters:
   drupal:
-    client: ~
-    http:
-      uri: https://drupal-int.viper.webpipeline.net/graphql
+    graphql:
+      client: ~
+      http:
+        uri: https://drupal-int.viper.webpipeline.net/graphql
+    rest:
+      client:
+        baseURL: https://drupal-int.viper.webpipeline.net
     defaultLocales:
       EN: en_GB
       DE: de_DE
@@ -10,19 +14,45 @@ parameters:
       prefix: drupal
       level: info
       timestamp: true
-    rest:
-      baseUrl: https://drupal-int.viper.webpipeline.net
 
 services:
+  # REST
+  DrupalRestClientProvider:
+    class: //@inviqa/viper-backend-drupal[DrupalRestClientProvider]
+    arguments: ['@DrupalAxiosClientBuilder']
+
+  DrupalAxiosClientBuilder:
+    class: //@inviqa/viper-axios[AxiosClientBuilder]
+    factory: ['@AxiosClientBuilderFactory', 'create']
+    arguments:
+      - '%drupal.rest.client%'
+      - '@DrupalAxiosClientBuilderPluginList'
+
+  DrupalAxiosClientBuilderPluginList:
+    class: //@inviqa/viper-axios[AxiosClientBuilderPluginList]
+    factory: ['@AxiosClientBuilderPluginListFactory', 'create']
+    arguments: ['@DrupalAxiosClientLoggerPlugin']
+
+  DrupalAxiosClientLoggerPlugin:
+    class: //@inviqa/viper-axios[AxiosClientLoggerPlugin]
+    factory: ['@AxiosClientLoggerPluginFactory', 'create']
+    arguments: ['@DrupalLogger']
+
+  # GraphQL
   DrupalGraphqlClientProvider:
     class: //@inviqa/viper-backend-drupal[DrupalGraphqlClientProvider]
-    arguments: ['@DrupalApolloClientBuilder']
+    arguments:
+      - '@DrupalApolloClientBuilder'
+      - '@DrupalDocumentOverrides'
+
+  DrupalDocumentOverrides:
+    class: //@inviqa/viper-backend-graphql[DocumentOverrides]
 
   DrupalApolloClientBuilder:
     class: //@inviqa/viper-apollo[ApolloClientBuilder]
     factory: ['@ApolloClientBuilderFactory', 'create']
     arguments:
-      - '%drupal.client%'
+      - '%drupal.graphql.client%'
       - '@DrupalApolloLinkProviders'
 
   DrupalApolloLinkProviders:
@@ -35,7 +65,7 @@ services:
   DrupalHttpLinkProvider:
     class: //@inviqa/viper-apollo[HttpLinkProvider]
     factory: ['@HttpLinkProviderFactory', 'create']
-    arguments: ['%drupal.http%']
+    arguments: ['%drupal.graphql.http%']
 
   DrupalLoggerLinkProvider:
     class: //@inviqa/viper-apollo[LoggerLinkProvider]

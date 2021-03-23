@@ -1,13 +1,9 @@
-parameters:
-  catalog:
-    path: /_internal/catalog
-
 services:
   CatalogService:
     class: //@inviqa/viper-gateway-service-catalog[CatalogService]
     arguments:
-      - '%catalog.path%'
-      - './node_modules/@inviqa/viper-gateway-service-catalog/src/typedef/*.graphql'
+      - '%services.catalog.path%'
+      - '%services.catalog.schema%'
       - '@CatalogResolverProvider'
       - '@CatalogDataSourceProvider'
       - '@GatewayServiceRunner'

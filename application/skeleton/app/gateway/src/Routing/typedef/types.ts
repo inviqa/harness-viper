@@ -1,6 +1,8 @@
 import { GraphQLResolveInfo } from 'graphql';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -16,30 +18,15 @@ export type Scalars = {
 
 
 
-/** Input containing basic page information */
-export type PageInput = {
+/** CMS Homepage page */
+export type CmsHomepagePage = Page & {
+  __typename?: 'CmsHomepagePage';
   /** Page identifier */
   id: Scalars['String'];
   /** Page type */
   type: Scalars['String'];
-};
-
-export type Query = {
-  __typename?: 'Query';
-  /** Get the route by path */
-  routeByPath?: Maybe<Route>;
-  /** Get the route by basic page info */
-  routeByPage?: Maybe<Route>;
-};
-
-
-export type QueryRouteByPathArgs = {
-  path: Scalars['String'];
-};
-
-
-export type QueryRouteByPageArgs = {
-  page: PageInput;
+  /** Page locale */
+  locale: Scalars['String'];
 };
 
 /** Page interface (all the pages should implement this) */
@@ -105,15 +92,15 @@ export type Route = {
   page: Page;
 };
 
-/** CMS Homepage page */
-export type CmsHomepagePage = Page & {
-  __typename?: 'CmsHomepagePage';
-  /** Page identifier */
-  id: Scalars['String'];
-  /** Page type */
-  type: Scalars['String'];
-  /** Page locale */
-  locale: Scalars['String'];
+export type Query = {
+  __typename?: 'Query';
+  /** Get the route by path */
+  routeByPath?: Maybe<Route>;
+};
+
+
+export type QueryRouteByPathArgs = {
+  path: Scalars['String'];
 };
 
 
@@ -179,7 +166,7 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type IsTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
+export type IsTypeOfResolverFn<T = {}, TContext = {}> = (obj: T, context: TContext, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
@@ -193,41 +180,42 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  PageInput: PageInput;
+  CmsHomepagePage: ResolverTypeWrapper<CmsHomepagePage>;
   String: ResolverTypeWrapper<Scalars['String']>;
-  Query: ResolverTypeWrapper<{}>;
-  Page: ResolversTypes['CmsArticlePage'] | ResolversTypes['CmsPagePage'] | ResolversTypes['ProductPage'] | ResolversTypes['CategoryPage'] | ResolversTypes['CmsHomepagePage'];
+  Page: ResolversTypes['CmsHomepagePage'] | ResolversTypes['CmsArticlePage'] | ResolversTypes['CmsPagePage'] | ResolversTypes['ProductPage'] | ResolversTypes['CategoryPage'];
   CmsArticlePage: ResolverTypeWrapper<CmsArticlePage>;
   CmsPagePage: ResolverTypeWrapper<CmsPagePage>;
   ProductPage: ResolverTypeWrapper<ProductPage>;
   CategoryPage: ResolverTypeWrapper<CategoryPage>;
   Route: ResolverTypeWrapper<Route>;
-  CmsHomepagePage: ResolverTypeWrapper<CmsHomepagePage>;
+  Query: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  PageInput: PageInput;
+  CmsHomepagePage: CmsHomepagePage;
   String: Scalars['String'];
-  Query: {};
-  Page: ResolversParentTypes['CmsArticlePage'] | ResolversParentTypes['CmsPagePage'] | ResolversParentTypes['ProductPage'] | ResolversParentTypes['CategoryPage'] | ResolversParentTypes['CmsHomepagePage'];
+  Page: ResolversParentTypes['CmsHomepagePage'] | ResolversParentTypes['CmsArticlePage'] | ResolversParentTypes['CmsPagePage'] | ResolversParentTypes['ProductPage'] | ResolversParentTypes['CategoryPage'];
   CmsArticlePage: CmsArticlePage;
   CmsPagePage: CmsPagePage;
   ProductPage: ProductPage;
   CategoryPage: CategoryPage;
   Route: Route;
-  CmsHomepagePage: CmsHomepagePage;
+  Query: {};
   Boolean: Scalars['Boolean'];
 };
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  routeByPath?: Resolver<Maybe<ResolversTypes['Route']>, ParentType, ContextType, RequireFields<QueryRouteByPathArgs, 'path'>>;
-  routeByPage?: Resolver<Maybe<ResolversTypes['Route']>, ParentType, ContextType, RequireFields<QueryRouteByPageArgs, 'page'>>;
+export type CmsHomepagePageResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsHomepagePage'] = ResolversParentTypes['CmsHomepagePage']> = {
+  __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['CmsHomepagePage']>, { __typename: 'CmsHomepagePage' } & GraphQLRecursivePick<ParentType, {"id":true,"type":true,"locale":true}>, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  locale?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Page'] = ResolversParentTypes['Page']> = {
-  __resolveType: TypeResolveFn<'CmsArticlePage' | 'CmsPagePage' | 'ProductPage' | 'CategoryPage' | 'CmsHomepagePage', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'CmsHomepagePage' | 'CmsArticlePage' | 'CmsPagePage' | 'ProductPage' | 'CategoryPage', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   locale?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -238,7 +226,7 @@ export type CmsArticlePageResolvers<ContextType = any, ParentType extends Resolv
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   locale?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CmsPagePageResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsPagePage'] = ResolversParentTypes['CmsPagePage']> = {
@@ -246,7 +234,7 @@ export type CmsPagePageResolvers<ContextType = any, ParentType extends Resolvers
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   locale?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ProductPageResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProductPage'] = ResolversParentTypes['ProductPage']> = {
@@ -254,7 +242,7 @@ export type ProductPageResolvers<ContextType = any, ParentType extends Resolvers
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   locale?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CategoryPageResolvers<ContextType = any, ParentType extends ResolversParentTypes['CategoryPage'] = ResolversParentTypes['CategoryPage']> = {
@@ -262,33 +250,29 @@ export type CategoryPageResolvers<ContextType = any, ParentType extends Resolver
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   locale?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RouteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Route'] = ResolversParentTypes['Route']> = {
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['Route']>, { __typename: 'Route' } & GraphQLRecursivePick<ParentType, {"path":true}>, ContextType>;
   path?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   page?: Resolver<ResolversTypes['Page'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CmsHomepagePageResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsHomepagePage'] = ResolversParentTypes['CmsHomepagePage']> = {
-  __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['CmsHomepagePage']>, { __typename: 'CmsHomepagePage' } & GraphQLRecursivePick<ParentType, {"id":true,"type":true,"locale":true}>, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  locale?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  routeByPath?: Resolver<Maybe<ResolversTypes['Route']>, ParentType, ContextType, RequireFields<QueryRouteByPathArgs, 'path'>>;
 };
 
 export type Resolvers<ContextType = any> = {
-  Query?: QueryResolvers<ContextType>;
+  CmsHomepagePage?: CmsHomepagePageResolvers<ContextType>;
   Page?: PageResolvers<ContextType>;
   CmsArticlePage?: CmsArticlePageResolvers<ContextType>;
   CmsPagePage?: CmsPagePageResolvers<ContextType>;
   ProductPage?: ProductPageResolvers<ContextType>;
   CategoryPage?: CategoryPageResolvers<ContextType>;
   Route?: RouteResolvers<ContextType>;
-  CmsHomepagePage?: CmsHomepagePageResolvers<ContextType>;
+  Query?: QueryResolvers<ContextType>;
 };
 
 

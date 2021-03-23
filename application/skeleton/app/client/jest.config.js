@@ -10,17 +10,17 @@ module.exports = {
     'babel.config.js',
     'next-env.d.ts',
     '.next',
-    '/cypress/',
     '/types/',
+    '/storybook-static/',
     '/src/pages/',
     '/src/hooks/apollo/'
   ],
   coverageThreshold: {
     global: {
-      branches: 50,
-      functions: 50,
-      lines: 50,
-      statements: 50
+      branches: 40,
+      functions: 40,
+      lines: 40,
+      statements: 40
     }
   },
   testPathIgnorePatterns: [...config.testPathIgnorePatterns, '<rootDir>/.next/', '<rootDir>/cypress/']

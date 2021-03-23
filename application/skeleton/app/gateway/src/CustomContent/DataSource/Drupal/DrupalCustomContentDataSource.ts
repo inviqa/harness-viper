@@ -2,7 +2,8 @@
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import { ApolloError } from 'apollo-server-errors';
 import { Context } from '@inviqa/viper-gateway-graphql-service';
-import { GraphqlClientOperations, DrupalGraphqlClientProvider } from '@inviqa/viper-backend-drupal';
+import { DrupalGraphqlClientProvider } from '@inviqa/viper-backend-drupal';
+import { GraphqlClientOperations } from '@inviqa/viper-backend-graphql';
 import { CustomContentDataSource } from '../CustomContentDataSource';
 import {
   LanguageId,

@@ -1,5 +1,5 @@
 import { ListenOptions } from 'net';
-import Koa from 'koa';
+import Koa, { Middleware } from 'koa';
 import { ApolloServer } from 'apollo-server-koa';
 import { TypedefFilePointerOrPointers } from '@inviqa/viper-graphql-utils';
 import {
@@ -28,12 +28,14 @@ export class CustomContentService implements InternalGatewayService, RunnableGat
     private readonly serverBuilder: ApolloServerBuilder
   ) {}
 
-  getAppMiddleware() {
+  getAppMiddleware(): Middleware {
     return this.createApolloServer().getMiddleware({ path: this.path });
   }
 
   start(koa: Koa, listenOptions: ListenOptions) {
-    this.createApolloServer().applyMiddleware({ app: koa, path: this.path });
+    // Apollo doesn't use @types/koa resulting in type missmatch
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.createApolloServer().applyMiddleware({ app: (koa as unknown) as any, path: this.path });
     return this.serviceRunner.start(koa, listenOptions, [this]);
   }
 

@@ -6,14 +6,15 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "module": "CommonJS",
-    "target": "ES2020"
+    "target": "ES2020",
+    "skipLibCheck": true
   },
   "include": [
-    "src/**/*",
-    "bin/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "**/*.test.ts"
   ]
 }

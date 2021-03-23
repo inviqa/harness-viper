@@ -1,16 +1,16 @@
 import React from 'react';
 import { act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { messagesVar } from '@inviqa/viper-react-hooks';
 import ProductContent from './ProductContent';
 import { renderWithProviders } from '~test-helpers';
 import { cartIdVar } from '~hooks/cart';
 import { addToCartMock } from '~hooks/apollo/mocks/AddToCart';
 import { ProductType } from '~hooks/apollo';
-import { messagesVar } from '~hooks/useMessages';
 
 describe(ProductContent, () => {
   const product = {
-    id: '969',
+    id: 'mock-id',
     sku: 'mock-sku',
     name: 'Rapha Sports Short',
     title: 'Rapha Sports Short',
@@ -61,18 +61,15 @@ describe(ProductContent, () => {
     type: ProductType.Simple
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     act(() => {
       cartIdVar('mock-cart-id');
       messagesVar([]);
     });
-  });
 
-  afterEach(() => {
-    act(() => {
-      cartIdVar(null);
-      messagesVar([]);
-    });
+    // awaiting because reactive var changes are async
+    await waitFor(() => cartIdVar() === 'mock-cart-id');
+    await waitFor(() => messagesVar().length === 0);
   });
 
   describe('When: product data is provided', () => {
@@ -85,8 +82,8 @@ describe(ProductContent, () => {
 
     it('And: it renders the product image', () => {
       const { container } = setup();
-      expect(container.querySelectorAll('.product-image')).toHaveLength(1);
-      expect(container.querySelectorAll('.product-gallery__thumbnails-item')).toHaveLength(6);
+      expect(container.querySelectorAll('.product-gallery__main')).toHaveLength(1);
+      expect(container.querySelectorAll('.product-gallery__thumbnail')).toHaveLength(6);
     });
 
     it('And: it renders the product price', () => {

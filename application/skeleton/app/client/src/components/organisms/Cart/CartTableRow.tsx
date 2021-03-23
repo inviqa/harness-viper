@@ -1,7 +1,5 @@
-/* @jsx jsx */
-import { CartItem, CartTableRow as UICartTableRow } from '@inviqa/viper-ui-commerce';
-import { FunctionComponent } from 'react';
-import { jsx } from 'theme-ui';
+import React, { FunctionComponent } from 'react';
+import { CartItem, CartTableRow as UICartTableRow } from '@inviqa/viper-ui';
 import { useUpdateCartItem } from '~hooks/cart';
 
 const CartTableRow: FunctionComponent<CartItem> = props => {
@@ -10,7 +8,7 @@ const CartTableRow: FunctionComponent<CartItem> = props => {
 
   return (
     <UICartTableRow
-      sx={{ p: 3 }}
+      className="p-3"
       handleUpdateItem={handleUpdateCartItem}
       isLoading={loading}
       hasError={!!error}

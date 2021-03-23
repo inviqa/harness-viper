@@ -1,11 +1,10 @@
-/* @jsx jsx */
-import { ProductCard as UIProductCard } from '@inviqa/viper-ui-commerce';
-import { FunctionComponent, HTMLAttributes } from 'react';
-import { jsx } from 'theme-ui';
-import { ProductListFragmentFragment, ProductType } from '~hooks/apollo';
+import React, { FunctionComponent, HTMLAttributes } from 'react';
+import { ProductCard as UIProductCard } from '@inviqa/viper-ui';
+
+import { ProductListItemFragmentFragment, ProductType } from '~hooks/apollo';
 import { useAddToCart } from '~hooks/cart';
 
-export type Props = HTMLAttributes<HTMLElement> & ProductListFragmentFragment;
+export type Props = Omit<HTMLAttributes<HTMLElement>, 'color'> & ProductListItemFragmentFragment;
 
 const ProductCard: FunctionComponent<Props> = ({ id, type, sku, name, thumbnailImage, price, url, ...props }) => {
   const [handleAddToCart, { loading }] = useAddToCart({ id, name, sku }, 'minicart');
@@ -17,7 +16,7 @@ const ProductCard: FunctionComponent<Props> = ({ id, type, sku, name, thumbnailI
       image={thumbnailImage ?? undefined}
       price={price}
       url={url}
-      handleAddToCart={() => handleAddToCart({ quantity: 1, variantSku: null })}
+      handleAddToCart={() => handleAddToCart({ quantity: 1, variantId: null })}
       disableCartAction={type !== ProductType.Simple || loading}
       aria-busy={loading}
       {...props}

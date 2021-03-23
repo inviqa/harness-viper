@@ -29,6 +29,7 @@ fragment ProductPageFragment on ProductPage {
         label
       }
       product {
+        id
         sku
         price {
           value

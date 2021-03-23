@@ -9,4 +9,12 @@ query GetPageByPath($path: String!) {
       ...CategoryPageFragment
     }
   }
+
+  mainMenu: menu(name: "main") {
+    ...MenuFragment
+  }
+
+  footerMenu: menu(name: "footer") {
+    ...MenuFragment
+  }
 }

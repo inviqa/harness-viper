@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-import { Box } from 'theme-ui';
 import { CmsHomepagePageFragmentFragment, ProductBanner as ProductBannerT, ProductGridBanner } from '~hooks/apollo';
 
 import ProductBanner from '../ProductBanner/ProductBanner';
@@ -14,30 +13,18 @@ export const CmsHomepage: FunctionComponent<{
   const { productBanner, productGrid } = homepageData;
 
   return (
-    <Box as="div" className="homepage">
+    <div className="homepage">
       {productBanner && (
-        <Box
-          className="homepage__product-banner"
-          as="section"
-          sx={{
-            mb: 4
-          }}
-        >
+        <section className="homepage__product-banner mb-8">
           <ProductBanner {...(productBanner as ProductBannerT)} />
-        </Box>
+        </section>
       )}
       {productGrid && (
-        <Box
-          className="homepage__product-grid"
-          as="section"
-          sx={{
-            mb: 4
-          }}
-        >
+        <section className="homepage__product-grid mb-8">
           <ProductGridBlock {...(productGrid as ProductGridBanner)} />
-        </Box>
+        </section>
       )}
-    </Box>
+    </div>
   );
 };
 

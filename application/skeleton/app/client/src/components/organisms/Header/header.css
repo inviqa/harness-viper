@@ -1,0 +1,9 @@
+@layer components {
+  .header__nav-menu--visible {
+    height: calc(100vh - (75px + 1rem));
+  }
+
+  .itsNotthere {
+    @apply bg-yellow-900;
+  }
+}

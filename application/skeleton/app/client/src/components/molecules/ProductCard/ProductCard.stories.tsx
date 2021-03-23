@@ -1,7 +1,8 @@
 import React from 'react';
 import { withApollo } from '@inviqa/viper-storybook-addons';
+import { createApolloCache } from '@inviqa/viper-nextjs';
 import ProductCard from './ProductCard';
-import { cache } from '~lib/cache';
+import { apolloCacheConfig } from '~lib/apolloCacheConfig';
 import { addToCartMock } from '~hooks/apollo/mocks/AddToCart';
 import { ProductType } from '~hooks/apollo';
 
@@ -11,7 +12,7 @@ export default {
   decorators: [withApollo],
   parameters: {
     apollo: {
-      cache,
+      cache: createApolloCache(apolloCacheConfig),
       mocks: [addToCartMock()]
     }
   }
@@ -33,7 +34,7 @@ export const simple = () => (
       url:
         'https://magento-int.viper.webpipeline.net/media/catalog/product/cache/e73f31ae33f68f0f603b4fb488de3756/m/g/mg04-bk-0.jpg'
     }}
-    sx={{ maxWidth: '300px' }}
+    style={{ maxWidth: '300px' }}
   />
 );
 
@@ -53,6 +54,6 @@ export const other = () => (
       url:
         'https://magento-int.viper.webpipeline.net/media/catalog/product/cache/e73f31ae33f68f0f603b4fb488de3756/m/g/mg04-bk-0.jpg'
     }}
-    sx={{ maxWidth: '300px' }}
+    style={{ maxWidth: '300px' }}
   />
 );

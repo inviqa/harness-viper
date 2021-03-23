@@ -9,7 +9,7 @@ const createProductSelectionReducer = (variants: ProductVariant[] | null, initia
       if (!selection || !variants) {
         return {
           displayPrice: initialPrice,
-          variantSku: null
+          variantId: null
         };
       }
 
@@ -33,7 +33,7 @@ const createProductSelectionReducer = (variants: ProductVariant[] | null, initia
 
       return {
         displayPrice: variant?.price ?? initialPrice,
-        variantSku: variant?.sku ?? null
+        variantId: variant?.id ?? null
       };
     };
 
@@ -49,6 +49,6 @@ const createProductSelectionReducer = (variants: ProductVariant[] | null, initia
 export const useProductSelection = (variants: ProductVariant[] | null, initialPrice: Money) => {
   return useReducer(createProductSelectionReducer(variants, initialPrice), {
     displayPrice: initialPrice,
-    variantSku: null
+    variantId: null
   });
 };

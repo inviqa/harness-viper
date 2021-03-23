@@ -1,7 +1,8 @@
 import { withApollo } from '@inviqa/viper-storybook-addons';
+import { createApolloCache } from '@inviqa/viper-nextjs';
 import React from 'react';
 import { addToCartMock } from '~hooks/apollo/mocks/AddToCart';
-import { cache } from '~lib/cache';
+import { apolloCacheConfig } from '~lib/apolloCacheConfig';
 import { ProductType } from '~hooks/apollo';
 import ProductContent from './ProductContent';
 
@@ -64,7 +65,7 @@ export default {
   decorators: [withApollo],
   parameters: {
     apollo: {
-      cache,
+      cache: createApolloCache(apolloCacheConfig),
       mocks: [addToCartMock()]
     }
   }

@@ -1,4 +1,4 @@
-import { renderHook, act, HookResult } from '@testing-library/react-hooks';
+import { renderHook, act, RenderResult } from '@testing-library/react-hooks';
 import { Dispatch } from 'react';
 import { Money, ProductVariant, Product } from '~hooks/apollo';
 import { ProductSelectionChangeAction, ProductSelectionState } from './types';
@@ -31,7 +31,7 @@ const colorBlue = {
 let variants: ProductVariant[];
 let initialPrice: Money;
 
-let hookResult: HookResult<[ProductSelectionState, Dispatch<ProductSelectionChangeAction>]>;
+let hookResult: RenderResult<[ProductSelectionState, Dispatch<ProductSelectionChangeAction>]>;
 
 describe(useProductSelection, () => {
   beforeAll(() => {
@@ -39,6 +39,7 @@ describe(useProductSelection, () => {
       {
         options: [sizeS, colorRed],
         product: {
+          id: 'ID-1',
           sku: 'TEST-1',
           price: {
             value: 2000,
@@ -49,6 +50,7 @@ describe(useProductSelection, () => {
       {
         options: [sizeM, colorBlue],
         product: {
+          id: 'ID-2',
           sku: 'TEST-2',
           price: {
             value: 3000,
@@ -91,8 +93,8 @@ describe(useProductSelection, () => {
       });
     });
 
-    it('Then: it sets the variant products sku as variantSku', () => {
-      expect(hookResult.current[0].variantSku).toEqual('TEST-1');
+    it('Then: it sets the variant products id as variantId', () => {
+      expect(hookResult.current[0].variantId).toEqual('ID-1');
     });
   });
 
@@ -110,8 +112,8 @@ describe(useProductSelection, () => {
       expect(hookResult.current[0].displayPrice).toEqual(initialPrice);
     });
 
-    it('Then: it sets the variantSku as null', () => {
-      expect(hookResult.current[0].variantSku).toEqual(null);
+    it('Then: it sets the variantId as null', () => {
+      expect(hookResult.current[0].variantId).toEqual(null);
     });
   });
 });

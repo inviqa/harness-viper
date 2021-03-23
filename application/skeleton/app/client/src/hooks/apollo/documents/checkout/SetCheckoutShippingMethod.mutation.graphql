@@ -1,5 +1,5 @@
-mutation SetCheckoutShippingMethod($checkoutId: String!, $shippingMethodId: String!) {
-  setCheckoutShippingMethod(checkoutId: $checkoutId, shippingMethodId: $shippingMethodId) {
+mutation SetCheckoutShippingMethod($checkoutInput: CheckoutInput!, $shippingMethodId: String!) {
+  setCheckoutShippingMethod(checkoutInput: $checkoutInput, shippingMethodId: $shippingMethodId) {
     ...CheckoutFragment
   }
 }

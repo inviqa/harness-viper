@@ -1,13 +1,9 @@
-parameters:
-  menu:
-    path: /_internal/menu
-
 services:
   MenuService:
     class: //@inviqa/viper-gateway-service-menu[MenuService]
     arguments:
-      - '%menu.path%'
-      - './node_modules/@inviqa/viper-gateway-service-menu/src/typedef/schema.graphql'
+      - '%services.menu.path%'
+      - '%services.menu.schema%'
       - '@MenuResolverProvider'
       - '@MenuDataSourceProvider'
       - '@GatewayServiceRunner'

@@ -1,0 +1,167 @@
+projects:
+  # Backends:
+
+  magento:
+    schema: https://magento-int.viper.webpipeline.net/graphql
+    documents: src/Magento/documents/**/*.graphql
+    extensions:
+      viper:
+        type: backend
+      codegen:
+        generates:
+          src/Magento/documents/documents.ts:
+            plugins:
+              - typescript
+              - typescript-operations
+              - typescript-react-apollo
+            config:
+              enumsAsConst: true
+              federation: true
+              noSchemaStitching: true
+              withComponent: false
+              withHOC: false
+              withHooks: false
+              withMutationFn: false
+              withRefetchFn: false
+              withResultType: false
+              gqlImport: '@apollo/client#gql'
+              documentNodeImport: '@apollo/client#DocumentNode'
+              documentMode: documentNode
+
+  drupal:
+    schema: https://drupal-int.viper.webpipeline.net/graphql
+    documents: src/Drupal/documents/**/*.graphql
+    extensions:
+      viper:
+        type: backend
+      codegen:
+        generates:
+          src/Drupal/documents/documents.ts:
+            plugins:
+              - typescript
+              - typescript-operations
+              - typescript-react-apollo
+            config:
+              enumsAsConst: true
+              federation: true
+              noSchemaStitching: true
+              withComponent: false
+              withHOC: false
+              withHooks: false
+              withMutationFn: false
+              withRefetchFn: false
+              withResultType: false
+              gqlImport: '@apollo/client#gql'
+              documentNodeImport: '@apollo/client#DocumentNode'
+              documentMode: documentNode
+
+  # Services:
+
+  auth:
+    schema: '@inviqa/viper-gateway-service-auth/src/typedef/schema.graphql'
+    extensions:
+      viper:
+        type: service
+
+  catalog:
+    schema:
+      - '@inviqa/viper-gateway-service-catalog/src/typedef/schema.graphql'
+      - ./src/Catalog/typedef/product.schema.graphql
+      - '@inviqa/viper-gateway-service-catalog/src/typedef/category.schema.graphql'
+    extensions:
+      viper:
+        type: service
+      codegen:
+        generates:
+          src/Catalog/typedef/types.ts:
+            plugins:
+              - typescript
+              - typescript-operations
+              - typescript-resolvers
+            config:
+              enumsAsConst: true
+              federation: true
+              noSchemaStitching: true
+
+  config:
+    schema: '@inviqa/viper-gateway-service-config/src/typedef/schema.graphql'
+    extensions:
+      viper:
+        type: service
+
+  content:
+    schema: '@inviqa/viper-gateway-service-content/src/typedef/schema.graphql'
+    extensions:
+      viper:
+        type: service
+
+  custom-content:
+    schema: ./src/CustomContent/typedef/*.graphql
+    extensions:
+      viper:
+        type: service
+      codegen:
+        generates:
+          src/CustomContent/typedef/types.ts:
+            plugins:
+              - typescript
+              - typescript-operations
+              - typescript-resolvers
+            config:
+              enumsAsConst: true
+              federation: true
+              noSchemaStitching: true
+
+  ecomm:
+    schema: '@inviqa/viper-gateway-service-ecomm/src/typedef/schema.graphql'
+    extensions:
+      viper:
+        type: service
+
+  hello-world:
+    schema: ./src/HelloWorld/typedef/*.graphql
+    extensions:
+      viper:
+        type: service
+      codegen:
+        generates:
+          src/HelloWorld/typedef/types.ts:
+            plugins:
+              - typescript
+              - typescript-operations
+              - typescript-resolvers
+            config:
+              enumsAsConst: true
+              federation: true
+              noSchemaStitching: true
+
+  menu:
+    schema: '@inviqa/viper-gateway-service-menu/src/typedef/schema.graphql'
+    extensions:
+      viper:
+        type: service
+
+  routing:
+    schema:
+      - '@inviqa/viper-gateway-service-routing/src/typedef/schema.graphql'
+      - ./src/Routing/typedef/custom-pages.graphql
+    extensions:
+      viper:
+        type: service
+      codegen:
+        generates:
+          src/Routing/typedef/types.ts:
+            plugins:
+              - typescript
+              - typescript-operations
+              - typescript-resolvers
+            config:
+              enumsAsConst: true
+              federation: true
+              noSchemaStitching: true
+
+  user:
+    schema: '@inviqa/viper-gateway-service-user/src/typedef/schema.graphql'
+    extensions:
+      viper:
+        type: service

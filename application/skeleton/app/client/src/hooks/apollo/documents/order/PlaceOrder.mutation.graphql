@@ -1,5 +1,5 @@
-mutation PlaceOrder($checkoutId: String!) {
-  placeOrder(checkoutId: $checkoutId) {
+mutation PlaceOrder($checkoutInput: CheckoutInput!) {
+  placeOrder(checkoutInput: $checkoutInput) {
     checkout {
       ...CheckoutFragment
     }

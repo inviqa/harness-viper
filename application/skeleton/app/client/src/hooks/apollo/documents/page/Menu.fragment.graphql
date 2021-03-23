@@ -1,0 +1,18 @@
+fragment MenuFragment on Menu {
+  name
+  items {
+    name
+    link
+    level
+    items {
+      name
+      link
+      level
+      items {
+        name
+        link
+        level
+      }
+    }
+  }
+}

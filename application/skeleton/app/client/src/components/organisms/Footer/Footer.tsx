@@ -1,23 +1,40 @@
-/** @jsx jsx */
-import { FunctionComponent } from 'react';
-import { jsx, Container, Grid, Box, Link, Input, Button, Flex } from 'theme-ui';
+import React, {
+  forwardRef,
+  ForwardRefExoticComponent,
+  FunctionComponent,
+  AnchorHTMLAttributes,
+  RefAttributes
+} from 'react';
+import Link from 'next/link';
+import cx from 'classnames';
 import { MenuItem, useGetMenuQuery } from '~hooks/apollo';
-import Paragraph from '../../atoms/Paragraph/Paragraph';
-import Heading from '../../atoms/Heading/Heading';
+import NewsletterForm from '../../molecules/NewsletterForm/NewsletterForm';
 
 type FooterColProps = {
   items: Omit<MenuItem, 'items'>[];
 };
 
+const FooterLink: ForwardRefExoticComponent<
+  AnchorHTMLAttributes<HTMLAnchorElement> & RefAttributes<HTMLAnchorElement>
+> = forwardRef(({ children, className, href, ...props }, ref) => (
+  <Link href={href ?? '/'} passHref>
+    <a
+      ref={ref}
+      className={cx('footer__link text-white font-normal hover:text-white hover:text-opacity-80', className)}
+      {...props}
+    >
+      {children}
+    </a>
+  </Link>
+));
+
 const FooterCol: FunctionComponent<FooterColProps> = ({ items }) => (
   // voiceover will remove these semantics if list does not have list styling so role is necessary
   // eslint-disable-next-line jsx-a11y/no-redundant-roles
-  <ul role="list" sx={{ variant: 'lists.plain', lineHeight: 1.625 }}>
+  <ul role="list" className="leading-relaxed">
     {items.map(item => (
       <li key={item.name}>
-        <Link href={item.link} variant="inverted" sx={{ fontWeight: 'bold', textDecoration: 'none' }}>
-          {item.name}
-        </Link>
+        <FooterLink href={item.link}>{item.name}</FooterLink>
       </li>
     ))}
   </ul>
@@ -27,75 +44,24 @@ const Footer: FunctionComponent = () => {
   const { data } = useGetMenuQuery({ variables: { name: 'footer' } });
 
   return (
-    <Container
-      className="footer"
-      as="footer"
-      sx={{
-        variant: 'panels.accent',
-        mt: 5,
-        pb: '5rem',
-        alignSelf: 'flex-end',
-        flex: 0,
-        '&::after': {
-          content: '""',
-          display: 'block',
-          position: 'absolute',
-          top: 0,
-          right: 'auto',
-          bottom: 'auto',
-          left: '50%',
-          height: '100%',
-          transform: 'translateX(-50%)',
-          minWidth: '100vw',
-          zIndex: '-1',
-          mask: 'url("/images/houndstooth.svg")',
-          maskRepeat: 'repeat-x',
-          maskSize: '160px',
-          maskPosition: 'center 100%',
-          bg: 'highlight'
-        }
-      }}
-    >
-      <Grid
-        columns={[1, '1fr 2fr 1fr']}
-        sx={{
-          pb: '10rem',
-          backgroundImage: 'url("/images/logo.svg")',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'bottom',
-          backgroundSize: '5rem 5rem'
-        }}
-      >
-        <Box>{data?.menu && <FooterCol items={data?.menu.items ?? []} />}</Box>
-        <Box sx={{ m: 0, pr: '15%' }}>
-          <Heading level={2} display={5} sx={{ mb: 2 }}>
-            Sign up to our newsletter
-          </Heading>
-          <Flex as="form">
-            <Input
-              name="email-address"
-              id="email-address"
-              type="email"
-              sx={{ bg: 'background', width: '60%', mr: 2 }}
-              placeholder="Your email address"
-            />
-            <Button variant="base" sx={{ width: '40%' }}>
-              Sign up
-            </Button>
-          </Flex>
-        </Box>
-        <Box>
-          <Paragraph sx={{ m: 0 }}>
+    <footer className="footer w-full box-border relative mt-16 pt-16 pb-20 px-4 md:px-16 self-end flex-initial text-panels-accent-text bg-panels-accent bg-footer-bg bg-repeat-x bg-40 bg-center-bottom">
+      <div className="container grid grid-cols-1 md:grid-cols-4 gap-4 pb-40 bg-footer-logo bg-no-repeat bg-bottom bg-20">
+        <div className="md:col-span-1">{data?.menu && <FooterCol items={data?.menu.items ?? []} />}</div>
+        <div className="md:col-span-2 m-0 w-5/6">
+          <NewsletterForm />
+        </div>
+        <div className="md:col-span-1">
+          <p className="m-0">
             Part of the{' '}
-            <Link href="https://www.inviqa.com" variant="inverted">
+            <FooterLink href="https://www.inviqa.com" className="underline">
               Inviqa Group
-            </Link>
+            </FooterLink>
             .<br />
             &copy; 2020 Inviqa
-          </Paragraph>
-        </Box>
-      </Grid>
-    </Container>
+          </p>
+        </div>
+      </div>
+    </footer>
   );
 };
 

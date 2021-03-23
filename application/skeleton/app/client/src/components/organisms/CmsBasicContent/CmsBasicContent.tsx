@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { CmsBasicContent as CmsBasicContentData } from '~hooks/apollo';
-import CmsLayoutRenderer from '../CmsLayoutRenderer/CmsLayoutRenderer';
+import { LayoutRenderer } from '../../utility/LayoutRenderer/LayoutRenderer/LayoutRenderer';
 import { fieldRenderers, fixedLayoutItems } from './renderers.config';
 
 export const CmsBasicContent: FunctionComponent<{
@@ -9,7 +9,7 @@ export const CmsBasicContent: FunctionComponent<{
   if (!basicContentData) {
     return null;
   }
-  return <CmsLayoutRenderer fieldRenderers={fieldRenderers} data={basicContentData} layoutItems={fixedLayoutItems} />;
+  return <LayoutRenderer fieldRenderers={fieldRenderers} data={basicContentData} layoutItems={fixedLayoutItems} />;
 };
 
 export default CmsBasicContent;

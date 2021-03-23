@@ -1,18 +1,25 @@
 import { act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { ProductType } from '~hooks/apollo';
-import { addToCartMock } from '~hooks/apollo/mocks/AddToCart';
+import { messagesVar } from '@inviqa/viper-react-hooks';
+import { ProductType, useAddToCartMutation } from '~hooks/apollo';
 import { cartIdVar } from '~hooks/cart';
-import { messagesVar } from '~hooks/useMessages';
-import { isMiniCartVisibleVar } from '~lib/cache';
+import { isMiniCartVisibleVar } from '~lib/apolloCacheConfig';
 import { renderWithProviders } from '~test-helpers';
 import ProductCard from './ProductCard';
+
+jest.mock('~hooks/apollo', () => {
+  const actual = jest.requireActual('../../../hooks/apollo');
+  return {
+    ...actual,
+    useAddToCartMutation: jest.fn()
+  };
+});
 
 describe(ProductCard, () => {
   const product = {
     type: ProductType.Simple,
-    id: '36',
+    id: 'mock-id',
     name: 'Aim Analog Watch',
     sku: 'mock-sku',
     url: '/gear/watches/aim-analog-watch.html',
@@ -27,85 +34,45 @@ describe(ProductCard, () => {
     }
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     act(() => {
       cartIdVar('mock-cart-id');
       isMiniCartVisibleVar(false);
       messagesVar([]);
     });
-  });
 
-  afterEach(() => {
-    act(() => {
-      cartIdVar(null);
-      isMiniCartVisibleVar(false);
-      messagesVar([]);
-    });
+    // awaiting because reactive var changes are async
+    await waitFor(() => cartIdVar() === 'mock-cart-id');
+    await waitFor(() => isMiniCartVisibleVar() === false);
+    await waitFor(() => messagesVar().length === 0);
   });
 
   describe('When: product is a simple product', () => {
     it('Then: it has an add to cart button', () => {
-      const { getByText } = renderWithProviders(<ProductCard {...product} />, { mocks: [] });
+      (useAddToCartMutation as jest.Mock).mockImplementation(() => [jest.fn(), {}]);
+      const { getByText } = renderWithProviders(<ProductCard {...product} />);
       expect(getByText('commerce:Cart.AddToCart')).not.toBeDisabled();
     });
 
     describe('When: add to cart button is clicked', () => {
       it('Then: it disables the button while loading', async () => {
-        const { getByText } = renderWithProviders(<ProductCard {...product} />, { mocks: [] });
+        (useAddToCartMutation as jest.Mock).mockImplementation(() => [jest.fn(), { loading: true }]);
+        const { getByText } = renderWithProviders(<ProductCard {...product} />);
         act(() => {
           userEvent.click(getByText('commerce:Cart.AddToCart'));
         });
         await waitFor(() => expect(getByText('commerce:Cart.AddToCart')).toBeDisabled());
-      });
-
-      describe('When: add to cart was unsuccessful', () => {
-        it('Then: it adds an error message', async () => {
-          const { getByText } = renderWithProviders(<ProductCard {...product} />, { mocks: [] });
-          act(() => {
-            userEvent.click(getByText('commerce:Cart.AddToCart'));
-          });
-
-          expect(messagesVar()).toStrictEqual([]);
-          await waitFor(() => expect(getByText('commerce:Cart.AddToCart')).not.toBeDisabled());
-          expect(messagesVar()).toStrictEqual([
-            {
-              content: `Messages.UnexpectedError ${product.id},${product.name},${product.sku}`,
-              id: `error-${product.id}-${product.name}-${product.sku}`,
-              location: 'minicart',
-              type: 'error'
-            }
-          ]);
-        });
-      });
-
-      describe('When: add to cart was successful', () => {
-        it('Then: it adds a success message', async () => {
-          const { getByText } = renderWithProviders(<ProductCard {...product} />, { mocks: [addToCartMock()] });
-          act(() => {
-            userEvent.click(getByText('commerce:Cart.AddToCart'));
-          });
-
-          expect(messagesVar()).toStrictEqual([]);
-          await waitFor(() => expect(getByText('commerce:Cart.AddToCart')).not.toBeDisabled());
-          expect(messagesVar()).toStrictEqual([
-            {
-              content: `Messages.AddedToCart ${product.id},${product.name},${product.sku}`,
-              id: `${product.id}-added-to-cart`,
-              location: 'minicart',
-              type: 'success'
-            }
-          ]);
-        });
       });
     });
 
     describe('When: user has no cart', () => {
       describe('And: add to cart button is clicked', () => {
         it('Then: it adds an error message', async () => {
+          (useAddToCartMutation as jest.Mock).mockImplementation(() => [jest.fn(), {}]);
           act(() => {
             cartIdVar(null);
           });
-          const { getByText } = renderWithProviders(<ProductCard {...product} />, { mocks: [] });
+          const { getByText } = renderWithProviders(<ProductCard {...product} />);
           act(() => {
             userEvent.click(getByText('commerce:Cart.AddToCart'));
           });
@@ -125,7 +92,8 @@ describe(ProductCard, () => {
 
   describe('When: product is not a simple product', () => {
     it('Then: it has a disabled add to cart button', () => {
-      const { getByText } = renderWithProviders(<ProductCard {...product} type={ProductType.Other} />, { mocks: [] });
+      (useAddToCartMutation as jest.Mock).mockImplementation(() => [jest.fn(), {}]);
+      const { getByText } = renderWithProviders(<ProductCard {...product} type={ProductType.Other} />);
       expect(getByText('commerce:Cart.AddToCart')).toBeDisabled();
     });
   });

@@ -1,6 +1,8 @@
 import { GraphQLResolveInfo } from 'graphql';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -17,7 +19,7 @@ export type Scalars = {
 
 export type Product = {
   __typename?: 'Product';
-  sku: Scalars['String'];
+  id: Scalars['ID'];
 };
 
 export type CmsImageVersion = {
@@ -133,7 +135,7 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type IsTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
+export type IsTypeOfResolverFn<T = {}, TContext = {}> = (obj: T, context: TContext, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
@@ -148,8 +150,9 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Product: ResolverTypeWrapper<Product>;
-  String: ResolverTypeWrapper<Scalars['String']>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   CmsImageVersion: ResolverTypeWrapper<CmsImageVersion>;
+  String: ResolverTypeWrapper<Scalars['String']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   CmsImage: ResolverTypeWrapper<CmsImage>;
   CmsHtmlField: ResolverTypeWrapper<CmsHtmlField>;
@@ -163,8 +166,9 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Product: Product;
-  String: Scalars['String'];
+  ID: Scalars['ID'];
   CmsImageVersion: CmsImageVersion;
+  String: Scalars['String'];
   Int: Scalars['Int'];
   CmsImage: CmsImage;
   CmsHtmlField: CmsHtmlField;
@@ -176,9 +180,9 @@ export type ResolversParentTypes = {
 };
 
 export type ProductResolvers<ContextType = any, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = {
-  __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['Product']>, { __typename: 'Product' } & GraphQLRecursivePick<ParentType, {"sku":true}>, ContextType>;
+  __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['Product']>, { __typename: 'Product' } & GraphQLRecursivePick<ParentType, {"id":true}>, ContextType>;
 
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CmsImageVersionResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsImageVersion'] = ResolversParentTypes['CmsImageVersion']> = {
@@ -186,32 +190,32 @@ export type CmsImageVersionResolvers<ContextType = any, ParentType extends Resol
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   width?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   height?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CmsImageResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsImage'] = ResolversParentTypes['CmsImage']> = {
   alt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sizes?: Resolver<Array<ResolversTypes['CmsImageVersion']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CmsHtmlFieldResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsHtmlField'] = ResolversParentTypes['CmsHtmlField']> = {
   raw?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   html?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ProductBannerResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProductBanner'] = ResolversParentTypes['ProductBanner']> = {
   text?: Resolver<ResolversTypes['CmsHtmlField'], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['CmsImage']>, ParentType, ContextType>;
   product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ProductGridBannerResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProductGridBanner'] = ResolversParentTypes['ProductGridBanner']> = {
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   products?: Resolver<Array<Maybe<ResolversTypes['Product']>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CmsHomepageResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsHomepage'] = ResolversParentTypes['CmsHomepage']> = {
@@ -220,7 +224,7 @@ export type CmsHomepageResolvers<ContextType = any, ParentType extends Resolvers
   locale?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   productBanner?: Resolver<ResolversTypes['ProductBanner'], ParentType, ContextType>;
   productGrid?: Resolver<ResolversTypes['ProductGridBanner'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CmsHomepagePageResolvers<ContextType = any, ParentType extends ResolversParentTypes['CmsHomepagePage'] = ResolversParentTypes['CmsHomepagePage']> = {
@@ -229,7 +233,7 @@ export type CmsHomepagePageResolvers<ContextType = any, ParentType extends Resol
 
 
   homePage?: Resolver<Maybe<ResolversTypes['CmsHomepage']>, { __typename: 'CmsHomepagePage' } & GraphQLRecursivePick<ParentType, {"id":true,"type":true,"locale":true}>, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {

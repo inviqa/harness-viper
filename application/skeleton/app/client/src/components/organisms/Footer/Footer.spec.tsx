@@ -1,25 +1,35 @@
 import React from 'react';
-import { waitFor } from '@testing-library/react';
+import { waitFor, screen } from '@testing-library/react';
 import { renderWithProviders } from '~test-helpers';
 import Footer from './Footer';
-import { getMenuMock } from '~hooks/apollo/mocks/GetMenu';
+import { useGetMenuQuery } from '~hooks/apollo';
+import { defaultMenu } from '~hooks/apollo/mocks/GetMenu';
+
+jest.mock('~hooks/apollo', () => {
+  const actual = jest.requireActual('../../../hooks/apollo');
+  return {
+    ...actual,
+    useGetMenuQuery: jest.fn()
+  };
+});
 
 describe(Footer, () => {
   describe('When: the footer is rendered', () => {
-    it('Then: it uses a semantic element', () => {
-      const { getByRole } = renderWithProviders(<Footer />, {
-        mocks: [getMenuMock({ name: 'footer' })]
-      });
+    beforeEach(() => {
+      (useGetMenuQuery as jest.Mock).mockImplementation(() => ({
+        data: {
+          menu: defaultMenu
+        }
+      }));
+      renderWithProviders(<Footer />);
+    });
 
-      expect(getByRole('contentinfo').tagName).toBe('FOOTER');
+    it('Then: it uses a semantic element', () => {
+      expect(screen.getByRole('contentinfo').tagName).toBe('FOOTER');
     });
 
     it('And: the menu is rendered', async () => {
-      const { getByText } = renderWithProviders(<Footer />, {
-        mocks: [getMenuMock({ name: 'footer' })]
-      });
-
-      await waitFor(() => expect(getByText('Menu item 1')).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByText('Menu item 1')).toBeInTheDocument());
     });
   });
 });

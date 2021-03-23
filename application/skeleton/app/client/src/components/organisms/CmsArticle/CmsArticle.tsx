@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { CmsArticle as CmsArticleData } from '~hooks/apollo';
-import CmsLayoutRenderer from '../CmsLayoutRenderer/CmsLayoutRenderer';
+import { LayoutRenderer } from '../../utility/LayoutRenderer/LayoutRenderer/LayoutRenderer';
 import { fieldRenderers } from './renderers.config';
 
 export const CmsArticle: FunctionComponent<{
@@ -45,7 +45,7 @@ export const CmsArticle: FunctionComponent<{
   const articleDataWithTitle = withTitle(articleData);
 
   return (
-    <CmsLayoutRenderer
+    <LayoutRenderer
       fieldRenderers={fieldRenderers}
       data={articleDataWithTitle}
       layoutItems={articleDataWithTitle.layout?.items ?? []}

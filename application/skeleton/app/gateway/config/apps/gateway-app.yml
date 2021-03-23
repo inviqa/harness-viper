@@ -15,6 +15,7 @@ services:
       - '@/Gateway/GatewayService[GatewayService]'
       - '@DocsService'
       - '@GraphqlVoyagerService'
+      - '@StorybookService'
 
   GatewayKoa:
     class: //koa[default]

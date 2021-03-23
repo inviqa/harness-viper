@@ -221,17 +221,19 @@ export const defaultCartTotals: GetCartQuery['cart']['totals'] = {
 
 export const defaultCouponCodes: GetCartQuery['cart']['couponCodes'] = [{ code: 'some-code' }];
 
+export const defaultCart: GetCartQuery['cart'] = {
+  __typename: 'Cart',
+  id: 'mock-cart-id',
+  numberOfItems: defaultCartItems.length,
+  items: defaultCartItems,
+  totals: defaultCartTotals,
+  couponCodes: defaultCouponCodes
+};
+
 export const getCartMock = ({
   cartId = 'mock-cart-id',
   data = {
-    cart: {
-      __typename: 'Cart',
-      id: 'mock-cart-id',
-      numberOfItems: defaultCartItems.length,
-      items: defaultCartItems,
-      totals: defaultCartTotals,
-      couponCodes: defaultCouponCodes
-    }
+    cart: defaultCart
   },
   loading = false,
   error = undefined

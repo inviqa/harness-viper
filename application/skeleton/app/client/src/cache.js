@@ -31,4 +31,17 @@ module.exports = [
       }
     }
   }
+  // {
+  //   urlPattern: /\/_next\/data\/.*\.(?:json)\??.*$/,
+  //   handler: 'StaleWhileRevalidate',
+  //   options: {
+  //     // Use a custom cache name.
+  //     cacheName: 'props',
+  //     // Only cache 10 images.
+  //     expiration: {
+  //       maxEntries: 10,
+  //       maxAgeSeconds: 2 * 60 * 60 // 2 hours
+  //     }
+  //   }
+  // }
 ];

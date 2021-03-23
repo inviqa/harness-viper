@@ -1,13 +1,9 @@
-parameters:
-  user:
-    path: /_internal/user
-
 services:
   UserService:
     class: //@inviqa/viper-gateway-service-user[UserService]
     arguments:
-      - '%user.path%'
-      - './node_modules/@inviqa/viper-gateway-service-user/src/typedef/schema.graphql'
+      - '%services.user.path%'
+      - '%services.user.schema%'
       - '@UserResolverProvider'
       - '@UserDataSourceProvider'
       - '@GatewayServiceRunner'

@@ -1,0 +1,47 @@
+parameters:
+  spryker:
+    glue:
+      client:
+        baseURL: http://glue-%website%-viper-spryker.my127.site
+    logger:
+      prefix: spryker
+      level: debug
+      timestamp: true
+
+services:
+  # Glue
+  SprykerGlueClientProvider:
+    class: //@inviqa/viper-backend-spryker[SprykerGlueClientProvider]
+    factory: ['@SprykerGlueClientProviderFactory', 'create']
+    arguments: ['@SprykerGlueClientBuilder']
+
+  SprykerGlueClientBuilder:
+    class: //@inviqa/viper-axios[AxiosClientBuilder]
+    factory: ['@AxiosClientBuilderFactory', 'create']
+    arguments:
+      - '%spryker.glue.client%'
+      - '@SprykerAxiosClientBuilderPluginList'
+
+  # REST plugins
+
+  SprykerAxiosClientBuilderPluginList:
+    class: //@inviqa/viper-axios[AxiosClientBuilderPluginList]
+    factory: ['@AxiosClientBuilderPluginListFactory', 'create']
+    arguments: ['@SprykerAxiosClientLoggerPlugin']
+
+  SprykerAxiosClientLoggerPlugin:
+    class: //@inviqa/viper-axios[AxiosClientLoggerPlugin]
+    factory: ['@AxiosClientLoggerPluginFactory', 'create']
+    arguments: ['@SprykerLogger']
+
+  # Etc
+  SprykerGlueClientProviderFactory:
+    class: //@inviqa/viper-backend-spryker[SprykerGlueClientProviderFactory]
+    arguments: []
+
+  SprykerLogger:
+    class: //@inviqa/viper-logger[LogLevelNextLogger]
+    arguments:
+      - '%spryker.logger.prefix%'
+      - '%spryker.logger.level%'
+      - '%spryker.logger.timestamp%'

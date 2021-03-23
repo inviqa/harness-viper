@@ -4,33 +4,69 @@ parameters:
       client: ~
       http:
         uri: https://store-jtonevm7by.mybigcommerce.com/graphql
-    rest:
+    rest-v2:
+      client:
+        baseURL: https://api.bigcommerce.com/stores/jtonevm7by/v2
+    rest-v3:
       client:
         baseURL: https://api.bigcommerce.com/stores/jtonevm7by/v3
     logger:
       prefix: bigcommerce
       level: debug
       timestamp: true
+    storefrontBaseUrl: https://steffan-headless.mybigcommerce.com
+    websiteChannels:
+      EN: 1
+    locales:
+      EN: en_GB
+    staticPaymentMethods:
+      - id: checkout_cod
+        label: Cash on Delivery
+        note: ''
+      - id: checkout_money
+        label: Money order
+        note: ''
 
 services:
-  # REST
-  BigcommerceRestClientProvider:
+  # REST-V2
+  BigcommerceRestV2ClientProvider:
     class: //@inviqa/viper-backend-bigcommerce[BigcommerceRestClientProvider]
-    arguments:
-      - '@BigcommerceAxiosClientBuilder'
-      - '%env(BIGCOMMERCE__ACCESS_TOKEN)%'
+    factory: ['@BigcommerceRestClientProviderFactory', 'create']
+    arguments: ['@BigcommerceRestV2ClientBuilder']
 
-  BigcommerceAxiosClientBuilder:
+  BigcommerceRestV2ClientBuilder:
     class: //@inviqa/viper-axios[AxiosClientBuilder]
     factory: ['@AxiosClientBuilderFactory', 'create']
     arguments:
-      - '%bigcommerce.rest.client%'
+      - '%bigcommerce.rest-v2.client%'
       - '@BigcommerceAxiosClientBuilderPluginList'
+
+  # REST-V3
+  BigcommerceRestV3ClientProvider:
+    class: //@inviqa/viper-backend-bigcommerce[BigcommerceRestClientProvider]
+    factory: ['@BigcommerceRestClientProviderFactory', 'create']
+    arguments: ['@BigcommerceRestV3ClientBuilder']
+
+  BigcommerceRestV3ClientBuilder:
+    class: //@inviqa/viper-axios[AxiosClientBuilder]
+    factory: ['@AxiosClientBuilderFactory', 'create']
+    arguments:
+      - '%bigcommerce.rest-v3.client%'
+      - '@BigcommerceAxiosClientBuilderPluginList'
+
+  # REST plugins
 
   BigcommerceAxiosClientBuilderPluginList:
     class: //@inviqa/viper-axios[AxiosClientBuilderPluginList]
     factory: ['@AxiosClientBuilderPluginListFactory', 'create']
-    arguments: ['@BigcommerceAxiosClientLoggerPlugin']
+    arguments:
+      - '@BigcommerceRestClientPlugin'
+      - '@BigcommerceAxiosClientLoggerPlugin'
+
+  BigcommerceRestClientPlugin:
+    class: //@inviqa/viper-backend-bigcommerce[BigcommerceRestClientPlugin]
+    factory: ['@BigcommerceRestClientPluginFactory', 'create']
+    arguments: ['%env(BIGCOMMERCE__ACCESS_TOKEN)%']
 
   BigcommerceAxiosClientLoggerPlugin:
     class: //@inviqa/viper-axios[AxiosClientLoggerPlugin]
@@ -42,7 +78,11 @@ services:
     class: //@inviqa/viper-backend-bigcommerce[BigcommerceGraphqlClientProvider]
     arguments:
       - '@BigcommerceApolloClientBuilder'
+      - '@BigcommerceDocumentOverrides'
       - '%env(BIGCOMMERCE__AUTH_TOKEN)%'
+
+  BigcommerceDocumentOverrides:
+    class: //@inviqa/viper-backend-graphql[DocumentOverrides]
 
   BigcommerceApolloClientBuilder:
     class: //@inviqa/viper-apollo[ApolloClientBuilder]
@@ -67,6 +107,15 @@ services:
     class: //@inviqa/viper-apollo[LoggerLinkProvider]
     factory: ['@LoggerLinkProviderFactory', 'create']
     arguments: ['@BigcommerceLogger']
+
+  # Etc
+  BigcommerceRestClientPluginFactory:
+    class: //@inviqa/viper-backend-bigcommerce[BigcommerceRestClientPluginFactory]
+    arguments: []
+
+  BigcommerceRestClientProviderFactory:
+    class: //@inviqa/viper-backend-bigcommerce[BigcommerceRestClientProviderFactory]
+    arguments: []
 
   BigcommerceLogger:
     class: //@inviqa/viper-logger[LogLevelNextLogger]

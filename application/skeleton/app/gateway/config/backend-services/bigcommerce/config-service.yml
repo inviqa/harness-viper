@@ -1,0 +1,14 @@
+services:
+  ConfigDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-config[BigcommerceConfigDataSourceProvider]
+    arguments:
+      - '@BigcommerceRestV2ClientProvider'
+      - '@BigcommerceRestV3ClientProvider'
+      - '@ConfigDataTransformer'
+
+  ConfigDataTransformer:
+    class: //@inviqa/viper-gateway-service-config[BigcommerceConfigDataTransformer]
+    arguments:
+      - '%bigcommerce.storefrontBaseUrl%'
+      - '%bigcommerce.locales%'
+      - '%bigcommerce.websiteChannels%'

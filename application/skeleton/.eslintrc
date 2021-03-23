@@ -1,0 +1,100 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": ["plugin:@typescript-eslint/recommended", "airbnb", "plugin:prettier/recommended"],
+  "reportUnusedDisableDirectives": true,
+  "plugins": ["@typescript-eslint", "react", "react-hooks", "import", "jsdoc", "jsx-a11y", "cypress"],
+  "settings": {
+    "import/parser": "@typescript-eslint/parser",
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".ts", ".tsx"]
+      }
+    },
+    "jsdoc": {
+      "tagNamePreference": {
+        "return": "returns"
+      }
+    }
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true,
+    "cypress/globals": true
+  },
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "import/prefer-default-export": "off",
+    "import/no-unresolved": "off",
+    "import/extensions": [
+      "error",
+      "never",
+      {
+        "json": "always"
+      }
+    ],
+    "linebreak-style": ["error", "unix"],
+    "no-unused-vars": "off", // overlap with ts-eslint rule
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "no-console": "off",
+    "no-plusplus": "off",
+    "no-useless-constructor": "off",
+    "no-empty-function": "off",
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": ["__resolveReference", "__typename"],
+        "enforceInMethodNames": true
+      }
+    ],
+    "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".js"] }],
+    "react/jsx-props-no-spreading": "off",
+    "react/prop-types": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-wrap-multilines": "off",
+    "react/jsx-curly-newline": "off",
+    "react/jsx-pascal-case": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "jsx-a11y/anchor-is-valid": [
+      "error",
+      {
+        "components": ["Link"],
+        "specialLink": ["hrefLeft", "hrefRight"],
+        "aspects": ["invalidHref", "preferButton"]
+      }
+    ], // next/link api incompatible with no-href aspect
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        "labelComponents": [],
+        "labelAttributes": [],
+        "controlComponents": [],
+        "assert": "either",
+        "depth": 25
+      }
+    ],
+    "jsdoc/check-alignment": 1,
+    "jsdoc/check-indentation": "off",
+    "jsdoc/check-param-names": 1,
+    "jsdoc/check-syntax": 1,
+    "jsdoc/check-tag-names": "off",
+    "jsdoc/check-types": 1,
+    "jsdoc/require-hyphen-before-param-description": [1, "never"],
+    "jsdoc/newline-after-description": [1, "never"],
+    "jsdoc/require-param": 1,
+    "jsdoc/require-param-name": 1,
+    "jsdoc/require-param-type": "off",
+    "jsdoc/require-returns-check": 1,
+    "jsdoc/require-returns-type": 1
+  },
+  "globals": {
+    "__DEVELOPMENT__": true,
+    "__CLIENT__": true,
+    "__SERVER__": true,
+    "__DEVTOOLS__": true,
+    "socket": true,
+    "webpackIsomorphicTools": true
+  }
+}

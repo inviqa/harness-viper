@@ -1,29 +1,35 @@
-import { SelectElementOptionProps, Address as UIAddress, ShippingAddressForm } from '@inviqa/viper-ui-commerce';
+import {
+  Address as UIAddress,
+  ShippingAddressForm,
+  ShippingAddressFormProps,
+  ShippingAddressFormValues,
+  Checkbox
+} from '@inviqa/viper-ui';
+import { useResponseHandler } from '@inviqa/viper-react-hooks';
 import React, { FunctionComponent, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Checkbox, Label } from 'theme-ui';
 import {
   Address,
+  CheckoutInput,
   Customer,
   SetCheckoutShippingAddressMutation,
   SetCheckoutShippingAddressMutationVariables,
   useSetCheckoutShippingAddressMutation
 } from '~hooks/apollo';
 import { billingSameAsShippingVar, CheckoutStep, useCheckoutSteps } from '~hooks/checkout';
-import { useResponseHandler } from '~hooks/useResponseHandler';
 import { transformAddressForDisplay } from '~lib/address';
-import Heading from '../../atoms/Heading/Heading';
-import CheckoutStepWrapper from '../../templates/CheckoutStepWrapper/CheckoutStepWrapper';
+import CheckoutStepWrapper from './CheckoutStepWrapper';
+import { setOrderId } from '~hooks/cart';
 
 type Props = {
-  checkoutId: string;
+  checkoutInput: CheckoutInput;
   customer?: Customer;
   shippingAddress?: Address;
-  countries?: SelectElementOptionProps[];
+  countries?: ShippingAddressFormProps['countries'];
 };
 
 export const ShippingAddressStep: FunctionComponent<Props> = ({
-  checkoutId,
+  checkoutInput,
   countries = [],
   customer,
   shippingAddress
@@ -41,24 +47,21 @@ export const ShippingAddressStep: FunctionComponent<Props> = ({
     SetCheckoutShippingAddressMutationVariables
   >({
     i18nNs: 'commerce',
-    successCallback: () => {
+    successCallback: (data: SetCheckoutShippingAddressMutation) => {
+      setOrderId(data.setCheckoutShippingAddress.order?.id || null);
       goToNextCheckoutStep();
     }
   });
   const [setShippingAddress, { loading }] = useSetCheckoutShippingAddressMutation(responseHandlers);
 
   const onSubmit = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (values: any) => {
-      if (values && values.address) {
-        const { shipping } = values.address;
-        const email = customer?.email ?? currentLocalCustomerEmail;
-        setShippingAddress({
-          variables: { checkoutId, address: { ...shipping, email } }
-        });
-      }
+    (address: ShippingAddressFormValues) => {
+      const email = customer?.email ?? currentLocalCustomerEmail;
+      setShippingAddress({
+        variables: { checkoutInput, address: { ...address, email } }
+      });
     },
-    [setShippingAddress, checkoutId, currentLocalCustomerEmail, customer?.email]
+    [setShippingAddress, checkoutInput, currentLocalCustomerEmail, customer?.email]
   );
 
   const onEdit = useCallback(() => {
@@ -68,35 +71,28 @@ export const ShippingAddressStep: FunctionComponent<Props> = ({
   return (
     <CheckoutStepWrapper
       name={CheckoutStep.ShippingAddress}
-      heading={<Heading level={2}>{t('Checkout.ShippingAddressForm')}</Heading>}
+      heading={<h2>{t('Checkout.ShippingAddressForm')}</h2>}
       visible={currentCheckoutStep === CheckoutStep.ShippingAddress}
       preview={shippingAddress ? <UIAddress address={transformAddressForDisplay(shippingAddress, countries)} /> : null}
       onEditCallback={onEdit}
     >
-      <Box className="checkout-shipping-section">
+      <div className="checkout-shipping-section">
         <ShippingAddressForm
-          fieldsConfigOverrides={[
-            {
-              name: 'country',
-              options: countries
-            }
-          ]}
+          countries={countries}
           defaultValues={shippingAddress}
           isLoading={loading}
           onSubmit={onSubmit}
         />
-      </Box>
-      <Box className="checkout-use-shipping-for-billing" my={4}>
-        <Label>
-          <Checkbox
-            defaultChecked={billingSameAsShipping}
-            onChange={e => {
-              billingSameAsShippingVar(e.currentTarget.checked);
-            }}
-          />
-          {t('Checkout.UseShippingForBilling')}
-        </Label>
-      </Box>
+      </div>
+      <div className="checkout-use-shipping-for-billing my-4">
+        <Checkbox
+          defaultChecked={billingSameAsShipping}
+          onChange={e => {
+            billingSameAsShippingVar(e.currentTarget.checked);
+          }}
+          label={t('Checkout.UseShippingForBilling')}
+        />
+      </div>
     </CheckoutStepWrapper>
   );
 };

@@ -1,0 +1,9 @@
+services:
+  CatalogDataSourceProvider:
+    class: //@inviqa/viper-gateway-service-catalog[SprykerCatalogDataSourceProvider]
+    arguments:
+      - '@SprykerGlueClientProvider'
+      - '@CatalogProductDataTransformer'
+
+  CatalogProductDataTransformer:
+    class: //@inviqa/viper-gateway-service-catalog[SprykerProductDataTransformer]

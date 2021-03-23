@@ -1,6 +1,5 @@
-import { makeVar, useReactiveVar } from '@apollo/client';
+import { makeVar, useApolloClient, useReactiveVar } from '@apollo/client';
 import { useCallback, useEffect } from 'react';
-import { cache } from '~lib/cache';
 
 const CHECKOUT_EMAIL_KEY = 'viper-checkout-email';
 const CHECKOUT_CURRENT_STEP_KEY = 'viper-checkout-current-step';
@@ -31,6 +30,7 @@ const setCurrentCheckoutStep = (step?: CheckoutStep) => {
 };
 
 export function useCheckoutSteps() {
+  const apolloClient = useApolloClient();
   const currentCheckoutStep = useReactiveVar(currentCheckoutStepVar);
   const currentLocalCustomerEmail = useReactiveVar(currentLocalCustomerEmailVar);
   const billingSameAsShipping = useReactiveVar(billingSameAsShippingVar);
@@ -76,9 +76,8 @@ export function useCheckoutSteps() {
     localStorage.removeItem(CHECKOUT_EMAIL_KEY);
     currentCheckoutStepVar(undefined);
     localStorage.removeItem(CHECKOUT_CURRENT_STEP_KEY);
-
-    cache.gc();
-  }, []);
+    apolloClient.cache.gc();
+  }, [apolloClient]);
 
   return {
     currentCheckoutStep,

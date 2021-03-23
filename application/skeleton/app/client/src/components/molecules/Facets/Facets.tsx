@@ -1,6 +1,6 @@
 import React, { FunctionComponent, HTMLAttributes, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatPrice, Facets as UIFacets } from '@inviqa/viper-ui-commerce';
+import { formatPrice, Facets as UIFacets } from '@inviqa/viper-ui';
 import { FacetOption, GetProductsQuery } from '~hooks/apollo';
 import { parseHtml } from '~lib/parseHtml';
 import useWebsiteConfig from '~hooks/useWebsiteConfig';

@@ -2,28 +2,29 @@ import {
   ShippingMethodSelector,
   ShippingMethod as ShippingMethodUIType,
   ShippingMethodSelectorValues
-} from '@inviqa/viper-ui-commerce';
+} from '@inviqa/viper-ui';
+import { useResponseHandler } from '@inviqa/viper-react-hooks';
 import React, { FunctionComponent, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  CheckoutInput,
   SetCheckoutShippingMethodMutation,
   SetCheckoutShippingMethodMutationVariables,
   ShippingMethod,
   useSetCheckoutShippingMethodMutation
 } from '~hooks/apollo';
 import { CheckoutStep, useCheckoutSteps } from '~hooks/checkout';
-import { useResponseHandler } from '~hooks/useResponseHandler';
-import Heading from '../../atoms/Heading/Heading';
-import CheckoutStepWrapper from '../../templates/CheckoutStepWrapper/CheckoutStepWrapper';
+import CheckoutStepWrapper from './CheckoutStepWrapper';
+import { setOrderId } from '~hooks/cart';
 
 type Props = {
-  checkoutId: string;
+  checkoutInput: CheckoutInput;
   availableShippingMethods?: Omit<ShippingMethod, 'priceExcludingTax'>[];
   shippingMethod?: Omit<ShippingMethod, 'priceExcludingTax'>;
 };
 
 export const ShippingMethodStep: FunctionComponent<Props> = ({
-  checkoutId,
+  checkoutInput,
   availableShippingMethods = [],
   shippingMethod
 }) => {
@@ -34,7 +35,8 @@ export const ShippingMethodStep: FunctionComponent<Props> = ({
     SetCheckoutShippingMethodMutationVariables
   >({
     i18nNs: 'commerce',
-    successCallback: () => {
+    successCallback: (data: SetCheckoutShippingMethodMutation) => {
+      setOrderId(data.setCheckoutShippingMethod.order?.id || null);
       goToNextCheckoutStep();
     }
   });
@@ -54,10 +56,10 @@ export const ShippingMethodStep: FunctionComponent<Props> = ({
   const onSubmit = useCallback(
     (values: ShippingMethodSelectorValues) => {
       setShippingMethod({
-        variables: { checkoutId, shippingMethodId: values['shipping-method'] }
+        variables: { checkoutInput, shippingMethodId: values['shipping-method'] }
       });
     },
-    [setShippingMethod, checkoutId]
+    [setShippingMethod, checkoutInput]
   );
 
   const onEdit = useCallback(() => {
@@ -67,7 +69,7 @@ export const ShippingMethodStep: FunctionComponent<Props> = ({
   return (
     <CheckoutStepWrapper
       name={CheckoutStep.ShippingMethod}
-      heading={<Heading level={2}>{t('Checkout.ShippingMethod')}</Heading>}
+      heading={<h2>{t('Checkout.ShippingMethod')}</h2>}
       visible={currentCheckoutStep === CheckoutStep.ShippingMethod}
       preview={shippingMethod?.label}
       onEditCallback={onEdit}

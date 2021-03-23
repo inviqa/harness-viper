@@ -1,19 +1,32 @@
 import { withI18n, createI18nToolbar } from '@inviqa/viper-storybook-addons';
-import { storybook } from '@inviqa/viper-ui';
-import { createI18n } from '@inviqa/viper-nextjs';
+import { createI18nInstance } from '@inviqa/viper-nextjs';
 import withNextRouter from './decorators/withNextRouter';
 import withCartId from './decorators/withCartId';
 import { websiteConfig } from '../websiteConfig';
 
-const { i18n } = createI18n({
-  locales: websiteConfig.map(({ id }) => id),
-  additionalNamespaces: ['catalog', 'commerce']
+import '../src/styles/main.css';
+
+const { instance: i18nInstance } = createI18nInstance({
+  /* eslint-disable global-require */
+  resources: {
+    en: {
+      common: require('../public/locales/en/common.json'),
+      catalog: require('../public/locales/en/catalog.json'),
+      commerce: require('../public/locales/en/commerce.json')
+    },
+    de: {
+      common: require('../public/locales/de/common.json'),
+      catalog: require('../public/locales/de/catalog.json'),
+      commerce: require('../public/locales/de/commerce.json')
+    }
+  }
+  /* eslint-enable global-require */
 });
 
-export const decorators = [withI18n, withNextRouter, storybook.withTheme, withCartId];
+export const decorators = [withI18n, withNextRouter, withCartId];
 export const parameters = {
   i18n: {
-    i18nInstance: i18n
+    i18nInstance
   }
 };
 

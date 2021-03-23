@@ -1,8 +1,12 @@
-/* @jsx jsx */
-import { AnchorHTMLAttributes, forwardRef, ForwardRefExoticComponent, FunctionComponent, RefAttributes } from 'react';
-import { Banner } from '@inviqa/viper-ui';
-import { jsx, Box, Heading, Link, Text } from 'theme-ui';
-import { ProductPrice } from '@inviqa/viper-ui-commerce';
+import React, {
+  AnchorHTMLAttributes,
+  forwardRef,
+  ForwardRefExoticComponent,
+  FunctionComponent,
+  RefAttributes
+} from 'react';
+import cx from 'classnames';
+import { Banner, ProductPrice, defaultProductPriceOverrides } from '@inviqa/viper-ui';
 import NextLink from 'next/link';
 import { ProductBanner as ProductBannerT } from '~hooks/apollo';
 import { parseHtml } from '~lib/parseHtml';
@@ -14,103 +18,53 @@ export const ProductBanner: FunctionComponent<ProductBannerT> = ({ product, imag
 
   const picture = {
     alt: image.alt || '',
-    sizes: (image.sizes || []).map(({ size, url }) => ({ size, url }))
+    sources: image.sizes
   };
 
   const { name, url, price } = product;
 
   const ProductLink: ForwardRefExoticComponent<
     AnchorHTMLAttributes<HTMLAnchorElement> & RefAttributes<HTMLAnchorElement>
-  > = forwardRef((props, ref) => (
+  > = forwardRef(({ children, ...props }, ref) => (
     <NextLink href={url} passHref>
-      <Link
-        ref={ref}
-        sx={{
-          color: 'darkOverlayText',
-          textDecoration: 'none',
-          ':hover': {
-            opacity: 1
-          }
-        }}
-        {...props}
-      />
+      <a ref={ref} className="text-banner-white-text hover:text-banner-white-text" {...props}>
+        {children}
+      </a>
     </NextLink>
   ));
 
+  const { Price: DefaultPrice } = defaultProductPriceOverrides;
+
   return (
-    <Banner
-      picture={picture}
-      sx={{
-        '> .banner__content': {
-          backgroundColor: 'transparent'
-        }
-      }}
-    >
+    <Banner picture={picture}>
       {text?.html && (
-        <Heading
-          as="div"
-          sx={{
-            textAlign: 'right',
-            mb: 4
-          }}
-        >
+        <div className="text-5xl text-right mb-8">
           <ProductLink>
-            <Text
-              as="span"
-              sx={{
-                fontSize: '4rem',
-                color: 'darkText',
-                backgroundColor: 'primary',
-                p: 2,
-                px: 4
-              }}
-            >
-              {parseHtml(text.html)}
-            </Text>
+            <span className="text-6xl bg-brand-accent text-black py-2 px-4">{parseHtml(text.html)}</span>
           </ProductLink>
-        </Heading>
+        </div>
       )}
-      <Heading
-        as="div"
-        sx={{
-          textAlign: 'right'
-        }}
-      >
+      <div className="text-3xl md:text-5xl text-right">
         <ProductLink>
-          <Text
-            as="span"
-            sx={{
-              fontSize: '2.5rem',
-              backgroundColor: 'darkOverlay',
-              p: 2
-            }}
-          >
-            {name}
-          </Text>
+          <span className="text-4xl bg-black py-2 px-4">{name}</span>
         </ProductLink>
-      </Heading>
-      <Box
-        as="div"
-        sx={{
-          textAlign: 'right'
-        }}
-      >
+      </div>
+      <div className="text-right">
         <ProductLink>
           <ProductPrice
             price={price}
-            sx={{
-              display: 'inline-block',
-              textAlign: 'right',
-              '> .product-price__price': {
-                fontSize: '3rem',
-                display: 'inline-block',
-                backgroundColor: 'darkOverlay',
-                p: 2
-              }
+            className="inline-block text-right"
+            overrides={{
+              Price: ({ className, ...priceProps }) => (
+                <DefaultPrice
+                  className={cx(className, 'text-5xl inline-block bg-black py-2 px-4 text-right')}
+                  {...priceProps}
+                />
+              )
             }}
           />
         </ProductLink>
-      </Box>
+      </div>
     </Banner>
   );
 };

@@ -7,15 +7,15 @@
       "Save": "Save shipping address"
     },
     "Field": {
-      "firstName": "First name",
-      "lastName": "Last name",
-      "address1": "Address line 1",
-      "address2": "Address line 2",
-      "city": "City",
-      "country": "Country",
-      "phoneNumber": "Phone number",
-      "postcode": "Postcode",
-      "company": "Company"
+      "FirstName": "First name",
+      "LastName": "Last name",
+      "Address1": "Address line 1",
+      "Address2": "Address line 2",
+      "City": "City",
+      "Country": "Country",
+      "PhoneNumber": "Phone number",
+      "Postcode": "Postcode",
+      "Company": "Company"
     },
     "Submit": "Save address"
   },
@@ -45,7 +45,8 @@
       "Shipping": "Delivery ({{ method }})"
     },
     "Item": {
-      "Quantity": "Quantity",
+      "Quantity": "Quantity: {{ quantity }}",
+      "Quantity_input": "Quantity",
       "Remove": {
         "Full": "Remove {{ name }} from your basket",
         "Short": "Remove"

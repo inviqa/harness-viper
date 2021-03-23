@@ -1,0 +1,3 @@
+services:
+  CatalogProductDataTransformer:
+    class: /Catalog/DataSource/Bigcommerce/BigcommerceProductDataTransformer[BigcommerceProductDataTransformer]

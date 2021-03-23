@@ -1,13 +1,9 @@
-parameters:
-  auth:
-    path: /_internal/auth
-
 services:
   AuthService:
     class: //@inviqa/viper-gateway-service-auth[AuthService]
     arguments:
-      - '%auth.path%'
-      - './node_modules/@inviqa/viper-gateway-service-auth/src/typedef/schema.graphql'
+      - '%services.auth.path%'
+      - '%services.auth.schema%'
       - '@AuthResolverProvider'
       - '@AuthDataSourceProvider'
       - '@GatewayServiceRunner'

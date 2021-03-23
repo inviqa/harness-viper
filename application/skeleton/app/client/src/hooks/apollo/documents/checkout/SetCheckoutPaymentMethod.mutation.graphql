@@ -1,5 +1,5 @@
-mutation SetCheckoutPaymentMethod($checkoutId: String!, $paymentMethodId: String!) {
-  setCheckoutPaymentMethod(checkoutId: $checkoutId, paymentMethodId: $paymentMethodId) {
+mutation SetCheckoutPaymentMethod($checkoutInput: CheckoutInput!, $paymentMethodId: String!) {
+  setCheckoutPaymentMethod(checkoutInput: $checkoutInput, paymentMethodId: $paymentMethodId) {
     ...CheckoutFragment
   }
 }

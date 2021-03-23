@@ -1,13 +1,9 @@
-parameters:
-  config:
-    path: /_internal/config
-
 services:
   ConfigService:
     class: //@inviqa/viper-gateway-service-config[ConfigService]
     arguments:
-      - '%config.path%'
-      - './node_modules/@inviqa/viper-gateway-service-config/src/typedef/schema.graphql'
+      - '%services.config.path%'
+      - '%services.config.schema%'
       - '@ConfigResolverProvider'
       - '@ConfigDataSourceProvider'
       - '@GatewayServiceRunner'

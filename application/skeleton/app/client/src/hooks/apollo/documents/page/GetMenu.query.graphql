@@ -1,20 +1,5 @@
 query GetMenu($name: String!) {
   menu(name: $name) {
-    name
-    items {
-      name
-      link
-      level
-      items {
-        name
-        link
-        level
-        items {
-          name
-          link
-          level
-        }
-      }
-    }
+    ...MenuFragment
   }
 }

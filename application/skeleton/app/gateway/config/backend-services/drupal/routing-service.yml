@@ -2,7 +2,7 @@ services:
   ContentRoutingDataSourceProvider:
     class: //@inviqa/viper-gateway-service-routing[DrupalRoutingDataSourceProvider]
     arguments:
-      - '@DrupalApolloClientBuilder'
+      - '@DrupalGraphqlClientProvider'
       - '@ContentRoutingDataTransformer'
 
   ContentRoutingDataTransformer:

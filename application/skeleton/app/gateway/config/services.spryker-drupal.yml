@@ -1,0 +1,9 @@
+import:
+  - core/*.yml
+  - backend-services/magento/*.yml
+  - backend-services/spryker/*.yml
+  - backend-services/drupal/*.yml
+  - services/*.yml
+  - apps/*.yml
+  - generated.yml
+  - main.yml

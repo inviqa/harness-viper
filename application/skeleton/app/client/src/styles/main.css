@@ -1,0 +1,7 @@
+@import 'tailwindcss/base';
+@import '@inviqa/viper-ui/src/styles/global.css';
+@import 'tailwindcss/components';
+@import '@inviqa/viper-ui/src/styles/components.css';
+@import '../components/organisms/Header/header.css';
+@import 'tailwindcss/utilities';
+@import '@inviqa/viper-ui/src/styles/utilities.css';

@@ -1,12 +1,14 @@
-import { AddressProps, SelectElementOptionProps } from '@inviqa/viper-ui-commerce';
+import { AddressProps, BillingAddressFormProps } from '@inviqa/viper-ui';
 import { Address } from '~hooks/apollo';
 
-const getCountryLabelById = (countryId: string, countries: SelectElementOptionProps[] = []) =>
+// TODO: make a more generic type for countries
+// TODO: tests for this file
+const getCountryLabelById = (countryId: string, countries: BillingAddressFormProps['countries'] = []) =>
   countries.find(country => country.value === countryId)?.label ?? countryId;
 
 export const transformAddressForDisplay = (
   { firstName, lastName, company, address2, phoneNumber, country, ...rest }: Address,
-  countries: SelectElementOptionProps[] = []
+  countries: BillingAddressFormProps['countries'] = []
 ): AddressProps['address'] => ({
   name: `${firstName} ${lastName}`,
   company: company ?? undefined,

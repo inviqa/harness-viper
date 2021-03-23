@@ -1,6 +1,7 @@
 import { useReactiveVar } from '@apollo/client';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useCartResponseHandler, MessageActionType, MessageType } from '@inviqa/viper-react-hooks';
 import {
   AddToCartMutation,
   AddToCartMutationVariables,
@@ -8,12 +9,9 @@ import {
   Product,
   useAddToCartMutation
 } from '~hooks/apollo';
-import { MessageActionType } from '~hooks/useMessages';
-import { MessageType } from '~types/message';
-import { isMiniCartVisibleVar } from '~lib/cache';
+import { isMiniCartVisibleVar } from '~lib/apolloCacheConfig';
 import { missingCartIdError } from './errors';
-import { cartIdVar } from './useCartId';
-import { useCartResponseHandler } from './useCartResponseHandler';
+import { cartIdVar, resetCartId } from './useCartId';
 
 export function useAddToCart(product: Pick<Product, 'id' | 'name' | 'sku'>, messageLocation?: string) {
   const cartId = useReactiveVar(cartIdVar);
@@ -47,19 +45,20 @@ export function useAddToCart(product: Pick<Product, 'id' | 'name' | 'sku'>, mess
       if (messageLocation === 'minicart') {
         isMiniCartVisibleVar(true);
       }
-    }
+    },
+    cartNotFoundCallback: resetCartId
   });
   const [addToCart, data] = useAddToCartMutation(responseHandlers);
 
   const handleAddToCart = useCallback(
-    ({ quantity = 1, variantSku }: Omit<CartItemInput, 'sku'>) => {
+    ({ quantity = 1, variantId }: Omit<CartItemInput, 'id'>) => {
       if (cartId)
-        addToCart({ variables: { cartId, items: [{ sku: product.sku, quantity, variantSku: variantSku || null }] } });
+        addToCart({ variables: { cartId, items: [{ id: product.id, quantity, variantId: variantId || null }] } });
       else {
         responseHandlers.onError?.(missingCartIdError);
       }
     },
-    [addToCart, responseHandlers, cartId, product.sku]
+    [addToCart, responseHandlers, cartId, product.id]
   );
 
   // as is basically reinforcing that this is a tuple rather than an array of the two types

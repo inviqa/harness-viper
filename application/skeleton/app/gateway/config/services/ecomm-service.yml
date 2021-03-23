@@ -1,13 +1,9 @@
-parameters:
-  ecomm:
-    path: /_internal/ecomm
-
 services:
   EcommService:
     class: //@inviqa/viper-gateway-service-ecomm[EcommService]
     arguments:
-      - '%ecomm.path%'
-      - './node_modules/@inviqa/viper-gateway-service-ecomm/src/typedef/schema.graphql'
+      - '%services.ecomm.path%'
+      - '%services.ecomm.schema%'
       - '@EcommResolverProvider'
       - '@CartDataSourceProvider'
       - '@CheckoutDataSourceProvider'

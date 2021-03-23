@@ -1,7 +1,13 @@
-/** @jsx jsx */
-import { FunctionComponent, useState, useEffect } from 'react';
+import React, {
+  FunctionComponent,
+  useState,
+  useEffect,
+  ForwardRefExoticComponent,
+  RefAttributes,
+  forwardRef,
+  HTMLAttributes
+} from 'react';
 import { useRouter } from 'next/router';
-import { Container, Flex, Box, IconButton, Link as ThemeLink, jsx, useThemeUI, Badge } from 'theme-ui';
 import {
   CgMenu as MenuIcon,
   CgClose as CloseIcon,
@@ -12,27 +18,39 @@ import { FocusOn } from 'react-focus-on';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import cx from 'classnames';
-import { Menu, SearchForm } from '@inviqa/viper-ui';
+import { Menu, SearchForm, Messages, SideSheet, Badge } from '@inviqa/viper-ui';
+import { useBreakpoint } from '@inviqa/viper-react-hooks';
 import { useReactiveVar } from '@apollo/client';
-import useBreakpoint from '~hooks/useBreakpoint';
 import { cartIdVar } from '~hooks/cart';
 import { useGetCartLazyQuery, useGetMenuQuery } from '~hooks/apollo';
-import { isMiniCartVisibleVar } from '~lib/cache';
+import { isMiniCartVisibleVar } from '~lib/apolloCacheConfig';
 import InviqaLogo from '../../atoms/Icons/InviqaLogo';
 import WebsiteSwitcher from '../../molecules/WebsiteSwitcher/WebsiteSwitcher';
-import SideSheet from '../../templates/SideSheet/SideSheet';
 import Cart from '../Cart/Cart';
-import Messages from '../../molecules/Messages/Messages';
+import tailwindConfig from '../../../../tailwind.config';
+
+const IconButton: ForwardRefExoticComponent<
+  HTMLAttributes<HTMLButtonElement> & RefAttributes<HTMLButtonElement>
+> = forwardRef(({ className, children, ...props }, ref) => (
+  <button
+    ref={ref}
+    type="button"
+    className={cx(className, 'block w-10 h-10 bg-transparent p-0 m-0 border-0')}
+    {...props}
+  >
+    {children}
+  </button>
+));
 
 const Header: FunctionComponent = () => {
   const router = useRouter();
-  const { theme } = useThemeUI();
+  const { theme } = tailwindConfig;
   const { t } = useTranslation(['common', 'commerce']);
   const isMiniCartVisible = useReactiveVar(isMiniCartVisibleVar);
   const cartId = useReactiveVar(cartIdVar);
   const [isMenuVisible, setMenuVisible] = useState(false);
   const [isSearchVisible, setSearchVisible] = useState(false);
-  const isLargeFormat = useBreakpoint(String(theme.breakpoints?.[0]));
+  const isLargeFormat = useBreakpoint(String(theme.screens.md));
   const [getCart, { data: cartResult }] = useGetCartLazyQuery();
   const { data: menuResult } = useGetMenuQuery({ variables: { name: 'main' } });
   const numberOfItems = cartResult?.cart.numberOfItems;
@@ -56,103 +74,104 @@ const Header: FunctionComponent = () => {
   }, [cartId, getCart]);
 
   return (
-    <Container
-      className="header"
-      as="header"
-      sx={{ position: 'sticky', top: 0, py: [2, 3], backgroundColor: 'background', zIndex: 1 }}
-    >
+    <header className="header sticky top-0 py-2 md:py-3 bg-white z-header">
       <FocusOn enabled={!isLargeFormat && isMenuVisible} returnFocus>
-        <Flex sx={{ flexWrap: ['wrap', 'nowrap'], alignItems: 'center', justifyContent: ['space-between', 'start'] }}>
+        <div className="container relative flex flex-wrap md:flex-nowrap items-center justify-between md:justify-start">
           <Link href="/" passHref>
-            <a className="header__logo" aria-label={t('Menu.Home')} sx={{ mr: [null, 4] }}>
-              <InviqaLogo sx={{ width: [75, 90], height: [75, 90] }} />
+            <a className="header__logo md:mr-4" aria-label={t('Menu.Home')}>
+              <InviqaLogo className="w-18	md:w-24" />
             </a>
           </Link>
 
-          <Box as="nav" className="header__nav" sx={{ marginRight: [null, 'auto'] }}>
+          <nav className="header__nav md:mr-auto">
             <IconButton
-              sx={{ display: ['block', 'none'] }}
-              variant="header"
               onClick={() => setMenuVisible(current => !current)}
-              className={cx('header__nav-toggle', { 'header__nav-toggle--is-open': isMenuVisible })}
+              className={cx('header__nav-toggle md:hidden', {
+                'header__nav-toggle--is-open': isMenuVisible
+              })}
               aria-label={t('Menu.Toggle')}
               {...(isLargeFormat ? {} : { 'aria-haspopup': true, 'aria-expanded': isMenuVisible })}
             >
-              {isMenuVisible ? <CloseIcon /> : <MenuIcon />}
+              {isMenuVisible ? <CloseIcon className="w-full h-full m-0" /> : <MenuIcon className="w-full h-full m-0" />}
             </IconButton>
             {!!menuResult?.menu && (
               <Menu
                 name={menuResult.menu.name}
                 items={menuResult.menu.items}
-                className="header__nav-menu"
+                className={cx(
+                  'header__nav-menu',
+                  'absolute md:static',
+                  'inset-0 top-full',
+                  'overflow-auto md:overflow-visible',
+                  'bg-transparent p-4',
+                  'text-center md:text-left',
+                  'transition opacity-0 duration-500 md:transition-none md:opacity-100',
+                  {
+                    'header__nav-menu--visible z-menu opacity-100': isMenuVisible,
+                    'invisible md:visible': !isMenuVisible
+                  },
+                  'md:z-auto',
+                  'md:h-auto'
+                )}
                 aria-hidden={!isLargeFormat && !isMenuVisible}
-                sx={{
-                  position: ['absolute', 'static'],
-                  top: '100%',
-                  right: 0,
-                  bottom: 0,
-                  left: 0,
-                  overflow: ['auto', 'visible'],
-                  backgroundColor: 'background',
-                  height: [isMenuVisible ? 'calc(100vh - (75px + 1rem))' : 0, 'auto'],
-                  px: 4,
-                  fontSize: [5, 2],
-                  textAlign: ['center', 'left'],
-                  visibility: [isMenuVisible ? 'visible' : 'hidden', 'visible'],
-                  zIndex: isMenuVisible ? ['11', 'auto'] : 'auto'
-                }}
               />
             )}
-          </Box>
+          </nav>
 
           <IconButton
-            variant="header"
+            className={cx('header__search-toggle md:mr-4', {
+              'header__search-toggle--is-open': isSearchVisible
+            })}
             onClick={() => setSearchVisible(current => !current)}
-            className={cx('header__search-toggle', { 'header__search-toggle--is-open': isSearchVisible })}
             aria-label={t('Search.Toggle')}
             aria-haspopup
             aria-expanded={isSearchVisible}
           >
-            {isSearchVisible ? <CloseIcon /> : <SearchIcon />}
+            {isSearchVisible ? (
+              <CloseIcon className="w-full h-full m-0" />
+            ) : (
+              <SearchIcon className="w-full h-full m-0" />
+            )}
           </IconButton>
-          <Box
-            sx={{
-              variant: 'layout.container',
-              position: 'absolute',
-              top: '100%',
-              left: 0,
-              width: '100%',
-              backgroundColor: 'background',
-              visibility: isSearchVisible ? 'visible' : 'hidden',
-              zIndex: isSearchVisible ? '11' : 'auto'
-            }}
+          <div
+            className={cx('container absolute top-full left-0 w-full bg-transparent', {
+              invisible: !isSearchVisible,
+              'z-menu': !isSearchVisible
+            })}
           >
-            <SearchForm
-              role="search"
+            <div
               aria-hidden={!isSearchVisible}
-              sx={{ variant: 'panels.secondary', py: 4 }}
-              onSubmit={value => {
-                router.push(`/search?q=${encodeURIComponent(value)}`);
-                setSearchVisible(false);
-              }}
-            />
-          </Box>
+              className={cx('relative p-4 transition opacity-0 duration-500 bg-brand-primary rounded-lg', {
+                'opacity-100': isSearchVisible
+              })}
+              role="search"
+            >
+              <SearchForm
+                onSubmit={value => {
+                  router.push(`/search?q=${encodeURIComponent(value)}`);
+                  setSearchVisible(false);
+                }}
+              />
+            </div>
+          </div>
 
           <IconButton
-            variant="header"
+            className={cx('header__cart-toggle block relative', {
+              'header__cart-toggle--is-open': isMiniCartVisible
+            })}
             onClick={() => isMiniCartVisibleVar(!isMiniCartVisible)}
-            className={cx('header__cart-toggle', { 'header__cart-toggle--is-open': isMiniCartVisible })}
             aria-label={t('commerce:Cart.Toggle')}
             aria-haspopup
             aria-expanded={isMiniCartVisible}
-            sx={{ position: 'relative' }}
           >
             {isMiniCartVisible ? (
-              <CloseIcon />
+              <CloseIcon className="w-full h-full m-0" />
             ) : (
               <>
-                <CartIcon />
-                <Badge sx={{ position: 'absolute', right: 1, bottom: 1 }}>{numberOfItems}</Badge>
+                <CartIcon className="w-full h-full m-0" />
+                <Badge className="absolute right-0 bottom-0 transform translate-x-1/4 translate-y-1/4">
+                  {numberOfItems}
+                </Badge>
               </>
             )}
           </IconButton>
@@ -164,19 +183,20 @@ const Header: FunctionComponent = () => {
             dismissLabel={t('commerce:Cart.Close')}
             className="header__cart"
           >
-            <Messages sx={{ m: 3 }} location="minicart" />
-            <Cart sx={{ p: 3, backgroundColor: 'muted' }} />
+            <Messages className="m-3" location="minicart" />
+            <Cart className="p-3 bg-white" />
             <Link href="/cart" passHref>
-              <ThemeLink sx={{ display: 'block', mt: 3, textAlign: 'center' }}>{t('commerce:Cart.View')}</ThemeLink>
+              <a className="block mt-3 text-center">{t('commerce:Cart.View')}</a>
             </Link>
           </SideSheet>
 
-          <WebsiteSwitcher sx={{ width: ['100%', 'auto'], marginLeft: [null, 2] }} />
-        </Flex>
+          <WebsiteSwitcher className="absolute -top-2 right-4 md:right-16" />
+        </div>
       </FocusOn>
-
-      <Messages sx={{ marginTop: 3 }} />
-    </Container>
+      <div className="container">
+        <Messages className="mt-3" />
+      </div>
+    </header>
   );
 };
 

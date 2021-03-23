@@ -1,6 +1,7 @@
 import React from 'react';
 import { withApollo } from '@inviqa/viper-storybook-addons';
-import { cache } from '~lib/cache';
+import { createApolloCache } from '@inviqa/viper-nextjs';
+import { apolloCacheConfig } from '~lib/apolloCacheConfig';
 import { addToCartMock } from '~hooks/apollo/mocks/AddToCart';
 import ProductGridBlock from './ProductGridBlock';
 import data from '../../pages/CmsHomepage/mock.json';
@@ -11,7 +12,7 @@ export default {
   title: 'Organisms/ProductGridBlock',
   parameters: {
     apollo: {
-      cache,
+      cache: createApolloCache(apolloCacheConfig),
       mocks: [addToCartMock()]
     }
   }

@@ -1,27 +1,48 @@
 import React from 'react';
 import { act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { messagesVar } from '@inviqa/viper-react-hooks';
 import { renderWithProviders, setupMatchMediaMock } from '~test-helpers';
 import Header from './Header';
 import { cartIdVar } from '~hooks/cart';
-import { getCartMock } from '~hooks/apollo/mocks/GetCart';
-import { getMenuMock } from '~hooks/apollo/mocks/GetMenu';
-import { isMiniCartVisibleVar } from '~lib/cache';
-import { messagesVar } from '~hooks/useMessages';
+import { isMiniCartVisibleVar } from '~lib/apolloCacheConfig';
 import { mockPush } from '../../../setupTests';
+import { useGetCartLazyQuery, useGetMenuQuery } from '~hooks/apollo';
+import { defaultMenu } from '~hooks/apollo/mocks/GetMenu';
+import { defaultCart } from '~hooks/apollo/mocks/GetCart';
 
 jest.mock('../Cart/Cart', () => () => null);
+
+jest.mock('~hooks/apollo', () => {
+  const actual = jest.requireActual('../../../hooks/apollo');
+  return {
+    ...actual,
+    useGetMenuQuery: jest.fn(),
+    useGetCartLazyQuery: jest.fn()
+  };
+});
 
 describe(Header, () => {
   const setup = ({ isLargeFormat = false } = {}) => {
     setupMatchMediaMock(isLargeFormat);
 
-    return renderWithProviders(<Header />, {
-      mocks: [getMenuMock({ name: 'main' }), getCartMock()]
-    });
+    return renderWithProviders(<Header />);
   };
 
   beforeEach(() => {
+    (useGetMenuQuery as jest.Mock).mockImplementation(() => ({
+      data: {
+        menu: defaultMenu
+      }
+    }));
+    (useGetCartLazyQuery as jest.Mock).mockImplementation(() => [
+      jest.fn(),
+      {
+        data: {
+          cart: defaultCart
+        }
+      }
+    ]);
     act(() => {
       isMiniCartVisibleVar(false);
       messagesVar([]);

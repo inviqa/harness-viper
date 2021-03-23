@@ -1,5 +1,4 @@
 import React, { FunctionComponent, HTMLAttributes } from 'react';
-import { Flex, NavLink } from 'theme-ui';
 import cx from 'classnames';
 import { useRouter } from 'next/router';
 
@@ -14,32 +13,24 @@ const WebsiteSwitcher: FunctionComponent<HTMLAttributes<HTMLElement>> = ({ class
   }
 
   return (
-    <Flex
-      as="ul"
-      role="list"
-      className={cx('website-switcher', className)}
-      sx={{ variant: 'lists.plain', justifyContent: 'flex-end' }}
-      {...props}
-    >
+    <ul className={cx('website-switcher', 'flex', 'justify-end', className)} {...props}>
       {locales.map(locale => {
         const isCurrentWebsite = locale === currentLocale;
         return (
           <li key={locale} className="website-switcher__item">
-            <NavLink
+            <a
               href={makeLink(locale)}
-              className="website-switcher__link"
-              sx={{
-                marginRight: [3, 3],
-                color: isCurrentWebsite ? 'primary' : undefined,
-                '&:hover': isCurrentWebsite ? { color: 'primary', borderColor: 'transparent' } : undefined
-              }}
+              className={`website-switcher__link ml-3 text-base ${
+                !isCurrentWebsite ? 'text-black hover:text-gray-600 hover:border-transparent' : ''
+              }
+              `}
             >
               {locale.toUpperCase()}
-            </NavLink>
+            </a>
           </li>
         );
       })}
-    </Flex>
+    </ul>
   );
 };
 

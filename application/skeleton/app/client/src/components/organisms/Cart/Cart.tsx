@@ -1,14 +1,26 @@
-/* @jsx jsx */
-import { FunctionComponent, useEffect, useMemo } from 'react';
-import { jsx, LinkProps, Link as ThemeLink, Alert, Box, BoxProps, Button, Flex } from 'theme-ui';
+import React, {
+  forwardRef,
+  ForwardRefExoticComponent,
+  FunctionComponent,
+  HTMLAttributes,
+  RefAttributes,
+  useEffect,
+  useMemo
+} from 'react';
 import { CgTrash as TrashIcon } from 'react-icons/cg';
 import { Trans, useTranslation } from 'react-i18next';
 import cx from 'classnames';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
-import { CartItem, CartTableTotal, CartTable, CouponCodeForm } from '@inviqa/viper-ui-commerce';
-import { cartIdVar, useCouponCode, checkoutIdVar } from '~hooks/cart';
-import { MessageActionType, useMessages } from '~hooks/useMessages';
+import { Alert, Button, CartItem, CartTableTotal, CartTable, CouponCodeForm } from '@inviqa/viper-ui';
+import {
+  useContainerQuery,
+  useMessages,
+  useCartResponseHandler,
+  MessageActionType,
+  MessageType
+} from '@inviqa/viper-react-hooks';
+import { cartIdVar, useCouponCode, checkoutIdVar, resetCartId } from '~hooks/cart';
 import {
   GetCheckoutQuery,
   GetCheckoutQueryVariables,
@@ -17,22 +29,27 @@ import {
   useGetCheckoutLazyQuery,
   useUpdateCartMutation
 } from '~hooks/apollo';
-import useContainerQuery from '~hooks/useContainerQuery';
-import CartItemCard from './CartItemCard';
 import Result from '../../utility/Result/Result';
+import CartItemCard from './CartItemCard';
 import CartTableRow from './CartTableRow';
-import { MessageType } from '~types/message';
-import { useCartResponseHandler } from '~hooks/cart/useCartResponseHandler';
 
-const CatalogLink: FunctionComponent<LinkProps> = props => (
-  <Link href="/search" passHref>
-    <ThemeLink variant="inverted" {...props} />
-  </Link>
+const CatalogLink: ForwardRefExoticComponent<RefAttributes<HTMLAnchorElement>> = forwardRef(
+  ({ children, ...props }, ref) => (
+    <Link href="/search" passHref>
+      <a ref={ref} {...props}>
+        {children}
+      </a>
+    </Link>
+  )
 );
 
-const Cart: FunctionComponent<BoxProps> = ({ className, ...props }) => {
-  const getCheckoutResponseHandler = useCartResponseHandler<GetCheckoutQuery, GetCheckoutQueryVariables>();
-  const updateCartResponseHandler = useCartResponseHandler<UpdateCartMutation, UpdateCartMutationVariables>();
+const Cart: FunctionComponent<HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => {
+  const getCheckoutResponseHandler = useCartResponseHandler<GetCheckoutQuery, GetCheckoutQueryVariables>({
+    cartNotFoundCallback: resetCartId
+  });
+  const updateCartResponseHandler = useCartResponseHandler<UpdateCartMutation, UpdateCartMutationVariables>({
+    cartNotFoundCallback: resetCartId
+  });
 
   const { t } = useTranslation('commerce');
 
@@ -116,10 +133,10 @@ const Cart: FunctionComponent<BoxProps> = ({ className, ...props }) => {
   };
 
   return (
-    <Box ref={ref} className={cx('cart', className)} {...props}>
+    <div ref={ref} className={cx('cart', className)} {...props}>
       <Result loading={loading || !called} error={error?.message}>
         {isEmpty && (
-          <Alert className="cart__message" sx={{ display: 'block' }}>
+          <Alert type={MessageType.Error} className="cart__message">
             <Trans i18nKey="Cart.IsEmpty" ns="commerce">
               <CatalogLink />
             </Trans>
@@ -137,56 +154,83 @@ const Cart: FunctionComponent<BoxProps> = ({ className, ...props }) => {
             ) : (
               // voiceover will remove these semantics if list does not have list styling so role is necessary
               // eslint-disable-next-line jsx-a11y/no-redundant-roles
-              <ul role="list" sx={{ variant: 'lists.plain' }} className="cart__list" data-cart-mode="list">
+              <ul role="list" className="cart__list" data-cart-mode="list">
                 {items.map(item => (
-                  <li key={item.id} sx={{ ':not(:last-of-type)': { marginBottom: 3 } }}>
+                  <li key={item.id} className="mb-3">
                     <CartItemCard {...item} />
                   </li>
                 ))}
               </ul>
             )}
 
-            <Flex
-              sx={{
-                flexDirection: isLargeContainer ? 'row' : 'column',
-                marginTop: 3,
-                alignItems: 'flex-start',
-                justifyContent: 'space-between',
-                '> *:not(:last-child)': {
-                  marginBottom: isLargeContainer ? 0 : 3
-                }
-              }}
+            <div
+              className={cx(
+                'flex',
+                {
+                  'flex-row': isLargeContainer,
+                  'flex-col': !isLargeContainer
+                },
+                'mt-3',
+                'items-start',
+                'justify-between'
+              )}
             >
               <Button
                 type="button"
-                variant="transparent"
+                variant="clear"
                 disabled={emptyCartResult.loading}
-                sx={{ variant: 'withIcon', width: isLargeContainer ? 'auto' : '100%' }}
+                className={cx(
+                  'inline-flex',
+                  'items-center',
+                  'justify-center',
+                  {
+                    'w-auto': isLargeContainer,
+                    'w-full': !isLargeContainer
+                  },
+                  {
+                    'mb-0': isLargeContainer,
+                    'mb-3': !isLargeContainer
+                  }
+                )}
                 onClick={handleEmptyCart}
               >
                 {/* TODO: if we have more buttons like this, should extract this pattern to a component */}
-                <TrashIcon />
+                <TrashIcon className="mr-2" />
                 <span>{t('Cart.Empty')}</span>
               </Button>
 
-              <Link href="/checkout" passHref>
-                <Button as="a" variant="primary" sx={{ width: isLargeContainer ? 'auto' : '100%' }}>
-                  {t('Cart.ProceedToCheckout')}
-                </Button>
-              </Link>
-            </Flex>
+              <a
+                href="/checkout"
+                className={cx(
+                  'button',
+                  'bg-button-primary',
+                  'hover:bg-button-primary-dark',
+                  'text-button-primary-text',
+                  'hover:text-button-primary-text',
+                  'inline-flex',
+                  'justify-center',
+                  'mr-0',
+                  {
+                    'w-auto': isLargeContainer,
+                    'w-full': !isLargeContainer
+                  }
+                )}
+              >
+                {t('Cart.ProceedToCheckout')}
+              </a>
+            </div>
 
             {isLargeContainer && (
               <CouponCodeForm
                 couponCode={cart?.couponCodes?.[0]?.code ?? ''}
                 onSubmit={handleCouponCodeInCart}
-                sx={{ marginTop: 3, maxWidth: '30rem' }}
+                className="mt-3 max-w-lg"
               />
             )}
           </>
         )}
       </Result>
-    </Box>
+    </div>
   );
 };
 

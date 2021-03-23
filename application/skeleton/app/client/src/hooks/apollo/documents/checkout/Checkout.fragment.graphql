@@ -24,4 +24,7 @@ fragment CheckoutFragment on Checkout {
   billingAddress {
     ...AddressFragment
   }
+  order {
+    id
+  }
 }
