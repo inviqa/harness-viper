@@ -48,8 +48,8 @@ attributes:
       steps:
       - run yarn install
       - run yarn generate:types
-      - run yarn generate:types:contract
       - run yarn build:deps
+      - run yarn run --cwd=app/client build:storybook
     resourcePrefix: ''
     gateway:
       build:
