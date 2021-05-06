@@ -12,16 +12,16 @@ command('app publish'):
   exec: |
     #!bash(workspace:/)|@
     echo "@('docker.registry.password')" | run docker login --username="@('docker.registry.username')" --password-stdin @('docker.registry.url')
-    run docker-compose push @('pipeline.publish.services')
+    run docker-compose push @('pipeline.stage.publish.services')
     run docker logout @('docker.registry.url')
 
 command('app publish chart <release> <message>'):
   env:
-    SSH_PRIVATE_KEY: = @('pipeline.publish.chart.git.ssh_private_key')
-    REPOSITORY: = @('pipeline.publish.chart.git.repository')
-    ARTIFACTS_PATH:  = "./build-artifacts-repository/" ~ @('pipeline.publish.chart.git.path') ~ "/" ~ input.argument('release')
+    SSH_PRIVATE_KEY: = @('pipeline.stage.publish.chart.git.ssh_private_key')
+    REPOSITORY: = @('pipeline.stage.publish.chart.git.repository')
+    ARTIFACTS_PATH:  = "./build-artifacts-repository/" ~ @('pipeline.stage.publish.chart.git.path') ~ "/" ~ input.argument('release')
     MESSAGE:    = input.argument('message')
-    USER_EMAIL: = @('pipeline.publish.chart.git.email')
+    USER_EMAIL: = @('pipeline.stage.publish.chart.git.email')
   exec: |
     #!bash(workspace:/)|@
     
@@ -46,7 +46,7 @@ command('app publish chart <release> <message>'):
 command('helm template <chart-path>'):
   env:
     CHART_PATH:  = input.argument('chart-path')
-    NAMESPACE:   = @('pipeline.' ~ input.argument('environment') ~ '.namespace')
+    NAMESPACE:   = @('pipeline.stage.' ~ input.argument('environment') ~ '.namespace')
   exec: |
     #!bash(harness:/helm)|=
     set -o pipefail
@@ -60,7 +60,7 @@ command('helm template <chart-path>'):
 command('helm kubeval <chart-path>'):
   env:
     CHART_PATH: = input.argument('chart-path')
-    NAMESPACE: = @('pipeline.' ~ input.argument('environment') ~ '.namespace')
+    NAMESPACE: = @('pipeline.stage.' ~ input.argument('environment') ~ '.namespace')
     ADDITIONAL_SCHEMA_LOCATIONS: = @('helm.additional_schema_locations')
   exec: |
     #!bash(harness:/helm)|=
