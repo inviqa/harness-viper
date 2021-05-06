@@ -32,7 +32,7 @@ attributes.default:
 
   docker:
     registry:
-      url: = get_docker_registry(@('docker.repository'))
+      url: ~
       username: ~
       password: ~
     repository: ~
