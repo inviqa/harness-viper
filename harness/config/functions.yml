@@ -167,3 +167,12 @@ function('slugify', [text]): |
   $text = preg_replace('~-+~', '-', $text);
   $text = strtolower($text);
   = $text;
+
+function('get_docker_registry', [dockerRepository]): |
+  #!php
+  $dockerRepoParts = explode('/', $dockerRepository);
+  if (strpos($dockerRepoParts[0], '.') !== false) {
+      $registry = $dockerRepoParts[0];
+  }
+  = $registry ?? 'https://index.docker.io/v1/';
+
