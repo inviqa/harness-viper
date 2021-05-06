@@ -42,7 +42,7 @@ attributes:
         # token: ~
   app:
     image_pull_config: null
-    image: = @('docker.repository') ~ @('app.version')
+    image: = @('docker.repository') ~ ':' ~ @('app.version')
     build:
       from: = 'node:' ~ @('node.version') ~ '-slim'
       steps:

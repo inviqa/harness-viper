@@ -14,7 +14,7 @@
       - ./.my127ws/docker/image/node/root/lib/task:/lib/task
       - ./.my127ws:/.my127ws
 {% else %}
-    image: {{ @('docker.repository') ~ @('app.version') }}
+    image: {{ @('app.image') }}
 {% endif %}
     labels:
       - traefik.enable=true
