@@ -70,6 +70,10 @@ attributes:
         enabled: true
         hosts:
           - = 'gateway-' ~ @('hostname')
+        tls:
+          - hosts:
+            - = 'gateway-' ~ @('hostname')
+            secretName: viper-gateway-letsencrypt-http-cert
     client:
       image: 
       build:
@@ -90,6 +94,10 @@ attributes:
         enabled: true
         hosts:
           - = @('hostname')
+        tls:
+          - hosts:
+            - = 'gateway-' ~ @('hostname')
+            secretName: viper-client-letsencrypt-http-cert
   service: {}
   environment:
     preview:
