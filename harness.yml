@@ -94,10 +94,6 @@ attributes:
         enabled: true
         hosts:
           - = @('hostname')
-        tls:
-          - hosts:
-            - = 'gateway-' ~ @('hostname')
-            secretName: viper-client-letsencrypt-http-cert
   service: {}
   environment:
     preview:
