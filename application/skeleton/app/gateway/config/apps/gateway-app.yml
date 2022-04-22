@@ -14,7 +14,6 @@ services:
     arguments:
       - '@/Gateway/GatewayService[GatewayService]'
       - '@DocsService'
-      - '@GraphqlVoyagerService'
       - '@StorybookService'
 
   GatewayKoa:

@@ -1,0 +1,9 @@
+services:
+  GatewayServices:
+    class: //@inviqa/viper-gateway[GatewayServiceList]
+    factory: ['@GatewayServiceListFactory', 'create']
+    arguments:
+      - '@/Gateway/GatewayService[GatewayService]'
+      - '@DocsService'
+      - '@GraphqlVoyagerService'
+      - '@StorybookService'

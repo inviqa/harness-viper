@@ -3,8 +3,8 @@ parameters:
     listen:
       port: 4100
     server:
-      playground: true
-      debug: true
+      playground: false
+      debug: false
 
 services:
   ServicesApp:

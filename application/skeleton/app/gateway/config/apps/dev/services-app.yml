@@ -1,0 +1,5 @@
+parameters:
+  services:
+    server:
+      playground: true
+      debug: true

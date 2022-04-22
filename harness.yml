@@ -97,6 +97,7 @@ attributes:
         gateway:
           env:
             SUPERVISOR_START_CLIENT: "false"
+            APP_ENV: prod
         client:
           env:
             SUPERVISOR_START_GATEWAY: "false"
@@ -105,6 +106,7 @@ attributes:
         gateway:
           env:
             SUPERVISOR_START_CLIENT: "false"
+            APP_ENV: prod
         client:
           env:
             SUPERVISOR_START_GATEWAY: "false"
