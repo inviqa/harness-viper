@@ -1,0 +1,20 @@
+{% set blocks  = '_twig/docker-compose.yml/' %}
+version: '{{ @('docker-compose.file_version') }}'
+services:
+{% include blocks ~ 'application.yml.twig' %}
+{% for service in @('app.services') %}
+{% include blocks ~ 'service/' ~ service ~ '.yml.twig' %}
+{% endfor %}
+networks:
+  private:
+    external: false
+  shared:
+    external:
+      name: my127ws
+{% if @('docker-compose.sync.strategy') == 'mutagen' %}
+volumes:
+{% for volume in get_mutagen_volume_names() %}
+  {{ volume }}:
+    external: true
+{% endfor %}
+{% endif %}
