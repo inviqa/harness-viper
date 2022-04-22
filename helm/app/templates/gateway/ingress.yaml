@@ -1,5 +1,5 @@
 {{ if .Values.app.gateway.ingress.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
 {{- if .Values.app.gateway.ingress.annotations }}
@@ -17,20 +17,23 @@ metadata:
 {{- end }}
   name: {{ .Values.app.resourcePrefix }}viper-gateway
 spec:
+  {{- with (pick .Values.app.gateway.ingress "ingressClassName" "tls") }}
+  {{- . | toYaml | nindent 2 }}
+  {{- end }}
   rules:
   {{- if .Values.app.gateway.ingress.hosts }}
   {{- range $host := .Values.app.gateway.ingress.hosts }}
     - host: {{ $host }}
       http:
         paths:
-          - backend:
-              serviceName: {{ $.Values.app.resourcePrefix }}viper-gateway
-              servicePort: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $.Values.app.resourcePrefix }}viper-gateway
+                port:
+                  number: 80
   {{- end -}}
-  {{- end }}
-  {{- if .Values.app.gateway.ingress.tls }}
-  tls:
-  {{- toYaml .Values.app.gateway.ingress.tls | nindent 4 }}
   {{- end }}
 status:
   loadBalancer: {}
