@@ -48,6 +48,9 @@ attributes.default:
     feature:
       sealed_secrets: true
 
+    # currently limited to versions supplied by https://github.com/inviqa/kubernetes-json-schema/tree/master/docs/schema
+    kubernetes_version: 1.21.9
+
     sealed_secrets:
       controller:
         name: sealed-secrets
