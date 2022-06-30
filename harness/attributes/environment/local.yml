@@ -1,0 +1,5 @@
+attributes:
+  app:
+    dynamic: yes
+    development: yes
+    version: develop
